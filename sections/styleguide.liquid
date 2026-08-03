@@ -1329,9 +1329,12 @@
           class: 'enable_controls',
           properties: 'If set to true, video controls (play, pause, etc.) will be visible.'
         %}
+        {% comment %}
+          Use double-quoted properties strings so apostrophes in the copy do not break Liquid parsing.
+        {% endcomment %}
         {% render 'styleguide__row',
           class: 'enable_autoplay',
-          properties: 'If set to true, the video will start playing as soon as it's ready.'
+          properties: "If set to true, the video will start playing as soon as it's ready."
         %}
         {% render 'styleguide__row',
           class: 'enable_loop',
@@ -1339,7 +1342,7 @@
         %}
         {% render 'styleguide__row',
           class: 'enable_mute_toggle',
-          properties: 'If set to true, provides an option to mute or unmute the video's audio.'
+          properties: "If set to true, provides an option to mute or unmute the video's audio."
         %}
       {% endcapture %}
       {% capture videos_1_preview %}

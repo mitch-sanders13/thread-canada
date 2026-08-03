@@ -14,10 +14,14 @@ This file can be re-written at any time.
 {% elsif collection %}
   {% assign content = collection %}
 
-{% elsif template == 'index' or template | starts_with: 'index.shogun-5c6aeb83ea4450004e2a2b22' %}
+{% comment %}
+  Shopify theme validation rejects filters inside if conditions (template | starts_with: ...).
+  Use template.name / template.suffix instead so index + Shogun homepage variants still resolve.
+{% endcomment %}
+{% elsif template.name == 'index' %}
   {% assign content = pages['home'] %}
 
-  {% if template == 'index' %}
+  {% if template.suffix == blank %}
     {% assign template_suffix = 'shogun-5c6aeb83ea4450004e2a2b22' %}
   {% endif %}
 
