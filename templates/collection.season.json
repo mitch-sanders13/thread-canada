@@ -43,7 +43,7 @@
         "content_P9kBgX": {
           "type": "content",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/spring24_warm_motion_feed_03.mp4",
+            "video": "shopify://files/videos/spring24_warm_motion_feed_03.mp4",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
@@ -64,7 +64,7 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
-            "image_background": "shopify:\/\/shop_images\/trio.png",
+            "image_background": "shopify://shop_images/trio.png",
             "url": "",
             "heading": "",
             "content": "",
@@ -81,7 +81,7 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": false,
-            "image_background": "shopify:\/\/shop_images\/COLEFERGUSON_DIGI_THREAD_2024--23.jpg",
+            "image_background": "shopify://shop_images/COLEFERGUSON_DIGI_THREAD_2024--23.jpg",
             "url": "",
             "heading": "",
             "content": "",
@@ -95,7 +95,7 @@
         "content_MPrLDX": {
           "type": "content",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/spring24_cold_ugc_feed_02.mp4",
+            "video": "shopify://files/videos/spring24_cold_ugc_feed_02.mp4",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
@@ -115,7 +115,7 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
-            "image_background": "shopify:\/\/shop_images\/COLEFERGUSON_DIGI_THREAD_2024--3.jpg",
+            "image_background": "shopify://shop_images/COLEFERGUSON_DIGI_THREAD_2024--3.jpg",
             "url": "",
             "heading": "",
             "content": "",
@@ -129,7 +129,7 @@
         "content_HntXri": {
           "type": "content",
           "settings": {
-            "video": "shopify:\/\/files\/videos\/spring24_warm_motion_feed_02.mp4",
+            "video": "shopify://files/videos/spring24_warm_motion_feed_02.mp4",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,

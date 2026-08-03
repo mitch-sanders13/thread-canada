@@ -23,8 +23,8 @@
     "collection_banner_jYXxJQ": {
       "type": "collection__banner",
       "settings": {
-        "image_background_desktop": "shopify:\/\/shop_images\/aquaslling_colleciton_blue.png",
-        "image_background_mobile": "shopify:\/\/shop_images\/aquasling_colleciton_mobile.png",
+        "image_background_desktop": "shopify://shop_images/aquaslling_colleciton_blue.png",
+        "image_background_mobile": "shopify://shop_images/aquasling_colleciton_mobile.png",
         "color_scheme": "color__bg-secondary color__secondary",
         "color_text": "color__light",
         "color_border": "color__border-divider-1",
@@ -49,7 +49,7 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
-            "image_background": "shopify:\/\/shop_images\/thread-desert-ut.jpg",
+            "image_background": "shopify://shop_images/thread-desert-ut.jpg",
             "url": "",
             "heading": "",
             "content": "",
@@ -67,7 +67,7 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
-            "image_background": "shopify:\/\/shop_images\/thread-woman-ut.jpg",
+            "image_background": "shopify://shop_images/thread-woman-ut.jpg",
             "url": "",
             "heading": "",
             "content": "",
@@ -82,7 +82,7 @@
           "type": "content",
           "disabled": true,
           "settings": {
-            "video": "shopify:\/\/files\/videos\/Beach_Video_two.mp4",
+            "video": "shopify://files/videos/Beach_Video_two.mp4",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,

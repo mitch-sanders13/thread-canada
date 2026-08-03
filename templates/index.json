@@ -1,1 +1,404 @@
-{"sections":{"85942a7d-a700-4a34-9b4d-8e0a35c6feb7":{"type":"banner","settings":{"url":"shopify:\/\/collections\/new-arrivals","image_background_desktop":"shopify:\/\/shop_images\/summernewarrivals_desktop_hero.jpg","image_background_mobile":"shopify:\/\/shop_images\/summernewarrivals_mobile_hero.jpg","show_entire_image":false,"enable_lazy_loading":false,"show_video_background_mobile":true,"color_scheme":"color__bg-overlay-1 color__text","color_text":"","color_border":"color__border-divider-1","enable_gradient":false,"style_border":"","layout_y_spacing":"min-h-[450px] md:min-h-[550px]","layout_y_alignment":"items-end","layout_x_alignment":"justify-start","visibility":""}},"3361b542-6a1f-4518-8ce5-33ef9fea04b7":{"type":"content-grid","blocks":{"2dc195a3-27e8-4175-b742-561798c34ac4":{"type":"content","settings":{"heading":"Bags","content":"","button_label":"Shop now","button_url":"shopify:\/\/collections\/all-bags","enable_new_tab":false,"image_background":"shopify:\/\/shop_images\/Utility-Tote.png","enable_autoplay":true,"enable_mute_toggle":true,"enable_loop":true,"enable_linked":true,"spacing_top":300,"spacing_bottom":0,"color_scheme":"color__bg-overlay-1 color__text","color_border":"color__border-divider-1","color_text":"color__light","color_button":"btn--minimal-light","enable_gradient":true,"layout_y_alignment":"items-end","layout_x_alignment":"text-center justify-center","layout_row_span":"row-span-1","layout_col_span":"col-span-1 md: md:col-span-1","enable_padding":true,"enable_shift":true,"visibility":""}},"90fae2ea-a4dc-4606-b8e6-b274189e5b45":{"type":"content","settings":{"heading":"Wallets","content":"","button_label":"Shop now","button_url":"shopify:\/\/collections\/all-wallets","enable_new_tab":false,"image_background":"shopify:\/\/shop_images\/vertical-wallet.png","enable_autoplay":true,"enable_mute_toggle":true,"enable_loop":true,"enable_linked":true,"spacing_top":300,"spacing_bottom":0,"color_scheme":"color__bg-overlay-1 color__text","color_border":"color__border-divider-1","color_text":"color__light","color_button":"btn--minimal-light","enable_gradient":true,"layout_y_alignment":"items-end","layout_x_alignment":"text-center justify-center","layout_row_span":"row-span-1","layout_col_span":"col-span-1 md: md:col-span-1","enable_padding":true,"enable_shift":true,"visibility":""}},"4c26a29b-7987-4140-b4bc-add74831ad81":{"type":"content","settings":{"heading":"Accessories","content":"","button_label":"Shop now","button_url":"shopify:\/\/collections\/all-accessories","enable_new_tab":false,"image_background":"shopify:\/\/shop_images\/accessories-mobile-tile.png","enable_autoplay":true,"enable_mute_toggle":true,"enable_loop":true,"enable_linked":true,"spacing_top":300,"spacing_bottom":0,"color_scheme":"color__bg-overlay-1 color__text","color_border":"color__border-divider-1","color_text":"color__light","color_button":"btn--minimal-light","enable_gradient":true,"layout_y_alignment":"items-end","layout_x_alignment":"text-center justify-center","layout_row_span":"row-span-1","layout_col_span":"col-span-1 md: md:col-span-1","enable_padding":true,"enable_shift":true,"visibility":""}}},"block_order":["2dc195a3-27e8-4175-b742-561798c34ac4","90fae2ea-a4dc-4606-b8e6-b274189e5b45","4c26a29b-7987-4140-b4bc-add74831ad81"],"settings":{"heading":"","content":"","button_label":"","button_url":"","spacing_top":20,"spacing_bottom":20,"color_scheme":"color__bg-body color__text","color_border":"color__border-divider-1","color_button":"btn btn--secondary","style_border":"border--b-width","row_size_desktop":"md:grid-cols-3","row_size_mobile":"grid-cols-1","layout_x_alignment":"justify-between","layout_horizontal":"window--full","visibility":"hidden md:block"}},"content_grid_3f7eXE":{"type":"content-grid","blocks":{"content_3GQQCh":{"type":"content","settings":{"heading":"Bags","content":"","button_label":"Shop now","button_url":"shopify:\/\/collections\/all-bags","enable_new_tab":false,"image_background":"shopify:\/\/shop_images\/Utility-Tote.png","enable_autoplay":true,"enable_mute_toggle":true,"enable_loop":true,"enable_linked":true,"spacing_top":300,"spacing_bottom":0,"color_scheme":"color__bg-overlay-1 color__text","color_border":"color__border-divider-1","color_text":"color__light","color_button":"btn--minimal-light","enable_gradient":true,"layout_y_alignment":"items-end","layout_x_alignment":"text-center justify-center","layout_row_span":"row-span-1","layout_col_span":"col-span-1 md: md:col-span-1","enable_padding":true,"enable_shift":true,"visibility":""}},"content_AephCJ":{"type":"content","settings":{"heading":"Wallets","content":"","button_label":"Shop now","button_url":"shopify:\/\/collections\/all-wallets","enable_new_tab":false,"image_background":"shopify:\/\/shop_images\/vertical-wallet.png","enable_autoplay":true,"enable_mute_toggle":true,"enable_loop":true,"enable_linked":true,"spacing_top":300,"spacing_bottom":0,"color_scheme":"color__bg-overlay-1 color__text","color_border":"color__border-divider-1","color_text":"color__light","color_button":"btn--minimal-light","enable_gradient":true,"layout_y_alignment":"items-end","layout_x_alignment":"text-center justify-center","layout_row_span":"row-span-1","layout_col_span":"col-span-1 md: md:col-span-1","enable_padding":true,"enable_shift":true,"visibility":""}},"content_tiVBwE":{"type":"content","settings":{"heading":"Accessories","content":"","button_label":"Shop now","button_url":"shopify:\/\/collections\/all-accessories","enable_new_tab":false,"image_background":"shopify:\/\/shop_images\/accessories-mobile-tile.png","enable_autoplay":true,"enable_mute_toggle":true,"enable_loop":true,"enable_linked":true,"spacing_top":300,"spacing_bottom":0,"color_scheme":"color__bg-overlay-1 color__text","color_border":"color__border-divider-1","color_text":"color__light","color_button":"btn--minimal-light","enable_gradient":true,"layout_y_alignment":"items-end","layout_x_alignment":"text-center justify-center","layout_row_span":"row-span-1","layout_col_span":"col-span-1 md: md:col-span-1","enable_padding":true,"enable_shift":true,"visibility":""}}},"block_order":["content_3GQQCh","content_AephCJ","content_tiVBwE"],"settings":{"heading":"","content":"","button_label":"","button_url":"","spacing_top":20,"spacing_bottom":20,"color_scheme":"color__bg-body color__text","color_border":"color__border-divider-1","color_button":"btn btn--secondary","style_border":"border--b-width","row_size_desktop":"md:grid-cols-4","row_size_mobile":"grid-cols-1","layout_x_alignment":"justify-between","layout_horizontal":"window--full","visibility":"md:hidden"}},"product_grid_BDfi4U":{"type":"product-grid","blocks":{"collection_tab_wallets":{"type":"collection_tab","settings":{"label":"Wallets","collection":"all-wallets"}},"collection_tab_bags":{"type":"collection_tab","settings":{"label":"Bags","collection":"all-bags"}},"collection_tab_accessories":{"type":"collection_tab","settings":{"label":"Accessories","collection":"all-accessories"}}},"block_order":["collection_tab_wallets","collection_tab_bags","collection_tab_accessories"],"settings":{"collection":"best-sellers","products_count":16,"heading":"Best Sellers","content":"","button_label":"","button_url":"","spacing_top":60,"spacing_bottom":60,"color_scheme":"color__bg-body color__text","color_border":"color__border-divider-1","color_button":"btn btn--secondary","style_border":"border--b-width","row_size_desktop":"md:grid-cols-4","row_size_mobile":"grid grid-cols-2","layout_x_alignment":"text-center justify-center flex-col items-center","visibility":""}},"banner_video_alternative_efx4E3":{"type":"banner-video-alternative","name":"Alternative video banner","settings":{"visibility":"","image_background":"shopify:\/\/shop_images\/screenshot-video.jpg","video_background":"shopify:\/\/files\/videos\/nocopy.mp4","auto_play":true,"enable_gradient":true,"height_mobile":320,"height_desktop":600,"content":"","heading":"Expressive Everyday Carry","button_label":"Shop Now","button_url":"shopify:\/\/collections\/shop-all","subline_text_size":12,"heading_text_size":32,"button_text_size":10,"spacing_top":0,"spacing_bottom":0}},"8533772d-b717-4509-8419-ecbf13366913":{"type":"text","settings":{"heading":"DO WHAT CONNECTS YOU","content":"","button_label":"FOLLOW US →","button_url":"https:\/\/www.instagram.com\/thread_wallets\/","spacing_top":60,"spacing_bottom":20,"color_scheme":"color__bg-body color__text","color_border":"color__border-divider-1","color_button":"btn--minimal-dark","style_border":"","layout_x_alignment":"text-center justify-center","content_x_alignment":"text-center justify-center","visibility":""}},"1709748309b5b3be26":{"type":"apps","blocks":{"instafeed_app_block_mrQHUB":{"type":"shopify:\/\/apps\/instafeed\/blocks\/app-block\/c447db20-095d-4a10-9725-b5977662c9d5","settings":{"title":"","title_color":"","title_size_v2":0,"alignment":"center","instafeed_margin_top":0,"instafeed_margin_bottom":0,"instafeed_margin_sides":0,"show_instagram_link":false,"link_alignment":"left","link_color":"#000000","background_color":"","feed_id":"","html_area":""}}},"block_order":["instafeed_app_block_mrQHUB"],"settings":{"spacing_top":0,"spacing_bottom":0,"color_scheme":"color__bg-body color__text","color_border":"color__border-divider-1","style_border":"border--b-width","layout_horizontal":"window","layout_padding":false}},"8f7efc6c-4c05-4b15-9308-f3534082f4ea":{"type":"text","settings":{"heading":"RELENTLESS PROGRESSION. FEARLESS EXPRESSION.","content":"<p>Thread® was born out of a need for expression and function. Life comes with stuff to carry, but who said that has to be boring and inconvenient? For us, it started with <a href=\"https:\/\/www.threadwallets.com\/collections\/all-wallets\" target=\"_blank\" title=\"https:\/\/www.threadwallets.com\/collections\/all-wallets\">wallets<\/a>. We overturned everything about the traditional wallet—you know, that big, ugly one that your dad has had for decades—and brought life to a category saturated with bulky and boring. We replaced the bulk with slim silhouettes that don’t weigh you down, and traded boring designs for a huge variety of original colorways. From there, we expanded into <a href=\"https:\/\/www.threadwallets.com\/collections\/lanyards\" target=\"_blank\" title=\"https:\/\/www.threadwallets.com\/collections\/lanyards\">lanyards<\/a>, <a href=\"https:\/\/www.threadwallets.com\/collections\/all-bags\" target=\"_blank\" title=\"All Bags Collection\">bags<\/a>, <a href=\"https:\/\/www.threadwallets.com\/collections\/chapstick-holder-keychains\" target=\"_blank\" title=\"Chapstick Holders\">lip balm holders<\/a>, and more <a href=\"https:\/\/www.threadwallets.com\/collections\/all-accessories\" target=\"_blank\" title=\"Thread Wallet Accessories\">accessories<\/a> made to hold your daily essentials. Check out Thread® products designed to express your originality with every outing and errand. We’re redefining the way you carry, and making sure you look damn good while doing it. <\/p>","button_label":"Button","button_url":"","spacing_top":60,"spacing_bottom":60,"color_scheme":"color__bg-body color__text","color_border":"color__border-divider-1","color_button":"btn btn--secondary","style_border":"border--b-width","layout_x_alignment":"text-center justify-center","content_x_alignment":"text-center justify-center","visibility":""}}},"order":["85942a7d-a700-4a34-9b4d-8e0a35c6feb7","3361b542-6a1f-4518-8ce5-33ef9fea04b7","content_grid_3f7eXE","product_grid_BDfi4U","banner_video_alternative_efx4E3","8533772d-b717-4509-8419-ecbf13366913","1709748309b5b3be26","8f7efc6c-4c05-4b15-9308-f3534082f4ea"]}
+{
+  "sections": {
+    "85942a7d-a700-4a34-9b4d-8e0a35c6feb7": {
+      "type": "banner",
+      "settings": {
+        "url": "shopify://collections/new-arrivals",
+        "image_background_desktop": "shopify://shop_images/summernewarrivals_desktop_hero.jpg",
+        "image_background_mobile": "shopify://shop_images/summernewarrivals_mobile_hero.jpg",
+        "show_entire_image": false,
+        "enable_lazy_loading": false,
+        "show_video_background_mobile": true,
+        "color_scheme": "color__bg-overlay-1 color__text",
+        "color_text": "",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": false,
+        "style_border": "",
+        "layout_y_spacing": "min-h-[450px] md:min-h-[550px]",
+        "layout_y_alignment": "items-end",
+        "layout_x_alignment": "justify-start",
+        "visibility": ""
+      }
+    },
+    "3361b542-6a1f-4518-8ce5-33ef9fea04b7": {
+      "type": "content-grid",
+      "blocks": {
+        "2dc195a3-27e8-4175-b742-561798c34ac4": {
+          "type": "content",
+          "settings": {
+            "heading": "Bags",
+            "content": "",
+            "button_label": "Shop now",
+            "button_url": "shopify://collections/all-bags",
+            "enable_new_tab": false,
+            "image_background": "shopify://shop_images/Utility-Tote.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "enable_linked": true,
+            "spacing_top": 300,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-overlay-1 color__text",
+            "color_border": "color__border-divider-1",
+            "color_text": "color__light",
+            "color_button": "btn--minimal-light",
+            "enable_gradient": true,
+            "layout_y_alignment": "items-end",
+            "layout_x_alignment": "text-center justify-center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md: md:col-span-1",
+            "enable_padding": true,
+            "enable_shift": true,
+            "visibility": ""
+          }
+        },
+        "90fae2ea-a4dc-4606-b8e6-b274189e5b45": {
+          "type": "content",
+          "settings": {
+            "heading": "Wallets",
+            "content": "",
+            "button_label": "Shop now",
+            "button_url": "shopify://collections/all-wallets",
+            "enable_new_tab": false,
+            "image_background": "shopify://shop_images/vertical-wallet.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "enable_linked": true,
+            "spacing_top": 300,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-overlay-1 color__text",
+            "color_border": "color__border-divider-1",
+            "color_text": "color__light",
+            "color_button": "btn--minimal-light",
+            "enable_gradient": true,
+            "layout_y_alignment": "items-end",
+            "layout_x_alignment": "text-center justify-center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md: md:col-span-1",
+            "enable_padding": true,
+            "enable_shift": true,
+            "visibility": ""
+          }
+        },
+        "4c26a29b-7987-4140-b4bc-add74831ad81": {
+          "type": "content",
+          "settings": {
+            "heading": "Accessories",
+            "content": "",
+            "button_label": "Shop now",
+            "button_url": "shopify://collections/all-accessories",
+            "enable_new_tab": false,
+            "image_background": "shopify://shop_images/accessories-mobile-tile.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "enable_linked": true,
+            "spacing_top": 300,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-overlay-1 color__text",
+            "color_border": "color__border-divider-1",
+            "color_text": "color__light",
+            "color_button": "btn--minimal-light",
+            "enable_gradient": true,
+            "layout_y_alignment": "items-end",
+            "layout_x_alignment": "text-center justify-center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md: md:col-span-1",
+            "enable_padding": true,
+            "enable_shift": true,
+            "visibility": ""
+          }
+        }
+      },
+      "block_order": [
+        "2dc195a3-27e8-4175-b742-561798c34ac4",
+        "90fae2ea-a4dc-4606-b8e6-b274189e5b45",
+        "4c26a29b-7987-4140-b4bc-add74831ad81"
+      ],
+      "settings": {
+        "heading": "",
+        "content": "",
+        "button_label": "",
+        "button_url": "",
+        "spacing_top": 20,
+        "spacing_bottom": 20,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "style_border": "border--b-width",
+        "row_size_desktop": "md:grid-cols-3",
+        "row_size_mobile": "grid-cols-1",
+        "layout_x_alignment": "justify-between",
+        "layout_horizontal": "window--full",
+        "visibility": "hidden md:block"
+      }
+    },
+    "content_grid_3f7eXE": {
+      "type": "content-grid",
+      "blocks": {
+        "content_3GQQCh": {
+          "type": "content",
+          "settings": {
+            "heading": "Bags",
+            "content": "",
+            "button_label": "Shop now",
+            "button_url": "shopify://collections/all-bags",
+            "enable_new_tab": false,
+            "image_background": "shopify://shop_images/Utility-Tote.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "enable_linked": true,
+            "spacing_top": 300,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-overlay-1 color__text",
+            "color_border": "color__border-divider-1",
+            "color_text": "color__light",
+            "color_button": "btn--minimal-light",
+            "enable_gradient": true,
+            "layout_y_alignment": "items-end",
+            "layout_x_alignment": "text-center justify-center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md: md:col-span-1",
+            "enable_padding": true,
+            "enable_shift": true,
+            "visibility": ""
+          }
+        },
+        "content_AephCJ": {
+          "type": "content",
+          "settings": {
+            "heading": "Wallets",
+            "content": "",
+            "button_label": "Shop now",
+            "button_url": "shopify://collections/all-wallets",
+            "enable_new_tab": false,
+            "image_background": "shopify://shop_images/vertical-wallet.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "enable_linked": true,
+            "spacing_top": 300,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-overlay-1 color__text",
+            "color_border": "color__border-divider-1",
+            "color_text": "color__light",
+            "color_button": "btn--minimal-light",
+            "enable_gradient": true,
+            "layout_y_alignment": "items-end",
+            "layout_x_alignment": "text-center justify-center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md: md:col-span-1",
+            "enable_padding": true,
+            "enable_shift": true,
+            "visibility": ""
+          }
+        },
+        "content_tiVBwE": {
+          "type": "content",
+          "settings": {
+            "heading": "Accessories",
+            "content": "",
+            "button_label": "Shop now",
+            "button_url": "shopify://collections/all-accessories",
+            "enable_new_tab": false,
+            "image_background": "shopify://shop_images/accessories-mobile-tile.png",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "enable_linked": true,
+            "spacing_top": 300,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-overlay-1 color__text",
+            "color_border": "color__border-divider-1",
+            "color_text": "color__light",
+            "color_button": "btn--minimal-light",
+            "enable_gradient": true,
+            "layout_y_alignment": "items-end",
+            "layout_x_alignment": "text-center justify-center",
+            "layout_row_span": "row-span-1",
+            "layout_col_span": "col-span-1 md: md:col-span-1",
+            "enable_padding": true,
+            "enable_shift": true,
+            "visibility": ""
+          }
+        }
+      },
+      "block_order": [
+        "content_3GQQCh",
+        "content_AephCJ",
+        "content_tiVBwE"
+      ],
+      "settings": {
+        "heading": "",
+        "content": "",
+        "button_label": "",
+        "button_url": "",
+        "spacing_top": 20,
+        "spacing_bottom": 20,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "style_border": "border--b-width",
+        "row_size_desktop": "md:grid-cols-4",
+        "row_size_mobile": "grid-cols-1",
+        "layout_x_alignment": "justify-between",
+        "layout_horizontal": "window--full",
+        "visibility": "md:hidden"
+      }
+    },
+    "product_grid_BDfi4U": {
+      "type": "product-grid",
+      "blocks": {
+        "collection_tab_wallets": {
+          "type": "collection_tab",
+          "settings": {
+            "label": "Wallets",
+            "collection": "all-wallets"
+          }
+        },
+        "collection_tab_bags": {
+          "type": "collection_tab",
+          "settings": {
+            "label": "Bags",
+            "collection": "all-bags"
+          }
+        },
+        "collection_tab_accessories": {
+          "type": "collection_tab",
+          "settings": {
+            "label": "Accessories",
+            "collection": "all-accessories"
+          }
+        }
+      },
+      "block_order": [
+        "collection_tab_wallets",
+        "collection_tab_bags",
+        "collection_tab_accessories"
+      ],
+      "settings": {
+        "collection": "best-sellers",
+        "products_count": 16,
+        "heading": "Best Sellers",
+        "content": "",
+        "button_label": "",
+        "button_url": "",
+        "spacing_top": 60,
+        "spacing_bottom": 60,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "style_border": "border--b-width",
+        "row_size_desktop": "md:grid-cols-4",
+        "row_size_mobile": "grid grid-cols-2",
+        "layout_x_alignment": "text-center justify-center flex-col items-center",
+        "visibility": ""
+      }
+    },
+    "banner_video_alternative_efx4E3": {
+      "type": "banner-video-alternative",
+      "name": "Alternative video banner",
+      "settings": {
+        "visibility": "",
+        "image_background": "shopify://shop_images/screenshot-video.jpg",
+        "video_background": "shopify://files/videos/nocopy.mp4",
+        "auto_play": true,
+        "enable_gradient": true,
+        "height_mobile": 320,
+        "height_desktop": 600,
+        "content": "",
+        "heading": "Expressive Everyday Carry",
+        "button_label": "Shop Now",
+        "button_url": "shopify://collections/shop-all",
+        "subline_text_size": 12,
+        "heading_text_size": 32,
+        "button_text_size": 10,
+        "spacing_top": 0,
+        "spacing_bottom": 0
+      }
+    },
+    "8533772d-b717-4509-8419-ecbf13366913": {
+      "type": "text",
+      "settings": {
+        "heading": "DO WHAT CONNECTS YOU",
+        "content": "",
+        "button_label": "FOLLOW US →",
+        "button_url": "https://www.instagram.com/thread_wallets/",
+        "spacing_top": 60,
+        "spacing_bottom": 20,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn--minimal-dark",
+        "style_border": "",
+        "layout_x_alignment": "text-center justify-center",
+        "content_x_alignment": "text-center justify-center",
+        "visibility": ""
+      }
+    },
+    "1709748309b5b3be26": {
+      "type": "apps",
+      "blocks": {
+        "instafeed_app_block_mrQHUB": {
+          "type": "shopify://apps/instafeed/blocks/app-block/c447db20-095d-4a10-9725-b5977662c9d5",
+          "settings": {
+            "title": "",
+            "title_color": "",
+            "title_size_v2": 0,
+            "alignment": "center",
+            "instafeed_margin_top": 0,
+            "instafeed_margin_bottom": 0,
+            "instafeed_margin_sides": 0,
+            "show_instagram_link": false,
+            "link_alignment": "left",
+            "link_color": "#000000",
+            "background_color": "",
+            "feed_id": "",
+            "html_area": ""
+          }
+        }
+      },
+      "block_order": [
+        "instafeed_app_block_mrQHUB"
+      ],
+      "settings": {
+        "spacing_top": 0,
+        "spacing_bottom": 0,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "style_border": "border--b-width",
+        "layout_horizontal": "window",
+        "layout_padding": false
+      }
+    },
+    "8f7efc6c-4c05-4b15-9308-f3534082f4ea": {
+      "type": "text",
+      "settings": {
+        "heading": "RELENTLESS PROGRESSION. FEARLESS EXPRESSION.",
+        "content": "<p>Thread® was born out of a need for expression and function. Life comes with stuff to carry, but who said that has to be boring and inconvenient? For us, it started with <a href=\"https://www.threadwallets.com/collections/all-wallets\" target=\"_blank\" title=\"https://www.threadwallets.com/collections/all-wallets\">wallets</a>. We overturned everything about the traditional wallet—you know, that big, ugly one that your dad has had for decades—and brought life to a category saturated with bulky and boring. We replaced the bulk with slim silhouettes that don’t weigh you down, and traded boring designs for a huge variety of original colorways. From there, we expanded into <a href=\"https://www.threadwallets.com/collections/lanyards\" target=\"_blank\" title=\"https://www.threadwallets.com/collections/lanyards\">lanyards</a>, <a href=\"https://www.threadwallets.com/collections/all-bags\" target=\"_blank\" title=\"All Bags Collection\">bags</a>, <a href=\"https://www.threadwallets.com/collections/chapstick-holder-keychains\" target=\"_blank\" title=\"Chapstick Holders\">lip balm holders</a>, and more <a href=\"https://www.threadwallets.com/collections/all-accessories\" target=\"_blank\" title=\"Thread Wallet Accessories\">accessories</a> made to hold your daily essentials. Check out Thread® products designed to express your originality with every outing and errand. We’re redefining the way you carry, and making sure you look damn good while doing it. </p>",
+        "button_label": "Button",
+        "button_url": "",
+        "spacing_top": 60,
+        "spacing_bottom": 60,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "style_border": "border--b-width",
+        "layout_x_alignment": "text-center justify-center",
+        "content_x_alignment": "text-center justify-center",
+        "visibility": ""
+      }
+    }
+  },
+  "order": [
+    "85942a7d-a700-4a34-9b4d-8e0a35c6feb7",
+    "3361b542-6a1f-4518-8ce5-33ef9fea04b7",
+    "content_grid_3f7eXE",
+    "product_grid_BDfi4U",
+    "banner_video_alternative_efx4E3",
+    "8533772d-b717-4509-8419-ecbf13366913",
+    "1709748309b5b3be26",
+    "8f7efc6c-4c05-4b15-9308-f3534082f4ea"
+  ]
+}
