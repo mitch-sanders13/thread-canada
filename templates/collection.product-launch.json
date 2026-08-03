@@ -1,0 +1,138 @@
+{
+  "sections": {
+    "banner": {
+      "type": "collection__banner",
+      "disabled": true,
+      "settings": {
+        "image_background_desktop": "{{ collection.metafields.custom.desktop_banner.value }}",
+        "image_background_mobile": "{{ collection.metafields.custom.mobile_banner.value }}",
+        "color_scheme": "color__bg-overlay-1 color__text",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": true,
+        "style_border": "border--b-width",
+        "layout_y_spacing": "min-h-[350px] md:min-h-[450px]",
+        "layout_y_alignment": "items-end",
+        "layout_x_alignment": "justify-center text-center",
+        "visibility": "",
+        "enable_bar": true,
+        "enable_description": false,
+        "enable_title": true
+      }
+    },
+    "collection_banner_jYXxJQ": {
+      "type": "collection__banner",
+      "settings": {
+        "image_background_desktop": "shopify:\/\/shop_images\/aquaslling_colleciton_blue.png",
+        "image_background_mobile": "shopify:\/\/shop_images\/aquasling_colleciton_mobile.png",
+        "color_scheme": "color__bg-secondary color__secondary",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": true,
+        "style_border": "border--b-width",
+        "layout_y_spacing": "min-h-[350px] md:min-h-[450px]",
+        "layout_y_alignment": "items-end",
+        "layout_x_alignment": "justify-center text-center",
+        "visibility": "",
+        "enable_bar": true,
+        "enable_description": true,
+        "enable_title": true
+      }
+    },
+    "4d273fb4-868d-426e-9ed2-994d976da4c3": {
+      "type": "collection__sidebar",
+      "blocks": {
+        "content_H4cBpJ": {
+          "type": "content",
+          "disabled": true,
+          "settings": {
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "image_background": "shopify:\/\/shop_images\/thread-desert-ut.jpg",
+            "url": "",
+            "heading": "",
+            "content": "",
+            "button_label": "",
+            "index": 1,
+            "paginate_index": 1,
+            "background_color_scheme": "color__bg-body color__text",
+            "column_size": "lg:col-span-1"
+          }
+        },
+        "content_ziyGx8": {
+          "type": "content",
+          "disabled": true,
+          "settings": {
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "image_background": "shopify:\/\/shop_images\/thread-woman-ut.jpg",
+            "url": "",
+            "heading": "",
+            "content": "",
+            "button_label": "",
+            "index": 2,
+            "paginate_index": 1,
+            "background_color_scheme": "color__bg-body color__text",
+            "column_size": "lg:col-span-1"
+          }
+        },
+        "content_XD6j49": {
+          "type": "content",
+          "disabled": true,
+          "settings": {
+            "video": "shopify:\/\/files\/videos\/Beach_Video_two.mp4",
+            "enable_autoplay": true,
+            "enable_mute_toggle": true,
+            "enable_loop": true,
+            "url": "",
+            "heading": "",
+            "content": "",
+            "button_label": "",
+            "index": 3,
+            "paginate_index": 1,
+            "background_color_scheme": "color__bg-body color__text",
+            "column_size": "lg:col-span-1"
+          }
+        }
+      },
+      "block_order": [
+        "content_H4cBpJ",
+        "content_ziyGx8",
+        "content_XD6j49"
+      ],
+      "settings": {
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "row_size_desktop": "md:grid-cols-4",
+        "row_size_mobile": "grid-cols-2",
+        "enable_sort": true,
+        "enable_filter": true,
+        "collection_enable_description": false,
+        "products_per_page": 24
+      }
+    },
+    "recent": {
+      "type": "recent-grid",
+      "settings": {
+        "heading": "Recently viewed",
+        "content": "",
+        "spacing_top": 100,
+        "spacing_bottom": 100,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "style_border": "border--t-width",
+        "layout_horizontal": "window--full",
+        "layout_horizontal_description": "window",
+        "visibility": ""
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "collection_banner_jYXxJQ",
+    "4d273fb4-868d-426e-9ed2-994d976da4c3",
+    "recent"
+  ]
+}

@@ -118,7 +118,8 @@
     },
     "inventory": {
       "only": "Only",
-      "remaining": "in stock"
+      "remaining": "in stock",
+      "limited": "Limited Inventory - Act Fast!"
     },
     "pickup": {
       "available": "Available for pickup",
@@ -171,7 +172,7 @@
     },
     "trust": {
       "exchanges": "Free Exchanges",
-      "warranty": "1-year warranty"
+      "warranty": "Lifetime Warranty"
     }
   },
   "article": {

@@ -1,0 +1,87 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "banner": {
+      "type": "collection__banner",
+      "disabled": true,
+      "settings": {
+        "image_background_desktop": "{{ collection.metafields.custom.desktop_banner.value }}",
+        "image_background_mobile": "{{ collection.metafields.custom.mobile_banner.value }}",
+        "color_scheme": "color__bg-overlay-1 color__text",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": true,
+        "style_border": "border--b-width",
+        "layout_y_spacing": "min-h-[250px] md:min-h-[350px]",
+        "layout_y_alignment": "items-end",
+        "layout_x_alignment": "justify-center text-center",
+        "visibility": "",
+        "enable_bar": true,
+        "enable_description": false,
+        "enable_title": true
+      }
+    },
+    "collection_banner_f4FyUG": {
+      "type": "collection__banner",
+      "settings": {
+        "image_background_desktop": "shopify://shop_images/spring_finalfew_hero_8b409516-7e9f-4b47-941f-d89199c8024a.png",
+        "image_background_mobile": "shopify://shop_images/finalsale_mobile_hero_b5ad6b7d-e192-409f-b0e9-f07079b203a6.jpg",
+        "color_scheme": "color__bg-secondary color__secondary",
+        "color_text": "color__light",
+        "color_border": "color__border-divider-1",
+        "enable_gradient": true,
+        "style_border": "border--b-width",
+        "layout_y_spacing": "min-h-[350px] md:min-h-[450px]",
+        "layout_y_alignment": "items-end",
+        "layout_x_alignment": "justify-center text-center",
+        "visibility": "",
+        "enable_bar": true,
+        "enable_description": false,
+        "enable_title": true
+      }
+    },
+    "4d273fb4-868d-426e-9ed2-994d976da4c3": {
+      "type": "collection__sidebar",
+      "settings": {
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "row_size_desktop": "md:grid-cols-4",
+        "row_size_mobile": "grid-cols-2",
+        "enable_sort": true,
+        "enable_filter": true,
+        "collection_enable_description": true,
+        "products_per_page": 24
+      }
+    },
+    "recent": {
+      "type": "recent-grid",
+      "disabled": true,
+      "settings": {
+        "heading": "Recently viewed",
+        "content": "",
+        "spacing_top": 100,
+        "spacing_bottom": 100,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "style_border": "border--t-width",
+        "layout_horizontal": "window--full",
+        "layout_horizontal_description": "window",
+        "visibility": ""
+      }
+    }
+  },
+  "order": [
+    "banner",
+    "collection_banner_f4FyUG",
+    "4d273fb4-868d-426e-9ed2-994d976da4c3",
+    "recent"
+  ]
+}

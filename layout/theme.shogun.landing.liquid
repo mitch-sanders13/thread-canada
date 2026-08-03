@@ -55,7 +55,9 @@ This file can be re-written at any time.
       };
     </script>
     
-  </head>
+  
+  {% render 'shogun-head' %}
+</head>
   <body class="
       min-h-[100vh] break-words 
       {{ template | handle }}
@@ -66,7 +68,9 @@ This file can be re-written at any time.
     
     {{ content_for_layout }}
     
-    
+    <script type="application/ld+json">
+        {{ article.metafields.custom.faq_schema.value }}
+      </script>
     <style type="text/css">
       body, html {
         width: 100% !important;
