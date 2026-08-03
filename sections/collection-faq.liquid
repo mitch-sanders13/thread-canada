@@ -1,0 +1,483 @@
+<!-- sections/collection-faq.liquid -->
+{% comment %} 
+  Display a two-column FAQ grid with expandable accordion items.
+
+  Content (per collection):
+    1) Collection metafield custom.faq_items — list OR one metaobject reference (Collection FAQ item)
+    2) Collection metafield custom.collection_faq — JSON array of { question|title, answer|content, open? }
+
+  Globals:
+    - settings.layout_horizontal: horizontal margin
+    - settings.enable_animations: boolean to enable animations
+
+  Pro tips:
+    - Designed for collection pages to boost SEO with FAQ content.
+    - Uses a 2-column grid on desktop that collapses to 1 column on mobile.
+{% endcomment %}
+
+{% liquid
+  assign mf_faqs = blank
+  assign mf_faq_single = blank
+  assign json_faqs = blank
+  if collection
+    assign mf_def = collection.metafields.custom.faq_items
+    assign mf_raw = mf_def.value
+    if mf_def != blank and mf_def.type contains 'list.metaobject_reference'
+      if mf_raw != blank and mf_raw.size > 0
+        assign mf_faqs = mf_raw
+      endif
+    elsif mf_def != blank and mf_def.type == 'metaobject_reference' and mf_raw != blank
+      assign mf_faq_single = mf_raw
+    endif
+    assign json_faqs = collection.metafields.custom.collection_faq.value
+  endif
+
+  assign content_source = blank
+  if mf_faqs != blank
+    assign content_source = 'metaobject'
+  elsif mf_faq_single != blank
+    assign content_source = 'metaobject_single'
+  elsif json_faqs != blank and json_faqs.size > 0
+    assign content_source = 'json'
+  endif
+
+  assign has_any_faq = false
+  if content_source != blank
+    assign has_any_faq = true
+  endif
+
+  assign faq_count = 0
+  case content_source
+    when 'metaobject'
+      assign faq_count = mf_faqs.size
+    when 'metaobject_single'
+      assign faq_count = 1
+    when 'json'
+      assign faq_count = json_faqs.size
+  endcase
+%}
+
+{% if has_any_faq or request.design_mode %}
+<section class="
+  {{ section.settings.visibility }}
+  {{ section.settings.color_scheme }} 
+  {{ section.settings.color_border }}
+  {{ section.settings.style_border }}">
+  <div style="
+    padding-top:{{ section.settings.spacing_top }}px;
+    padding-bottom:{{ section.settings.spacing_bottom }}px;" 
+    class="{{ section.settings.layout_horizontal }}">
+
+    {% render 'component__section-header' %} 
+
+    <div class="grid md:grid-cols-2 grid-cols-1 items-start" style="gap: {{ section.settings.layout_gap }}px;">
+      {% case content_source %}
+        {% when 'metaobject' %}
+          {% for entry in mf_faqs %}
+            {% assign fq = entry.question.value | default: entry.question %}
+            {% liquid
+              assign is_open = false
+              if entry.open.value == true or entry.open == true
+                assign is_open = true
+              elsif entry.enable_open.value == true or entry.enable_open == true
+                assign is_open = true
+              elsif entry.accordion_expanded_by_default.value == true or entry.accordion_expanded_by_default == true
+                assign is_open = true
+              endif
+            %}
+            {% capture faq_body %}{{ entry.answer | metafield_tag }}{% endcapture %}
+            {% render 'collection-faq__item',
+              title: fq,
+              content_html: faq_body,
+              open: is_open,
+              border_color: section.settings.color_border,
+              shopify_attributes: '' %}
+          {% endfor %}
+        {% when 'metaobject_single' %}
+          {% assign entry = mf_faq_single %}
+          {% assign fq = entry.question.value | default: entry.question %}
+          {% liquid
+            assign is_open = false
+            if entry.open.value == true or entry.open == true
+              assign is_open = true
+            elsif entry.enable_open.value == true or entry.enable_open == true
+              assign is_open = true
+            elsif entry.accordion_expanded_by_default.value == true or entry.accordion_expanded_by_default == true
+              assign is_open = true
+            endif
+          %}
+          {% capture faq_body %}{{ entry.answer | metafield_tag }}{% endcapture %}
+          {% render 'collection-faq__item',
+            title: fq,
+            content_html: faq_body,
+            open: is_open,
+            border_color: section.settings.color_border,
+            shopify_attributes: '' %}
+        {% when 'json' %}
+          {% for item in json_faqs %}
+            {% assign fq = item.question | default: item.title %}
+            {% liquid
+              assign is_open = false
+              if item.open == true or item.open == 'true' or item.enable_open == true or item.enable_open == 'true' or item.accordion_expanded_by_default == true or item.accordion_expanded_by_default == 'true'
+                assign is_open = true
+              endif
+            %}
+            {% assign ans = item.answer | default: item.content %}
+            {% render 'collection-faq__item',
+              title: fq,
+              content_html: ans,
+              open: is_open,
+              border_color: section.settings.color_border,
+              shopify_attributes: '' %}
+          {% endfor %}
+      {% endcase %}
+      {% if request.design_mode and faq_count == 0 %}
+        <p class="opacity-70 text-sm col-span-full">
+          {{ 'sections.collection_faq.editor_empty_state' | t }}
+        </p>
+      {% endif %}
+    </div>
+
+    {% if section.settings.enable_schema and faq_count > 0 %}
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          "mainEntity": [
+            {%- case content_source -%}
+              {%- when 'metaobject' -%}
+                {%- for entry in mf_faqs -%}
+                  {%- assign schema_q = entry.question.value | default: entry.question | strip -%}
+                  {%- assign schema_a = entry.answer.value | default: entry.answer | strip_html -%}
+                  {
+                    "@type": "Question",
+                    "name": {{ schema_q | json }},
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": {{ schema_a | json }}
+                    }
+                  }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+              {%- when 'metaobject_single' -%}
+                {%- assign entry = mf_faq_single -%}
+                {%- assign schema_q = entry.question.value | default: entry.question | strip -%}
+                {%- assign schema_a = entry.answer.value | default: entry.answer | strip_html -%}
+                {
+                  "@type": "Question",
+                  "name": {{ schema_q | json }},
+                  "acceptedAnswer": {
+                    "@type": "Answer",
+                    "text": {{ schema_a | json }}
+                  }
+                }
+              {%- when 'json' -%}
+                {%- for item in json_faqs -%}
+                  {%- assign schema_q = item.question | default: item.title | strip -%}
+                  {%- assign schema_a = item.answer | default: item.content | strip_html -%}
+                  {
+                    "@type": "Question",
+                    "name": {{ schema_q | json }},
+                    "acceptedAnswer": {
+                      "@type": "Answer",
+                      "text": {{ schema_a | json }}
+                    }
+                  }{%- unless forloop.last -%},{%- endunless -%}
+                {%- endfor -%}
+            {%- endcase -%}
+          ]
+        }
+      </script>
+    {% endif %}
+    
+  </div>
+</section>
+{% endif %}
+
+{% schema %}
+{
+  "name":"t:sections.collection_faq.name",
+  "settings":[
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__4.content"
+    },
+    {
+      "type":"text",
+      "id":"heading",
+      "label":"t:sections.all.content.settings.heading.label"
+    },
+    {
+      "type":"richtext",
+      "id":"content",
+      "label":"t:sections.all.content.settings.content.label"
+    },
+    {
+      "type":"text",
+      "id":"button_label",
+      "label":"t:sections.all.content.settings.button_label.label"
+    },
+    {
+      "type":"url",
+      "id":"button_url",
+      "label":"t:sections.all.content.settings.button_url.label"
+    },
+    {
+      "type": "header",
+      "content": "t:sections.all.headers.header__22.content"
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "min": 0,
+      "max": 300,
+      "step": 20,
+      "unit": "px",
+      "label": "t:sections.all.layout.settings.spacing.label_top",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 20,
+      "unit": "px",
+      "label": "t:sections.all.layout.settings.spacing.label_bottom",
+      "default": 100
+    },
+    {
+      "type": "range",
+      "id": "layout_gap",
+      "min": 0,
+      "max": 48,
+      "step": 4,
+      "unit": "px",
+      "label": "t:sections.collection_faq.settings.layout_gap.label",
+      "default": 16
+    },
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__1.content"
+    },
+    {
+      "type":"select",
+      "id":"color_scheme",
+      "label":"t:sections.all.colors.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__1.label"
+        },
+        {
+          "value":"color__bg-neutral color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__2.label"
+        },
+        {
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__3.label"
+        },
+        {
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__4.label"
+        },
+        {
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__5.label"
+        },
+        {
+          "value":"color__bg-primary color__primary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__6.label"
+        },
+        {
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__7.label"
+        },
+        {
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
+        }
+      ],
+      "default":"color__bg-body color__text"
+    },
+    {
+      "type":"select",
+      "id":"color_border",
+      "label":"t:sections.all.colors.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:sections.all.colors.settings.color_border.options__1.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:sections.all.colors.settings.color_border.options__2.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type":"select",
+      "id":"color_button",
+      "label":"t:sections.all.colors.settings.color_button.label",
+      "options":[
+        {
+          "value":"btn",
+          "label":"t:sections.all.colors.settings.color_button.options__1.label"
+        },
+        {
+          "value":"btn btn--secondary",
+          "label":"t:sections.all.colors.settings.color_button.options__2.label"
+        },
+        {
+          "value":"btn btn--tertiary",
+          "label":"t:sections.all.colors.settings.color_button.options__5.label"
+        },
+        {
+          "value":"btn btn--neutral",
+          "label":"t:sections.all.colors.settings.color_button.options__3.label"
+        },
+        {
+          "value":"btn btn--plain",
+          "label":"t:sections.all.colors.settings.color_button.options__4.label"
+        },
+        {
+          "value":"btn--minimal-light",
+          "label":"t:sections.all.colors.settings.color_button.options__6.label"
+        },
+        {
+          "value":"btn--minimal-dark",
+          "label":"t:sections.all.colors.settings.color_button.options__7.label"
+        }
+      ],
+      "default":"btn btn--secondary"
+    },
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__2.content"
+    },
+    {
+      "type":"select",
+      "id":"style_border",
+      "label":"t:sections.all.styles.settings.style_border.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:sections.all.styles.settings.style_border.options__1.label"
+        },
+        {
+          "value":"border--t-width",
+          "label":"t:sections.all.styles.settings.style_border.options__2.label"
+        },
+        {
+          "value":"border--b-width",
+          "label":"t:sections.all.styles.settings.style_border.options__3.label"
+        },
+        {
+          "value":"border--b-width border--t-width",
+          "label":"t:sections.all.styles.settings.style_border.options__4.label"
+        }
+      ],
+      "default":""
+    },
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__3.content"
+    },
+    {
+      "type": "select",
+      "id": "layout_x_alignment",
+      "label": "t:sections.all.layout.settings.layout_x_alignment.label",
+      "options": [
+        {
+          "value": "justify-between",
+          "label": "t:sections.all.layout.settings.layout_x_alignment.options__1.label"
+        },
+        {
+          "value": "text-center justify-center flex-col items-center",
+          "label": "t:sections.all.layout.settings.layout_x_alignment.options__2.label"
+        },
+        {
+          "value": "text-right justify-end flex-col items-end",
+          "label": "t:sections.all.layout.settings.layout_x_alignment.options__3.label"
+        }
+      ],
+      "default": "text-center justify-center flex-col items-center"
+    },
+    {
+      "type": "select",
+      "id": "layout_horizontal",
+      "label": "t:settings_schema.layout.settings.layout_horizontal.label",
+      "options": [
+        {
+          "value": "window--narrow",
+          "label": "t:settings_schema.layout.settings.layout_horizontal.options__1.label"
+        },
+        {
+          "value": "window",
+          "label": "t:settings_schema.layout.settings.layout_horizontal.options__2.label"
+        },
+        {
+          "value": "window--wide",
+          "label": "t:settings_schema.layout.settings.layout_horizontal.options__3.label"
+        },
+        {
+          "value": "window--full",
+          "label": "t:settings_schema.layout.settings.layout_horizontal.options__4.label"
+        }
+      ],
+      "default": "window"
+    },
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__8.content"
+    },
+    {
+      "type":"checkbox",
+      "id":"enable_schema",
+      "label":"t:sections.collection_faq.settings.enable_schema.label",
+      "info":"t:sections.collection_faq.settings.enable_schema.info",
+      "default":true
+    },
+    {
+      "type":"select",
+      "id":"visibility",
+      "label":"t:sections.all.visibility.label",
+      "options":[
+        {
+          "value":"",
+          "label":"t:sections.all.visibility.options__1.label"
+        },
+        {
+          "value":"md:hidden",
+          "label":"t:sections.all.visibility.options__2.label"
+        },
+        {
+          "value":"hidden md:block",
+          "label":"t:sections.all.visibility.options__3.label"
+        }
+      ],
+      "default":""
+    }
+  ],
+  "presets":[
+    {
+      "name":"t:sections.collection_faq.name",
+      "settings":{
+        "color_scheme":"color__bg-body color__text",
+        "color_border":"color__border-divider-1",
+        "color_button":"btn btn--secondary",
+        "style_border":"",
+        "heading":"Your questions, answered",
+        "content":"",
+        "button_label":"",
+        "button_url":"",
+        "layout_x_alignment":"text-center justify-center flex-col items-center",
+        "enable_schema": true
+      }
+    }
+  ],
+  "disabled_on": {
+    "groups": ["custom.overlay"]
+  }
+}
+{% endschema %}

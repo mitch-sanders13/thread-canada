@@ -1,0 +1,608 @@
+<!-- snippets/product__gallery-grid.liquid -->
+{% comment %} 
+  Block to display product photos in a grid.
+
+  Accepts:
+    - featured: boolean to assign product object from section settings, set this to true if block is used within a section rather than product template
+    - nested_gallery_column: when true, use w-full inside the sticky gallery wrapper (avoid double layout_gallery_size)
+  
+  Usage:
+    {% render 'product__gallery-grid', 
+      featured: true %}
+
+  Globals:
+    - settings.savings_badge: boolean to display savings badge
+
+  Possible enhancements:
+    - Add global setting to set grid gap width and apply to entire theme.
+    - Add alterntive grid layouts (e.g. 2x2, 3x3, 4x4, etc.).
+    - Move position of indicators to avoid overlap of alt text.
+  
+  Pro tips:
+    - When a product only has one photo the image will not be shown in a grid.
+    - Mobile will default to the slider layout regardless.
+{% endcomment %}
+
+{% if featured %}
+  {%- assign product = section.settings.product -%}
+{% endif %}
+
+{% if nested_gallery_column %}
+  {% assign gallery_width_class = 'w-full' %}
+{% else %}
+  {% assign gallery_width_class = section.settings.layout_gallery_size %}
+{% endif %}
+
+{%- liquid
+  assign selected_variant = product.selected_or_first_available_variant
+  assign selected_option_1 = selected_variant.option1 | handle
+  assign selected_option_2 = selected_variant.option2 | downcase
+  assign selected_option_3 = selected_variant.option3 | downcase
+  assign selected_option_2_marker = ' - ' | append: selected_option_2 | append: ' - '
+  assign selected_option_3_marker = ' - ' | append: selected_option_3 | append: ' - '
+  capture more_specific_option_1_handles
+    for option_value in product.options_with_values.first.values
+      assign option_value_handle = option_value | handle
+      if option_value_handle != selected_option_1 and option_value_handle contains selected_option_1
+        echo option_value_handle | append: ','
+      endif
+    endfor
+  endcapture
+  assign more_specific_option_1_handles = more_specific_option_1_handles | split: ','
+  assign render_variant_media_only = false
+  if section.settings.enable_variant_images and product.has_only_default_variant == false
+    assign render_variant_media_only = true
+  endif
+-%}
+
+{% comment %} Mobile only blocks {% endcomment %}
+<div class="w-full md:hidden">
+  {% for block in section.blocks %}
+    {%- case block.type -%}
+      
+      {%- when 'breadcrumb' -%}
+        {% render 'product__breadcrumb', blocksettings: block.settings %}
+      
+      {%- when 'title' -%}
+        {% render 'product__title', blocksettings: block.settings %}
+
+      {%- when 'price' -%}
+        <div class="px-4
+            {{ section.settings.color_border }}
+            {{ block.settings.color_scheme }} 
+            {{ block.settings.style_border }}"
+          style="
+            padding-top:{{ block.settings.spacing_top }}px;
+            padding-bottom:{{ block.settings.spacing_bottom }}px;">
+          <div class="relative flex items-end justify-between">
+            {% render 'product__price', blocksettings: block.settings %}
+          </div>
+        </div>
+
+    {%- endcase -%}
+  {% endfor %}
+</div>
+
+<div 
+  class="
+    hidden md:grid items-start relative padding--r-gap margin--t-gap margin--b-gap
+    {{ gallery_width_class }}
+    {% if product.media.size > 1 %}
+      grid-cols-2
+    {% endif %}
+  "
+  style="
+    gap: {{ settings.layout_gap_size }}px;">
+  
+  {%- comment -%} Badges {%- endcomment -%}
+  {% if section.settings.show_product_badges %}
+    <div class="absolute top-0 left-0 z-10 flex flex-wrap w-full gap-2 p-2 whitespace-normal">
+
+      {%- if product.metafields.reviews.rating.value != blank -%}
+        {% capture badge_content %}
+        {% assign rating = product.metafields.reviews.rating.value | strip %}
+        {{ rating | times: 1 | round: 2 }}
+          {% render 'component__icon', icon: 'star', size: '12', class: 'ml-1' %} 
+        {% endcapture %}
+        {% render 'component__badge', 
+          background: 'overlay-2',
+          text: 'text',
+          icon: '',
+          content: badge_content %}
+      {%- endif -%}
+
+      {% for tag in product.tags %}
+        {% if tag contains "badge_" %}
+          {% capture badge_content %}{{ tag | remove: "badge_" }}{% endcapture %}
+          {% render 'component__badge', 
+            background: 'secondary',
+            text: 'secondary',
+            icon: '',
+            content: badge_content %}
+        {% endif %}
+      {% endfor %}
+
+      {% render 'product__savings-badge-alpine', product: product %}
+      
+    </div>
+  {% endif %}
+
+  {% assign rendered_media_count = 0 %}
+  {% for media in product.media %}
+    {%- liquid
+      assign render_media = true
+      if render_variant_media_only
+        assign render_media = false
+        assign media_alt_handle = media.alt | handle
+        assign media_alt_downcase = media.alt | downcase
+        assign option_match = true
+        if selected_option_1 != blank
+          if media_alt_handle contains selected_option_1
+            for option_value_handle in more_specific_option_1_handles
+              if option_value_handle != blank and media_alt_handle contains option_value_handle
+                assign option_match = false
+                break
+              endif
+            endfor
+          else
+            assign option_match = false
+          endif
+        endif
+        if selected_option_2 != blank
+          unless media_alt_downcase contains selected_option_2_marker
+            assign option_match = false
+          endunless
+        endif
+        if selected_option_3 != blank
+          unless media_alt_downcase contains selected_option_3_marker
+            assign option_match = false
+          endunless
+        endif
+        if option_match
+          assign render_media = true
+        endif
+        if selected_variant.featured_media.id == media.id
+          assign render_media = true
+        endif
+      endif
+      if render_media
+        assign media_index = rendered_media_count
+        assign rendered_media_count = rendered_media_count | plus: 1
+      endif
+    -%}
+    {% if render_media %}
+    {% case media.media_type %}
+      {% when 'image' %}
+        {% assign gallery_image_loading = 'lazy' %}
+        {% assign gallery_image_fetchpriority = 'auto' %}
+        {% if media_index < 4 %}
+          {% assign gallery_image_loading = 'eager' %}
+          {% assign gallery_image_fetchpriority = 'high' %}
+        {% endif %}
+    
+        <div class="relative border--width border--radius overflow-hidden
+          {{ section.settings.image_border }}
+          {{ media | handle }}
+          {% if section.settings.enable_zoom %}cursor-zoom-in{% endif %}"
+            {% if section.settings.enable_zoom %}
+              @click="fullscreen = true; hide_header = true;"
+            {% endif %}>
+          <div class="overflow-hidden object-cover
+            {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}
+            {{ section.settings.media_color_scheme }}">
+            {% if section.settings.media_object-sizing == "cover" %}
+              {% capture image_class %}w-full h-full object-cover {{ section.settings.media_color_scheme }}{% endcapture %}
+            {% else %}
+              {% capture image_class %}w-full h-full object-contain {{ section.settings.media_color_scheme }}{% endcapture %}
+            {% endif %}
+            {{ media
+              | image_url: width: 1400 
+              | image_tag: style: 'object-fit:cover', class: image_class, loading: gallery_image_loading, fetchpriority: gallery_image_fetchpriority, alt: media.alt }}
+          </div>
+          {% if section.settings.enable_alt == true and media.alt != product.title %}
+            <div class="absolute bottom-0 w-full p-2 text-left whitespace-normal opacity-75 type--smaller">
+              {{ media.alt }}
+            </div>
+          {% endif %}
+        </div>
+
+      {% when 'external_video' %}
+        <div class="relative border--width border--radius overflow-hidden
+          {{ section.settings.image_border }}">
+          <div class="absolute z-10 bottom-2 left-2">
+            {% capture badge_content %}
+              {% render 'component__icon', icon: 'play', size: '16' %}
+            {% endcapture %}
+            {% render 'component__badge', 
+              background: 'body',
+              text: 'text',
+              icon: '',
+              content: badge_content %}
+          </div>
+          <div class="overflow-hidden object-cover
+            {{ section.settings.media_color_scheme }}
+            {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}">
+            <div class="flex items-center">
+              <div class="object-cover w-full aspect-video aspect-w-16 aspect-h-9">
+                {% if media.host == 'youtube' %}
+                  {{ media | external_video_url: color: 'white' | external_video_tag: class: 'w-full h-full aspect-video max-w-full' }}
+                {% elsif media.host == 'vimeo' %}
+                  {{ media | external_video_url: loop: '1', muted: '1' | external_video_tag: class: 'w-full h-full aspect-video max-w-full' }}
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        </div>
+
+      {% when 'video' %}
+        <div class="relative border--width border--radius overflow-hidden
+          {{ section.settings.image_border }}">
+          <div class="absolute z-10 bottom-2 left-2">
+            {% capture badge_content %}
+              {% render 'component__icon', icon: 'play', size: '16' %}
+            {% endcapture %}
+            {% render 'component__badge', 
+              background: 'body',
+              text: 'text',
+              icon: '',
+              content: badge_content %}
+          </div>
+          <div class="overflow-hidden object-cover
+            {{ section.settings.media_color_scheme }}
+            {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}">
+            <div class="flex items-center">
+              {{ media | video_tag: autoplay: true, loop: true, mute: true, controls: true, class: 'w-full h-full' }}
+            </div>
+          </div>
+        </div>
+
+      {% when 'model' %}
+        <div class="relative border--width border--radius overflow-hidden
+          {{ section.settings.image_border }}">
+          <div class="absolute z-10 bottom-2 left-2">
+            {% capture badge_content %}
+              {% render 'component__icon', icon: 'box', size: '16' %}
+            {% endcapture %}
+            {% render 'component__badge', 
+              background: 'body',
+              text: 'text',
+              icon: '',
+              content: badge_content %}
+          </div>
+          <div class="absolute left-auto right-auto z-10 w-full bottom-2">
+            <button
+              class="btn btn--small btn--secondary"
+              data-shopify-xr
+              data-shopify-model3d-id="{{ media.id }}"
+              data-shopify-title="{{ product.title | escape }}"
+              data-shopify-xr-hidden>
+              {{ 'general.media.view_in_space' | t }}
+            </button>
+          </div>
+          <div class="overflow-hidden object-cover h-full
+            {{ section.settings.media_color_scheme }}
+            {{ section.settings.media_ratio }}">
+            <div class="flex items-center h-full">
+              {{ media | model_viewer_tag: class: 'w-full h-full' }}
+            </div>
+          </div>
+        </div>
+
+    {% endcase %}
+    {% endif %}
+  {% endfor %}
+
+</div>
+
+<div class="md:hidden 
+  {{ section.settings.layout_gallery_size }}">
+  <div class="relative flex w-full margin--t-gap margin--b-gap">
+
+    {%- comment -%} Badges {%- endcomment -%}
+    {% if section.settings.show_product_badges %}
+      <div class="absolute top-0 left-0 z-10 flex flex-wrap w-full gap-2 px-4 py-2 whitespace-normal">
+    
+        {%- if product.metafields.reviews.rating.value != blank -%}
+          {% capture badge_content %}
+          {% assign rating = product.metafields.reviews.rating.value | strip %}
+          {{ rating | times: 1 | round: 2 }}
+            {% render 'component__icon', icon: 'star', size: '12', class: 'ml-1' %} 
+          {% endcapture %}
+          {% render 'component__badge', 
+            background: 'overlay-2',
+            text: 'text',
+            icon: '',
+            content: badge_content %}
+        {%- endif -%}
+    
+        {% for tag in product.tags %}
+          {% if tag contains "badge_" %}
+            {% capture badge_content %}{{ tag | remove: "badge_" }}{% endcapture %}
+            {% render 'component__badge', 
+              background: 'secondary',
+              text: 'secondary',
+              icon: '',
+              content: badge_content %}
+          {% endif %}
+        {% endfor %}
+        
+        {% render 'product__savings-badge-alpine', product: product %}
+
+      </div>
+    {% endif %}
+
+    {%- comment -%} Arrows {%- endcomment -%}
+    {% if product.media.size > 1 %}
+      <div x-show="show_arrows" class="absolute z-10 hidden -translate-y-1/2 md:block top-1/2 left-4">
+        <button class="shadow-sm btn btn--plain btn--small"
+          title="{{ 'general.media.previous_slide' | t }}"
+          {% if settings.enable_animations %}
+            x-transition:enter="animation-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="animation-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          {% endif %}
+          x-cloak
+          @click="scrollBack();">
+          {% render 'component__icon', icon: 'arrow-left', size: '20', class: '' %}
+        </button>
+      </div>
+      <div x-show="show_arrows" class="absolute z-10 hidden -translate-y-1/2 md:block top-1/2 right-4">
+        <button class="shadow-sm btn btn--plain btn--small"
+          title="{{ 'general.media.next_slide' | t }}"
+          {% if settings.enable_animations %}
+            x-transition:enter="animation-300"
+            x-transition:enter-start="opacity-0"
+            x-transition:enter-end="opacity-100"
+            x-transition:leave="animation-300"
+            x-transition:leave-start="opacity-100"
+            x-transition:leave-end="opacity-0"
+          {% endif %}
+          x-cloak
+          @click="scrollNext();">
+          {% render 'component__icon', icon: 'arrow-right', size: '20', class: '' %}
+        </button>
+      </div>
+    {% endif %}
+    
+    {%- comment -%} Slides {%- endcomment -%}
+    <div 
+      class="inline-flex w-full overflow-x-auto overflow-y-hidden text-center whitespace-nowrap md:snap-x hidescrollbar padding--l-gap padding--r-gap md:px-0 md:margin--l-gap md:margin--r-gap"
+      style="
+        gap: {{ settings.layout_gap_size }}px;"
+      x-init="setTimeout(function(){ if (isOverflown($el)) show_arrows = true}, 600)" 
+      x-ref="slider">
+
+      {% assign rendered_media_count = 0 %}
+      {% for media in product.media %}
+        {%- liquid
+          assign render_media = true
+          if render_variant_media_only
+            assign render_media = false
+            assign media_alt_handle = media.alt | handle
+            assign media_alt_downcase = media.alt | downcase
+            assign option_match = true
+            if selected_option_1 != blank
+              if media_alt_handle contains selected_option_1
+                for option_value_handle in more_specific_option_1_handles
+                  if option_value_handle != blank and media_alt_handle contains option_value_handle
+                    assign option_match = false
+                    break
+                  endif
+                endfor
+              else
+                assign option_match = false
+              endif
+            endif
+            if selected_option_2 != blank
+              unless media_alt_downcase contains selected_option_2_marker
+                assign option_match = false
+              endunless
+            endif
+            if selected_option_3 != blank
+              unless media_alt_downcase contains selected_option_3_marker
+                assign option_match = false
+              endunless
+            endif
+            if option_match
+              assign render_media = true
+            endif
+            if selected_variant.featured_media.id == media.id
+              assign render_media = true
+            endif
+          endif
+          if render_media
+            assign media_index = rendered_media_count
+            assign rendered_media_count = rendered_media_count | plus: 1
+          endif
+        -%}
+        {% if render_media %}
+        {% case media.media_type %}
+          
+          {% when 'image' %}
+            {% assign gallery_image_loading = 'lazy' %}
+            {% assign gallery_image_fetchpriority = 'auto' %}
+            {% if media_index == 0 %}
+              {% assign gallery_image_loading = 'eager' %}
+              {% assign gallery_image_fetchpriority = 'high' %}
+            {% endif %}
+            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+              {{ section.settings.image_border }}
+              {{ media | handle }} 
+              {% if section.settings.enable_zoom %}cursor-zoom-in{% endif %}  
+              {% if product.media.size > 1 %}w-5/6 {% else %} w-full{% endif %}"
+              {% if section.settings.enable_zoom %}
+                @click="fullscreen = true; hide_header = true;"
+              {% endif %}   
+              x-intersect:enter.half="gallery_index = {{ media_index }};"
+              x-bind:data-slide="{{ media_index }}">
+              <div class="overflow-hidden object-cover h-full
+                {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}
+                {{ section.settings.media_color_scheme }}">
+                {% if section.settings.media_object-sizing == "cover" %}
+                  {% capture image_class %}w-full h-full object-cover {{ section.settings.media_color_scheme }}{% endcapture %}
+                {% else %}
+                  {% capture image_class %}w-full h-full object-contain {{ section.settings.media_color_scheme }}{% endcapture %}
+                {% endif %}
+                {{ media
+                  | image_url: width: 1400 
+                  | image_tag: style: 'object-fit:cover', class: image_class, loading: gallery_image_loading, fetchpriority: gallery_image_fetchpriority, alt: media.alt }}
+              </div>
+              {% if section.settings.enable_alt == true and media.alt != product.title %}
+                <div class="absolute bottom-0 w-full p-2 text-left whitespace-normal opacity-75 type--smaller">
+                  {{ media.alt }}
+                </div>
+              {% endif %}
+            </div>
+            
+          {% when 'external_video' %}
+            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+              {{ section.settings.image_border }}
+              {% if product.media.size > 1 %}w-4/5 {% else %} w-full{% endif %}"
+              x-intersect:enter.half="gallery_index = {{ media_index }};"
+              x-bind:data-slide="{{ media_index }}">
+              <div class="absolute z-10 bottom-2 left-2">
+                {% capture badge_content %}
+                  {% render 'component__icon', icon: 'play', size: '16' %}
+                {% endcapture %}
+                {% render 'component__badge', 
+                  background: 'body',
+                  text: 'text',
+                  icon: '',
+                  content: badge_content %}
+              </div>
+              <div class="overflow-hidden object-cover 
+                {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}
+                {{ section.settings.media_color_scheme }}">
+                <div class="flex items-center">
+                  <div class="object-cover w-full aspect-video aspect-w-16 aspect-h-9">
+                    {% if media.host == 'youtube' %}
+                      {{ media | external_video_url: color: 'white' | external_video_tag: class: 'w-full h-full aspect-video max-w-full' }}
+                    {% elsif media.host == 'vimeo' %}
+                      {{ media | external_video_url: loop: '1', muted: '1' | external_video_tag: class: 'w-full h-full aspect-video max-w-full' }}
+                    {% endif %}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          {% when 'video' %}
+            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+              {{ section.settings.image_border }}
+              {% if product.media.size > 1 %}w-4/5 {% else %} w-full{% endif %}"
+              x-intersect:enter.half="gallery_index = {{ media_index }};"
+              x-bind:data-slide="{{ media_index }}">
+              <div class="absolute z-10 bottom-2 left-2">
+                {% capture badge_content %}
+                  {% render 'component__icon', icon: 'play', size: '16' %}
+                {% endcapture %}
+                {% render 'component__badge', 
+                  background: 'body',
+                  text: 'text',
+                  icon: '',
+                  content: badge_content %}
+              </div>
+              <div class="overflow-hidden object-contain 
+                {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}
+                {{ section.settings.media_color_scheme }}">
+                <div class="flex items-center">
+                  {{ media | video_tag: autoplay: true, loop: true, mute: true, controls: true, class: 'w-full h-full' }}
+                </div>
+              </div>
+            </div>
+            
+          {% when 'model' %}
+            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+              {{ section.settings.image_border }}
+              {% if product.media.size > 1 %}w-4/5 {% else %} w-full{% endif %}" 
+              x-intersect:enter.half="gallery_index = {{ media_index }};"
+              x-bind:data-slide="{{ media_index }}" data-media-id="{{ media.id }}">
+              <div class="absolute z-10 bottom-2 left-2">
+                {% capture badge_content %}
+                  {% render 'component__icon', icon: 'box', size: '16' %}
+                {% endcapture %}
+                {% render 'component__badge', 
+                  background: 'body',
+                  text: 'text',
+                  icon: '',
+                  content: badge_content %}
+              </div>
+              <div class="absolute left-auto right-auto z-10 w-full bottom-2">
+                <button class="btn btn--small btn--secondary"
+                  data-shopify-xr
+                  data-shopify-model3d-id="{{ media.id }}"
+                  data-shopify-title="{{ product.title | escape }}"
+                  data-shopify-xr-hidden>
+                  {{ 'general.media.view_in_space' | t }}
+                </button>
+              </div>
+              <div class="overflow-hidden object-contain h-full
+                {{ section.settings.media_ratio }}
+                {{ section.settings.media_color_scheme }}">
+                <div class="flex items-center h-full">
+                  {{ media | model_viewer_tag: class: 'w-full h-full' }}
+                </div>
+              </div>
+            </div>
+
+        {% endcase %}
+        {% endif %}
+      {% endfor %}
+      
+    </div>
+
+    {%- comment -%} Indicators {%- endcomment -%}
+    {% if product.media.size > 1 and section.settings.enable_variant_images == false %}
+      <div class="absolute left-0 right-0 flex flex-wrap items-center justify-center gap-2 px-4 text-center bottom-4">
+        {% capture media_group %}{% endcapture %}
+        {% for media in product.media %}
+          {% for variant in product.variants %}
+            {% if media.src == variant.featured_image %}
+              {% capture media_group %}
+                {{ variant.featured_image.id }}
+              {% endcapture %}
+            {% endif %}
+          {% endfor %}
+          <button 
+            aria-label="gallery_grid_button_{{ forloop.index0 }}" 
+            class="w-3 h-1 opacity-25 color__bg-text animation-100 border--radius" 
+            :class="{ '!opacity-100': gallery_index === {{ forloop.index0 }} }"
+            @click="gallery_index_scroll = {{ forloop.index0 }}; scrollToIndex(gallery_index_scroll);"
+            {% if media.media_type == 'image' and section.settings.enable_variant_images %}x-show="current_variant_featured_image_id == {{ media_group }}"{% endif %}>
+          </button>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+
+{%- assign first_3d_model = product.media | where: "media_type", "model" | first -%}
+{% if first_3d_model %}
+  <script type="application/json" id="ProductJSON-{{ product.id }}">
+    {{ product.media | where: 'media_type', 'model' | json }}
+  </script>
+  <script>
+    function setupShopifyXr(){
+      if (!window.ShopifyXR) {
+        document.addEventListener('shopify_xr_initialized', function() {
+          setupShopifyXr();
+        });
+      }else{
+        document.querySelectorAll('[id^="ProductJSON-"]').forEach((modelJSON) => {
+          window.ShopifyXR.addModels(JSON.parse(modelJSON.textContent));
+          window.ShopifyXR.setupXRElements();
+          modelJSON.remove();
+        });
+      }
+    }
+
+    window.Shopify.loadFeatures([{
+      name: 'shopify-xr',
+      version: '1.0',
+      onLoad: setupShopifyXr
+    }]);
+  </script>
+{% endif %}

@@ -1,0 +1,542 @@
+<!-- sections/theme__menu.liquid -->
+{% comment %} 
+  Slide out menu for mobile visitors.
+
+  Globals:
+    - settings.enable_region: boolean to enable/disable the region selector
+    - settings.enable_language: boolean to enable/disable the language selector
+    - settings.type_seperator: setting to pick the type of seperator between text
+  
+  Protips:
+    - Create a new navigation link list to set unique menu items for mobile visitors.
+    - Nested items: upload Files named {collection-or-product-handle}-mobile.jpg (collections and products).
+{% endcomment %}
+
+{% capture drawer_content %}
+
+  {%- comment -%} Top bar {%- endcomment -%}
+  <section class="sticky top-0 flex flex-wrap items-center justify-between h-[56px]
+    {{ section.settings.top_color_scheme }}"
+    @click="menu_nested = false;">
+    <div class="flex items-center justify-between w-full h-full">
+      <button 
+        class="type__nav w-full h-full flex-grow !text-left !justify-start !px-4 flex items-center border--b-width {{ section.settings.top_color_border }}"
+        title="Search"
+        @click.stop="menu_drawer = false; search_visible = true; search_active = true; $nextTick(() => { document.querySelector('#search-mobile').focus(); });">
+        {% render 'component__icon', icon: 'search', size: '24', class: '' %} 
+        <span class="ml-1 type__nav">Search...</span>
+      </button>
+      <button 
+        class="type__nav h-full !text-left !justify-start !px-4 flex items-center border--b-width {{ section.settings.top_color_border }}"
+        title="Close Menu"
+        @click.stop="menu_drawer = false; menu_nested = false" >
+        {% render 'component__icon', icon: 'x', size: '24', class: '' %}
+      </button>
+    </div>
+    
+    {% comment %} 
+    <div class="text-right ">
+      {% if section.settings.top_button_cart_type == "text" %}
+        <a
+          class="inline-flex pl-4 no-underline type__nav"
+          href="{{ routes.cart_url }}"
+          rel="nofollow"
+          {% if settings.cart_icon_behavior == "open_cart_drawer" %}
+          @click.prevent="menu_drawer = false; cart_drawer = true; {% if settings.enable_audio %} const click_audio = new Audio(window.__initialData.click_audio); click_audio.play(); {% endif %}"
+          {% endif %}>
+            {{ 'cart.general.title' | t }} 
+          <span class="ml-1">(<span x-text="cart.item_count">{{ cart.item_count }}</span>)</span>
+        </a>
+      {% else %}
+        <a
+          class="btn--close-dark btn--smaller"
+          title="{{ 'general.navigation.close' | t }}"
+          @click="menu_drawer = false;">
+          {% render 'component__icon', icon: 'x', size: '24', class: '' %} 
+        </a>
+      {% endif %}
+    </div> 
+    {% endcomment %}
+    
+  </section>
+
+  {%- comment -%}
+    Mobile: account is not in the top header; only in this drawer, styled like the search control above (same h-[56px], padding, icon + label).
+  {%- endcomment -%}
+  {%- if shop.customer_accounts_enabled -%}
+    <a
+      href="{{ routes.account_url }}"
+      rel="nofollow"
+      @click="menu_drawer = false"
+      class="type__nav w-full flex items-center h-[56px] !px-4 !text-left !justify-start border--b-width {{ section.settings.top_color_border }} no-underline uppercase
+        {{ section.settings.top_color_scheme }}"
+    >
+      {% render 'component__icon', icon: 'account', size: '24', class: '' %}
+      <span class="ml-1 type__nav">
+        {%- if customer -%}
+          {{ 'general.navigation.account' | t }}
+        {%- else -%}
+          {{ 'customer.account.log_in' | t }}
+        {%- endif -%}
+      </span>
+    </a>
+  {%- endif -%}
+  
+  {%- comment -%} Navigation {%- endcomment -%}
+  <section class="relative h-[inherit] overflow-y-auto overflow-x-hidden
+    {{ section.settings.main_color_scheme }}">
+      <div 
+        class="w-full"
+        x-cloak
+        x-data="{ accordion: null }">
+
+            {%- for link in section.settings.main_links.links -%}
+            {% if link.links != blank %}
+                {% capture accordion_content %}
+                    {% for child_link in link.links %}
+                        <a href="{{ child_link.url }}" class="type__nav border--t-width {{ section.settings.main_color_border }} flex flex-col items-start justify-start w-full px-4 py-4 no-underline uppercase">
+                            {%- liquid
+                              assign child_image = ''
+                              if child_link.url contains 'collections'
+                                assign collection_handle = child_link.url | remove: shop.url | remove: 'collections' | remove: '//' | handleize
+                                assign child_image = collection_handle | append: '-mobile.jpg'
+                              elsif child_link.url contains 'products'
+                                assign product_handle = child_link.url | split: '/products/' | last | split: '/' | first | split: '?' | first | handleize
+                                assign child_image = product_handle | append: '-mobile.jpg'
+                              endif
+                            -%}
+                            {% if child_image != blank %}
+                                <picture class="color__bg-overlay-2 aspect-[1/1] border--radius flex items-center font-normal">
+                                <source media="(min-width: 1px)" data-srcset="
+                                    {{ child_image | file_img_url: "640x", format: 'jpg' }} 1x,
+                                    {{ child_image | file_img_url: "640x", format: 'jpg', scale: 2 }} 2x">
+                                <img class="h-[127px] w-[127px]" loading="lazy" alt="{{ child_link.title }}" src="{{ child_image | file_img_url: "1200x", format: 'jpg' }}">
+                                </picture>
+                            {%- endif -%}
+                            <span class="pt-2 type__nav">{{ child_link.title }}</span>
+                        </a>
+                    {% endfor %}
+                {% endcapture %}
+                {% capture accordion_container_class %}{% unless forloop.last %}border--b-width{% endunless %} {{ section.settings.main_color_border }}{% endcapture %}
+                {% capture accordion_inner_class %}color__bg-overlay-1 {% unless link.title == "Brand" %}grid grid-cols-2{% endunless %}{% endcapture %}
+                {% render 'component__accordion', 
+                    open: false,
+                    index: forloop.index,
+                    button_label: link.title, 
+                    container_class: accordion_container_class,
+                    inner_class: accordion_inner_class,
+                    content: accordion_content %}
+
+            {% else %}
+                <a id="accordion-{{ forloop.index }}" class="type__body border--b-width {{ section.settings.main_color_border }} flex items-center justify-between w-full px-4 py-[1.25rem] no-underline uppercase" href="{{ link.url }}">
+                    <span class="text-left type__nav">
+                    {{ link.title }}
+                    </span>
+                </a>
+            {% endif %}
+            {% endfor %}
+
+            {%- unless section.settings.feature_img == blank -%}
+              <a href="{{ section.settings.url_id }}">
+                <div class="relative m-4 color__bg-overlay-1">
+                  {{ section.settings.feature_img | image_url: height: 210 | image_tag: class: 'w-full', loading: 'lazy' }}
+                  <div class="absolute flex items-center justify-center bg-white bottom-2 left-2 right-2">
+                    <button class="btn btn--secondary !w-full">{{ section.settings.text_id }}</button>
+                  </div>
+                </div>
+              </a>
+            {% endunless %}
+
+      </div>
+  </section>
+
+  {%- comment -%} Sticky footer {%- endcomment -%}
+  {% comment %} 
+  <aside class="sticky bottom-0 {{ section.settings.bottom_color_scheme }}" x-show="!menu_nested">
+    <div class="flex flex-wrap">
+
+      <div class="border--t-width {{ section.settings.bottom_color_border }} w-full">
+        <div class="flex flex-wrap px-4 pt-2">
+
+        {%- if shop.customer_accounts_enabled -%} 
+          <a href="{{ routes.account_url }}" rel="nofollow" class="btn btn--smaller mb-2 mr-2
+            {{ section.settings.bottom_button_color }}">
+            {% if customer %}
+              {{ 'general.navigation.account' | t }}
+            {% else %}
+            {{ 'customer.account.log_in' | t }}
+            {% endif %}
+          </a>
+        {% endif %}
+
+          {% if settings.enable_region or settings.enable_language %}
+            <button class="btn btn--smaller mb-2 mr-2
+            {{ section.settings.bottom_button_color }}" 
+              @click="localization_popup = true;">
+              <span class="fi type--smaller" style="background-image: url(https://flagicons.lipis.dev/flags/4x3/{{ localization.country.iso_code | downcase }}.svg)"></span>
+              <span class="ml-1 type--smaller">{{ localization.country.currency.symbol }} {{ localization.country.currency.iso_code }}
+              {% if settings.type_seperator == 'dot' %}·{% else %}|{% endif %}
+              {{ localization.language.iso_code | upcase }}</span> 
+              {% render 'component__icon', icon: 'chevron-down', size: '16' %}
+            </button>
+          {% endif %}
+          
+        </div>
+      </div>
+
+      <div class="border--t-width {{ section.settings.bottom_color_border }} w-full">
+        <p class="px-4 py-2 m-0 type--small">
+          {%- for link in section.settings.bottom_links.links -%}
+            <a href="{{ link.url }}" class="mr-2">{{ link.title }}</a>
+          {%- endfor -%}
+         </p>
+      </div>
+      
+    </div>
+  </aside> 
+  {% endcomment %}
+
+{% endcapture %}
+
+{% render 'component__drawer', 
+  drawer_id: 'menu_drawer',
+  position: 'left',
+  content: drawer_content %}
+
+{% schema %}
+{
+  "name":"t:sections.theme_menu.name",
+  "settings":[
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__15.content"
+    },
+    {
+      "type":"link_list",
+      "id":"main_links",
+      "label":"t:sections.theme_menu.settings.main_links.label"
+    },
+    {
+      "type": "image_picker",
+      "id": "feature_img",
+      "label": "Featured Menu Image"
+    },
+    {
+      "type": "url",
+      "id": "url_id",
+      "label": "Featured Image URL",
+      "default": "/"
+    },
+    {
+      "type": "text",
+      "id": "text_id",
+      "label": "Featured Image button text",
+      "default": "Learn More >"
+    },
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__12.content"
+    },
+    {
+      "type":"select",
+      "id":"top_color_scheme",
+      "label":"t:sections.all.colors.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__1.label"
+        },
+        {
+          "value":"color__bg-neutral color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__2.label"
+        },
+        {
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__3.label"
+        },
+        {
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__4.label"
+        },
+        {
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__5.label"
+        },
+        {
+          "value":"color__bg-primary color__primary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__6.label"
+        },
+        {
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__7.label"
+        },
+        {
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
+        }
+      ],
+      "default":"color__bg-body color__text"
+    },
+    {
+      "type":"select",
+      "id":"top_color_border",
+      "label":"t:sections.all.colors.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:sections.all.colors.settings.color_border.options__1.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:sections.all.colors.settings.color_border.options__2.label"
+        },
+        {
+          "value":"!color__border-transparent",
+          "label":"t:sections.all.colors.settings.color_border.options__3.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type":"select",
+      "id":"top_color_button",
+      "label":"t:sections.all.colors.settings.color_button.label",
+      "options":[
+        {
+          "value":"btn",
+          "label":"t:sections.all.colors.settings.color_button.options__1.label"
+        },
+        {
+          "value":"btn btn--secondary",
+          "label":"t:sections.all.colors.settings.color_button.options__2.label"
+        },
+        {
+          "value":"btn btn--tertiary",
+          "label":"t:sections.all.colors.settings.color_button.options__5.label"
+        },
+        {
+          "value":"btn btn--neutral",
+          "label":"t:sections.all.colors.settings.color_button.options__3.label"
+        },
+        {
+          "value":"btn btn--plain",
+          "label":"t:sections.all.colors.settings.color_button.options__4.label"
+        },
+        {
+          "value":"btn--minimal-light",
+          "label":"t:sections.all.colors.settings.color_button.options__6.label"
+        },
+        {
+          "value":"btn--minimal-dark",
+          "label":"t:sections.all.colors.settings.color_button.options__7.label"
+        }
+      ],
+      "default":"btn btn--plain"
+    },
+    {
+      "type":"select",
+      "id":"top_button_cart_type",
+      "label":"t:sections.theme_menu.settings.top_button_cart_type.label",
+      "options":[
+        {
+          "value":"icon",
+          "label":"t:sections.theme_menu.settings.top_button_cart_type.options__1.label"
+        },
+        {
+          "value":"text",
+          "label":"t:sections.theme_menu.settings.top_button_cart_type.options__2.label"
+        }
+      ],
+      "default":"icon"
+    },
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__13.content"
+    },
+    {
+      "type":"select",
+      "id":"main_color_scheme",
+      "label":"t:sections.all.colors.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__1.label"
+        },
+        {
+          "value":"color__bg-neutral color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__2.label"
+        },
+        {
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__3.label"
+        },
+        {
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__4.label"
+        },
+        {
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__5.label"
+        },
+        {
+          "value":"color__bg-primary color__primary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__6.label"
+        },
+        {
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__7.label"
+        },
+        {
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
+        }
+      ],
+      "default":"color__bg-body color__text"
+    },
+    {
+      "type":"select",
+      "id":"main_color_border",
+      "label":"t:sections.all.colors.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:sections.all.colors.settings.color_border.options__1.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:sections.all.colors.settings.color_border.options__2.label"
+        },
+        {
+          "value":"!color__border-transparent",
+          "label":"t:sections.all.colors.settings.color_border.options__3.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type":"select",
+      "id":"main_color_button",
+      "label":"t:sections.all.colors.settings.color_button.label",
+      "options":[
+        {
+          "value":"btn",
+          "label":"t:sections.all.colors.settings.color_button.options__1.label"
+        },
+        {
+          "value":"btn btn--secondary",
+          "label":"t:sections.all.colors.settings.color_button.options__2.label"
+        },
+        {
+          "value":"btn btn--tertiary",
+          "label":"t:sections.all.colors.settings.color_button.options__5.label"
+        },
+        {
+          "value":"btn btn--neutral",
+          "label":"t:sections.all.colors.settings.color_button.options__3.label"
+        },
+        {
+          "value":"btn btn--plain",
+          "label":"t:sections.all.colors.settings.color_button.options__4.label"
+        }
+      ],
+      "default":"btn btn--plain"
+    },
+    {
+      "type":"header",
+      "content":"t:sections.all.headers.header__14.content"
+    },
+    {
+      "type":"select",
+      "id":"bottom_color_scheme",
+      "label":"t:sections.all.colors.settings.color_scheme.label",
+      "options":[
+        {
+          "value":"color__bg-body color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__1.label"
+        },
+        {
+          "value":"color__bg-neutral color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__2.label"
+        },
+        {
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__3.label"
+        },
+        {
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__4.label"
+        },
+        {
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__5.label"
+        },
+        {
+          "value":"color__bg-primary color__primary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__6.label"
+        },
+        {
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__7.label"
+        },
+        {
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
+        }
+      ],
+      "default":"color__bg-overlay-1 color__text"
+    },
+    {
+      "type":"select",
+      "id":"bottom_color_border",
+      "label":"t:sections.all.colors.settings.color_border.label",
+      "options":[
+        {
+          "value":"color__border-divider-1",
+          "label":"t:sections.all.colors.settings.color_border.options__1.label"
+        },
+        {
+          "value":"color__border-selected-1",
+          "label":"t:sections.all.colors.settings.color_border.options__2.label"
+        },
+        {
+          "value":"!color__border-transparent",
+          "label":"t:sections.all.colors.settings.color_border.options__3.label"
+        }
+      ],
+      "default":"color__border-divider-1"
+    },
+    {
+      "type":"select",
+      "id":"bottom_button_color",
+      "label":"t:sections.theme_menu.settings.bottom_button_color.label",
+      "options":[
+        {
+          "value":"btn",
+          "label":"t:sections.theme_menu.settings.bottom_button_color.options__1.label"
+        },
+        {
+          "value":"btn btn--secondary",
+          "label":"t:sections.theme_menu.settings.bottom_button_color.options__2.label"
+        },
+        {
+          "value":"btn btn--neutral",
+          "label":"t:sections.theme_menu.settings.bottom_button_color.options__3.label"
+        },
+        {
+          "value":"btn btn--plain",
+          "label":"t:sections.theme_menu.settings.bottom_button_color.options__4.label"
+        }
+      ],
+      "default":"btn btn--secondary"
+    },
+    {
+      "type":"link_list",
+      "id":"bottom_links",
+      "label":"t:sections.theme_menu.settings.bottom_links.label"
+    }
+  ],
+  "disabled_on": {
+    "groups": ["custom.overlay"]
+  }
+}
+{% endschema %}

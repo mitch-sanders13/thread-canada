@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html 
+  class="min-h-[100vh]"
+  lang="{{ request.locale.iso_code }}"
+  x-data="app()" 
+  x-init="
+    if (window.location.search.includes('?cart')) cart_drawer = true;
+    handleSharedCart(); 
+    updateCart(false);">
+
+  <head>
+    <!-- do not edit or remove- code to remove duplicate slash from URL -->
+    <script>
+      (function() {
+        var path = window.location.pathname;
+
+        // Only fix if there are multiple slashes (but ignore protocol like https://)
+        if (path.includes('//')) {
+          var cleanPath = path.replace(/\/{2,}/g, '/');
+          window.location.replace(cleanPath + window.location.search + window.location.hash);
+        }
+      })();
+    </script>
+    <!-- do not edit or remove- code to remove duplicate slash from URL -->
+    {% render 'theme__meta' %}
+    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+    {%- unless settings.type_font_heading.system? and settings.type_font_body.system? -%}
+      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.type_font_body.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_font_body | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- unless settings.type_font_heading.system? -%}
+      <link rel="preload" as="font" href="{{ settings.type_font_heading | font_url }}" type="font/woff2" crossorigin>
+    {%- endunless -%}
+    {%- comment -%} Preload logo animation to prevent cold CDN misses {%- endcomment -%}
+    <link rel="preload" as="fetch" href="{{ 'logo.json' | asset_url }}" crossorigin>
+    {% if template contains "about" %}
+      <link rel="stylesheet" href="https://use.typekit.net/cuk8lrh.css">
+    {% endif %}
+    {% render 'theme__pwa' %}
+    {% render 'theme__structured-data' %}
+    {% render 'theme__styles' %}
+    
+    {{ settings.snippet_head }}
+    {% render 'assets' with 'styles.css', preload_stylesheet: true %}
+    {{ content_for_header }}    
+
+    <script>
+      window.Shopify = window.Shopify || {theme: {id: {{ theme.id }}, role: '{{ theme.role }}' } };
+      window._template = {
+          directory: "{{ template.directory }}",
+          name: "{{ template.name }}",
+          suffix: "{{ template.suffix }}"
+      };
+    </script>
+    
+  </head>
+  <body 
+    class="
+      min-h-[100vh] break-words 
+      {{ template | handle }}
+    "
+    x-init="initScroll()"
+    x-intersect.half:enter="scroll_up = false"
+    x-intersect.half:leave="scroll_up = true">
+
+    <a href="#root"
+      class="top-4 left-4 color__bg-body focus:translate-y-0 border__button--radius fixed z-50 px-4 py-2 no-underline transform -translate-y-20 shadow-md">
+      {{ 'general.accessibility.skip_to_content' | t }}
+    </a>
+
+    <header class="z-50
+      {{ settings.header_position }}
+      {% if settings.header_position == 'dynamic' %}sticky top-0 left-0 right-0 animation-300{% endif %} 
+      {% if settings.header_position == 'sticky' %}sticky top-0{% endif %}"
+      :class="{ 
+        '!z-50' : hide_header
+      }"
+      x-ref="header"
+      {% if settings.header_position == 'dynamic' %}
+        x-bind:style="is_scrolled ? 
+          'transform: translateY(-2rem); opacity: 0;' : 
+          'transform: translateY(0%); opacity: 1;'
+        "
+      {% endif %}>
+      {% sections 'header-group' %}
+    </header>
+    {% section 'theme__cart' %}
+    {% section 'theme__menu' %}
+
+    <main id="root" role="main">
+      {{ content_for_layout }}
+    </main>
+
+    <section aria-label="Footer Group">
+      {% sections 'footer-group' %}
+    </section> 
+    {% sections 'overlay-group' %}
+
+    {% render 'theme__localization-popup' %}
+    {% render 'theme__audio-popup' %}
+    {% render 'theme__error-popup' %}
+    {% render 'assets' with 'main.js' %}
+    {% render 'theme__scripts' %}
+    
+    {{ settings.snippet_body }}
+
+    {% if request.page_type == 'article' and article.metafields.custom.faq_schema != blank %}
+      <script type="application/ld+json">
+        {{ article.metafields.custom.faq_schema.value }}
+      </script>
+    {% endif %}
+</body>
+
+</html>

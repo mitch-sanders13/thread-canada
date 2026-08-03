@@ -1,0 +1,35 @@
+{% comment %}
+  Savings badge bound to defaultVariantPrice / defaultVariantComparePrice (same Alpine scope as product form).
+  Static fallback uses selected_or_first_available_variant for first paint.
+{% endcomment %}
+{% if settings.savings_badge != "none" %}
+  {% assign _save_v = product.selected_or_first_available_variant %}
+  {% capture _save_fallback %}
+    {% if _save_v.compare_at_price > _save_v.price %}
+      {% if settings.savings_badge == "percent" %}
+        {% assign _diff = _save_v.compare_at_price | minus: _save_v.price %}
+        {% assign _pct = _diff | times: 100 | divided_by: _save_v.compare_at_price | round %}
+        {{ 'products.general.save' | t }} {{ _pct }}%
+      {% else %}
+        {% assign _amt = _save_v.compare_at_price | minus: _save_v.price %}
+        {{ 'products.general.save' | t }} {{ _amt | money }}
+      {% endif %}
+    {% endif %}
+  {% endcapture %}
+  <div
+    class="border__button--radius inline-flex items-center px-2 py-1 border--width color__bg-secondary color__secondary"
+    x-show="defaultVariantComparePrice > defaultVariantPrice && defaultVariantComparePrice > 0"
+    x-cloak
+  >
+    <span
+      class="type--smaller flex items-center type__nav"
+      {% if settings.savings_badge == "percent" %}
+        x-text="(defaultVariantComparePrice > defaultVariantPrice && defaultVariantComparePrice > 0) ? ('{{ 'products.general.save' | t }} ' + Math.round((defaultVariantComparePrice - defaultVariantPrice) * 100 / defaultVariantComparePrice) + '%') : ''"
+      {% else %}
+        x-text="(defaultVariantComparePrice > defaultVariantPrice && defaultVariantComparePrice > 0) ? ('{{ 'products.general.save' | t }} ' + Shopify.formatMoney(defaultVariantComparePrice - defaultVariantPrice, '{{ cart.currency.symbol }}')) : ''"
+      {% endif %}
+    >
+      {{- _save_fallback | strip -}}
+    </span>
+  </div>
+{% endif %}

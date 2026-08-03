@@ -1,0 +1,152 @@
+{% assign current_category = 'All ' | append: collection.title %}
+{% if current_category != collection.title %}
+  {% assign current_category = 'All Products' %}
+{% endif %}
+
+{% assign product_type_count = 0 %}
+{%- for filter in collection.filters -%}
+  {% if filter.label == 'Product type' %}
+    {%- for filter_value in filter.values -%}
+      {% assign product_type_count = product_type_count | plus: 1 %}
+    {%- endfor -%}
+  {% endif %}
+{%- endfor -%}
+
+{% comment %}Hide quickfilter UI for collegiate collection but keep form for pagination{% endcomment %}
+{% if product_type_count > 1 %}
+  <form
+    id="js:quickFilter"
+    class="
+      block bg-inherit
+      md:static
+      sticky sm:relative
+      top-[var(--header-height,0px)] md:top-auto
+      z-30 md:z-20
+      {{ section.settings.color_scheme }}
+      {% if collection.handle == 'collegiate' %}hidden{% endif %}
+    "
+    x-data="{ height: 0 }"
+    {% if settings.header_position == 'sticky' %}
+      x-init="
+        height = $refs.header.offsetHeight;
+        $el.style.top = height + 'px';
+      "
+    {% endif %}
+    @change.prevent="
+      handleFilterChange('js:quickFilter');
+      scrollToTop('js:top');
+    "
+  >
+    {% comment %} Include active School filter as hidden input {% endcomment %}
+    {% if collection.handle contains 'collegiate' %}
+      {% for filter in collection.filters %}
+        {% if filter.label == 'School' %}
+          {% for filter_value in filter.values %}
+            {% if filter_value.active %}
+              <input
+                type="hidden"
+                name="{{ filter_value.param_name }}"
+                value="{{ filter_value.value }}"
+              >
+            {% endif %}
+          {% endfor %}
+        {% endif %}
+      {% endfor %}
+    {% endif %}
+
+    <div class="flex flex-row flex-wrap items-center justify-between gap-2 max-h-[85vh] border--b-width color__border-divider-1">
+      <div class="w-full">
+        <div class="flex flex-col gap-2 w-full">
+          {%- for filter in collection.filters -%}
+            {% assign has_values = false %}
+            {%- for filter_value in filter.values -%}
+              {%- if filter_value.count > 0 -%}
+                {% assign has_values = true %}
+              {%- endif -%}
+            {%- endfor -%}
+            {%- if filter.type == 'price_range' -%}
+              {% assign has_values = true %}
+            {%- endif -%}
+
+            {% if filter.label == 'Product type' %}
+              {%- if has_values -%}
+                <div class="flex flex-none justify-center snap-center">
+                  {% capture popup_content %}
+                    {%- case filter.type -%}
+                      {%- when 'boolean' or 'list' -%}
+                        
+                        {%- for filter_value in filter.active_values -%}
+                          {% assign active_product_type_filter = filter_value.value %}
+                        {%- endfor -%}
+                        
+                        {% comment %} All button {% endcomment %}
+                        <label 
+                          class="
+                            whitespace-pre text-center header__link2 type__nav type--small h-full flex flex-col items-center md:py-6 px-6 py-6 
+                            {% if active_product_type_filter == blank %}header__link2-active{% endif %}
+                          "
+                          tabindex="0"
+                          for="Filter-all">
+                          <input 
+                            type="radio"
+                            class="hidden"
+                            @click="popup = true;"
+                            name="{{ filter.values[1].param_name }}"
+                            value=""
+                            id="Filter-all">
+                          <span class="type__nav">{{ current_category }}</span>
+                        </label>
+                        
+                        {% comment %} Filter buttons {% endcomment %}
+                        {%- for filter_value in filter.values -%}
+                          <label 
+                            class="
+                              whitespace-pre text-center header__link2 type__nav type--small h-full flex flex-col items-center md:py-6 px-6 py-6 
+                              {% if filter_value.active %}header__link2-active{% endif %}
+                            "
+                            tabindex="0"
+                            for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
+                            <input 
+                              type="radio"
+                              class="hidden"
+                              @click="popup = true;"
+                              name="{{ filter_value.param_name }}"
+                              value="{{ filter_value.value }}"
+                              id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                              {% if filter_value.active %}checked{% endif %}
+                              {% if filter_value.count == 0 and filter_value.active == false %}disabled{% endif %}>
+                             <span class="type__nav">{{ filter_value.label }}</span>
+                          </label>
+                        {%- endfor -%}
+                        
+                        {% assign is_filter_active = false %}
+                        {%- for filter in collection.filters -%}
+                          {%- for filter_value in filter.values -%}
+                            {%- if filter_value.active -%}
+                              {% assign is_filter_active = true %}
+                            {%- endif -%}
+                          {%- endfor -%}
+                        {%- endfor -%}
+
+                    {%- endcase -%}
+                  {% endcapture %}
+
+                  <div class="flex overflow-x-auto items-center">
+                    {% comment %}
+                      <button
+                        class="header__link2 type__nav type--small h-full flex items-center mr-2
+                        uppercase px-4 md:py-6 py-2 pr-4 {{ button_class }} {% unless is_filter_active %}{% if current_category contains collection.title %}header__link2-active{% endif %}{% endunless %} hidden md:flex">
+                        {{ current_category }}
+                      </button>
+                    {% endcomment %}
+                    <div class="flex flex-row">{{ popup_content }}</div>
+                  </div>
+                </div>
+              {%- endif -%}
+            {% endif %}
+          {%- endfor -%}
+        </div>
+      </div>
+    </div>
+  </form>
+{% endif %}

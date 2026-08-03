@@ -1,0 +1,588 @@
+<!-- snippets/component__product-item.liquid -->
+{% comment %}
+  Standard product thumbnail.
+  Accepts:
+    - product: liquid product object
+    - source: accessibility variable
+
+  Usage:
+    {% render 'component__product-item',
+      product: product,
+      source: 'section-name' %}
+  Globals:
+    - settings.enable_animations: boolean to enable animations
+    - settings.thumbnails_border_style: border style of thumbnails
+    - settings.thumbnails_ratio: set the aspect ratio of thumbnails
+    - settings.thumbnails_object: set the image object sizing
+    - settings.type_seperator: setting to pick the type of seperator between text
+    - settings.savings_badge: can be set to 'dollar', 'percent', or 'none'
+    - settings.stock_threshold: number to set the threshold for when to show stock count
+    - settings.enable_quick_desktop: boolean to enable quick add
+    - settings.enable_quick_mobile: boolean to enable quick add
+    - settings.enable_thumbnails_product_type: boolean to enable product type
+    - settings.enable_thumbnails_vendor: boolean to enable vendor
+    - settings.enable_thumbnails_variant_count: boolean to enable variant count
+
+  Possible enhancements:
+    - Add setting to disable video on hover, can cause performance issues.
+
+  Pro tips:
+    - Use this while looping through products. For example on collection product grids.
+{% endcomment %}
+
+{%- comment %} disable quick add tag {%- endcomment %}
+{% if product.tags contains 'disable_quick_add' %}
+  {% assign disable_quick_add = true %}
+{% else %}
+  {% assign disable_quick_add = false %}
+{% endif %}
+
+{% assign hideproduct = false %}
+{% for tag in product.tags %}
+  {% if tag contains 'hideproduct' %}
+    {% assign hideproduct = true %}
+  {% endif %}
+  {% comment %} Hide collegiate products from non-collegiate collections (but allow on search pages) {% endcomment %}
+  {% if tag == 'collegiate' and collection.handle != 'collegiate' and template != 'search' %}
+    {% assign hideproduct = true %}
+  {% endif %}
+{% endfor %}
+
+{% assign hide_sale = false %}
+{% if product.tags contains 'hide_sale' %}
+  {% assign hide_sale = true %}
+{% endif %}
+
+{% unless hideproduct %}
+  <div
+    class="
+      group relative w-full border--width border--radius border-gray-300 border-opacity-0 hover:border-opacity-100
+      {% if settings.thumbnails_border_style == 'thumbnail' %}
+        border--radius overflow-hidden
+      {% endif %}
+    "
+    x-data="
+      {
+        button_loading: false,
+        original_second_image: '{{ product.media[1] | image_url: width: 1600 }}',
+        second_image: '{{ product.media[1] | image_url: width: 1600 }}'
+      }
+    "
+    @mouseleave="second_image = original_second_image"
+  >
+    {% render 'rivo-wishlist-heart' product: product %}
+    {%- comment -%} Badges {%- endcomment -%}
+    {% capture badge_background %}
+      {% if settings.product-cards_badge_scheme == "light_outline" or settings.product-cards_badge_scheme == "dark_outline" %}
+        trasnsparent
+      {% else %}
+        {{ settings.product-cards_badge_scheme }}
+      {% endif %}
+    {% endcapture %}
+    {% capture badge_foreground %}
+      {% if settings.product-cards_badge_scheme == "light_outline" %}
+        light
+      {% elsif settings.product-cards_badge_scheme == "dark_outline" %}
+        dark
+      {% else %}
+        {{ settings.product-cards_badge_scheme }}
+      {% endif %}
+    {% endcapture %}
+    <div class="absolute top-0 left-0 z-[5] flex flex-wrap w-full gap-1 p-2 whitespace-normal">
+      {% for tag in product.tags %}
+        {% if tag contains 'badge_' %}
+          {% capture badge_content %}{{ tag | remove: "badge_" }}{% endcapture %}
+          {% render 'component__badge',
+            background: badge_background,
+            text: badge_foreground,
+            border: badge_foreground,
+            icon: '',
+            content: badge_content
+          %}
+        {% endif %}
+      {% endfor %}
+
+      {% if product.selected_or_first_available_variant.compare_at_price > product.selected_or_first_available_variant.price
+        and hide_sale == false
+      %}
+        {% capture badge_content %}Sale{% endcapture %}
+        {% render 'component__badge',
+          background: badge_background,
+          text: badge_foreground,
+          border: badge_foreground,
+          icon: '',
+          content: badge_content
+        %}
+      {% endif %}
+
+      {% if settings.stock_threshold %}
+        {% assign product_qty = 0 %}
+        {% for variant in product.variants %}
+          {% if variant.inventory_quantity > 0 %}
+            {% assign product_qty = product_qty | plus: variant.inventory_quantity %}
+          {% endif %}
+        {% endfor %}
+        {% if product_qty < settings.stock_threshold and product_qty > 0 %}
+          {%- capture badge -%}
+            {% comment %} <span class="inline-flex w-2 h-2 mr-2">
+              <span class="absolute inline-flex w-2 h-2 rounded-full animate-ping color__bg-primary"></span>
+              <span class="inline-flex w-2 h-2 rounded-full color__bg-primary"></span>
+            </span>
+            <span class="type--small">{{ product_qty }} {{ 'products.inventory.remaining' | t }}</span>
+          {% endcomment %}
+          Low Stock
+          {%- endcapture -%}
+          {% render 'component__badge',
+            background: badge_background,
+            text: badge_foreground,
+            border: badge_foreground,
+            icon: '',
+            content: badge
+          %}
+        {% endif %}
+      {% endif %}
+
+      {% unless product.available %}
+        {%- capture badge -%}
+          {{ 'products.general.sold_out' | t }}
+        {%- endcapture -%}
+        {% render 'component__badge',
+          background: badge_background,
+          text: badge_foreground,
+          border: badge_foreground,
+          icon: '',
+          content: badge
+        %}
+      {% endunless %}
+
+      {% assign metafield = product.metafields.custom.badge %}
+      {% if metafield %}
+        {% capture badge_content %}{{ metafield }}{% endcapture %}
+        {% render 'component__badge',
+          background: badge_background,
+          text: badge_foreground,
+          border: badge_foreground,
+          icon: '',
+          content: badge_content
+        %}
+      {% endif %}
+    </div>
+
+    {%- comment -%} Image {%- endcomment -%}
+    <a
+      href="{{ product.url }}"
+      class="relative block hover:opacity-100"
+    >
+      <div
+        class="
+          animation-500 w-full overflow-hidden color__bg-overlay-1
+          {% if product.media[1].media_type == 'image' and settings.enable_second_media_hover or product.media[1].media_type == 'video' and settings.enable_second_media_hover %}
+            group-hover:opacity-0
+          {% endif %}
+          {% if settings.thumbnails_border_style == 'image' %}
+            border--radius
+          {% endif %}
+        "
+      >
+        <div class="{{ settings.thumbnails_ratio }} object-cover overflow-hidden">
+          {%- unless product.featured_image == blank %}
+            {% if settings['thumbnails_object-sizing'] == 'cover' %}
+              {% capture image_class %}w-full h-full object-cover {% endcapture %}
+            {% else %}
+              {% capture image_class %}w-full h-full object-contain {% endcapture %}
+            {% endif %}
+            {% render 'component__image',
+              image: product.featured_image,
+              aspect_ratio: settings.thumbnails_ratio,
+              background: 'color__bg-shade-2',
+              crop: 'object-cover',
+              container_class: 'h-full w-full',
+              image_class: image_class,
+              max_width: 400,
+              enable_lazy_load: true,
+              include_2x: true
+            %}
+          {%- endunless -%}
+        </div>
+      </div>
+
+      {% if settings.enable_second_media_hover %}
+        <div
+          class="
+            animation-500 absolute left-0 top-0 overflow-hidden opacity-0 group-hover:opacity-100 w-full h-full
+            {% if settings.thumbnails_border_style == 'image' %}
+              border--radius
+            {% endif %}
+          "
+        >
+          <img
+            loading="lazy"
+            class="{{ image_class }}"
+            alt="{{ product.media[1].alt }}"
+            :src="second_image"
+            height="550"
+            width="370"
+          >
+        </div>
+      {% endif %}
+    </a>
+
+    {%- comment -%} Content - Desktop only {%- endcomment -%}
+    <div
+      class="
+        hidden md:block hover:no-underline no-underline whitespace-normal relative flex flex-col justify-end py-2 {{ settings.thumbnails_alignment }}
+        {% if settings.thumbnails_border_style == "thumbnail" %}
+          px-4 pb-4
+        {% endif %}
+      "
+    >
+      {% comment %} Title, Details, and Prices - Desktop {% endcomment %}
+      <div class="px-2 flex flex-wrap items-center justify-between gap-1 mb-0 {{ settings.thumbnails_alignment }}">
+        {% comment %} Title and Details {% endcomment %}
+        <div class="flex items-center gap-1 pr-2">
+          <h3
+            class="type--base !leading-tight mb-0 type__heading"
+            aria-level="2"
+          >
+            {{ product.title }}
+          </h3>
+          <ul class="flex items-center p-0 mb-0 opacity-75 gap-x-1 gap-y-0 type__body">
+            {% if settings.enable_thumbnails_vendor %}
+              <li
+                class="
+                  type--small inline-block last:after:hidden
+                  {% if settings.type_seperator == 'dot' %} after:content-['\00B7'] {% else %} after:content-['\007C'] {% endif %}
+                "
+              >
+                {{ product.vendor }}
+              </li>
+            {% endif %}
+            {% if settings.enable_thumbnails_variant_count %}
+              <li
+                class="
+                  type--small inline-block last:after:hidden
+                  {% if settings.type_seperator == 'dot' %} after:content-['\00B7'] {% else %} after:content-['\007C'] {% endif %}
+                "
+              >
+                {{ product.variants.size }}
+                {{ 'products.general.options' | t }}
+              </li>
+            {% endif %}
+          </ul>
+        </div>
+
+        {% comment %} Prices {% endcomment %}
+        <div class="w-full text-center md:text-right md:w-auto">
+          <div class="flex items-center justify-between gap-2 mb-1">
+            <span
+              class="text-xs font-bold"
+              data-product-id="{{ product.id }}"
+              data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+            >
+              {{ product.selected_or_first_available_variant.price | money }}
+            </span>
+            {% if product.selected_or_first_available_variant.compare_at_price
+                > product.selected_or_first_available_variant.price
+            %}
+              <span
+                class="text-xs line-through opacity-75"
+                data-product-id="{{ product.id }}"
+                data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+              >
+                {{ product.selected_or_first_available_variant.compare_at_price | money }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+
+      {% if product.selected_or_first_available_variant.unit_price %}
+        <span class="type--small flex opacity-75 mb-0.5 {{ settings.thumbnails_alignment }}">
+          <span>
+            {{ product.selected_or_first_available_variant.unit_price | money }}
+          </span>
+          <span>/</span>
+          <span>
+            {{ product.selected_or_first_available_variant.unit_price_measurement.reference_value }}
+            {{ product.selected_or_first_available_variant.unit_price_measurement.reference_unit }}
+          </span>
+        </span>
+      {% endif %}
+
+      {% comment %} Swatches {% endcomment %}
+      {% assign swatch_class = product.type | handle %}
+      {% assign is_collegiate_product = false %}
+      {% assign school_tag = '' %}
+
+      {% comment %} Set appropriate class for collegiate products and extract school tag {% endcomment %}
+      {% for tag in product.tags %}
+        {% assign tag_lowercase = tag | downcase | strip %}
+        {% if tag_lowercase == 'collegiate' %}
+          {% assign is_collegiate_product = true %}
+        {% endif %}
+        {% comment %} Extract school tag (e.g., "school_byu" -> "byu") {% endcomment %}
+        {% if tag_lowercase contains 'school_' %}
+          {% assign school_tag = tag_lowercase | remove: 'school_' %}
+        {% endif %}
+      {% endfor %}
+      
+      {% if is_collegiate_product %}
+        {% assign swatch_class = 'collegiate-' | append: swatch_class %}
+        {% comment %} If we have a school tag, append it to the class for school-specific filtering {% endcomment %}
+        {% if school_tag != '' %}
+          {% assign swatch_class = swatch_class | append: '-' | append: school_tag %}
+        {% endif %}
+      {% endif %}
+
+      {% comment %} Only show swatches if product has swatch collection {% endcomment %}
+      {% if product.metafields.custom.swatch_collection %}
+        <div
+          class="
+            js:swatchList-{{ swatch_class }}
+            mt-2 relative z-[15] hidden md:block
+          "
+          data-current-handle="{{ product.handle }}"
+        >
+          <div class="flex flex-wrap gap-2 px-2">
+            {% comment %} Placeholder swatches {% endcomment %}
+            {% for i in (1..4) %}
+              <span
+                title="Loading swatches..."
+                class="animate-pulse btn btn--plain btn--small bg-center !w-6 !h-6 !min-h-[1.5rem] !min-w-[1.5rem] bg-contain !rounded-full !p-0"
+              >
+              </span>
+            {% endfor %}
+          </div>
+        </div>
+      {% endif %}
+
+      {% comment %} Mobile variant count - Show for products with swatches {% endcomment %}
+      {% if product.metafields.custom.swatch_collection or is_collegiate_product %}
+        <div class="px-2 mt-0 md:hidden">
+          <span class="type--small js:swatchCount-{{ swatch_class }}">
+            {% if is_collegiate_product %}
+              
+            {% elsif product.metafields.custom.swatch_collection %}
+              {{- product.metafields.custom.swatch_collection.value.products.size }} Colors
+            {% else %}
+              Multiple Colors
+            {% endif %}
+          </span>
+        </div>
+      {% endif %}
+
+      {% comment %} Sku {% endcomment %}
+      {% if product.has_only_default_variant and settings.enable_sku %}
+        <span class="type--small p-0 opacity-75 mb-0.5 flex">
+          {{- product.variants[0].sku -}}
+        </span>
+      {% endif %}
+
+      {% comment %}
+        {% comment %} Rating {% endcomment %}
+        {% assign hide_ratings = false %}
+        {% if product.tags contains 'hide_ratings' %}
+          {% assign hide_ratings = true %}
+        {% endif %}
+
+        {% if hide_ratings == false %}
+          <div class="mb-0.5 flex items-center justify-center invisible">
+            {% assign rating = product.metafields.reviews.rating.value.rating
+              | times: 1
+            %}
+            {% assign max = product.metafields.reviews.rating.value.scale_max %}
+            {% assign percentage = rating | times: 100 | divided_by: max %}
+            <div class="oke-stars">
+              <div class="oke-stars-background">
+                <svg height="14" viewBox="0 0 81 14" aria-hidden="true">
+                  <use x="0" href="#oke-star-empty"></use><use x="16.6" href="#oke-star-empty"></use><use x="33.2" href="#oke-star-empty"></use><use x="49.800000000000004" href="#oke-star-empty"></use><use x="66.4" href="#oke-star-empty"></use>
+                </svg>
+              </div>
+              {% if product.metafields.reviews.rating_count > 0 %}
+                <div
+                  class="oke-stars-foreground"
+                  style="width: {{ percentage }}%;"
+                >
+                  <svg height="14" viewBox="0 0 81 14" aria-hidden="true">
+                    <use x="0" href="#oke-star-filled"></use><use x="16.6" href="#oke-star-filled"></use><use x="33.2" href="#oke-star-filled"></use><use x="49.800000000000004" href="#oke-star-filled"></use><use x="66.4" href="#oke-star-filled"></use>
+                  </svg>
+                </div>
+              {% endif %}
+            </div>
+            {% if product.metafields.reviews.rating_count > 0 %}
+              <span class="ml-1 opacity-75 type--small"
+                >({{ product.metafields.reviews.rating_count }})</span
+              >
+            {% else %}
+              <span class="ml-1 opacity-75 type--small">
+                {{- product.metafields.reviews.rating_count -}}
+              </span>
+            {% endif %}
+          </div>
+        {% endif %}
+      {% endcomment %}
+
+      {% comment %} Taglines {% endcomment %}
+      {% if settings.enable_tagline and product.metafields.descriptors.subtitle %}
+        <p class="type--small mb-0.5 !leading-tight ">
+          {{ product.metafields.descriptors.subtitle }}
+        </p>
+      {% endif %}
+    </div>
+
+    {%- comment -%} Content - Mobile only {%- endcomment -%}
+    <div class="md:hidden hover:no-underline no-underline whitespace-normal relative flex flex-col justify-end py-2">
+      <div class="px-2">
+        {% comment %} Product Type & Price on first line {% endcomment %}
+        <div class="flex items-start justify-between gap-1 mb-0">
+          <h3
+            class="mb-0"
+            aria-level="2"
+            style="font-size: 14px; line-height: 1.1; font-weight: 500; max-width: 65%; word-break: break-word;"
+          >
+            {{ product.title }}
+          </h3>
+          <div class="flex whitespace-nowrap pl-1" style="margin-top: -1px;">
+            <span
+              class="text-xs font-bold"
+              data-product-id="{{ product.id }}"
+              data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+            >
+              {{ product.selected_or_first_available_variant.price | money }}
+            </span>
+            {% if product.selected_or_first_available_variant.compare_at_price
+                > product.selected_or_first_available_variant.price
+            %}
+              <span
+                class="text-xs ml-1"
+                data-product-id="{{ product.id }}"
+                data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+                style="text-decoration: line-through; opacity: 0.75;"
+              >
+                {{ product.selected_or_first_available_variant.compare_at_price | money }}
+              </span>
+            {% endif %}
+          </div>
+        </div>
+
+        {% comment %} Title and Colors on second line {% endcomment %}
+        <div class="flex items-center justify-between gap-2 mt-0">
+          <span class="opacity-75 whitespace-nowrap shrink-0 text-xs js:swatchCount-{{ swatch_class }}">
+            {% if is_collegiate_product %}
+              
+            {% elsif product.metafields.custom.swatch_collection %}
+              {{- product.metafields.custom.swatch_collection.value.products.size }} Colors
+            {% else %}
+              Multiple Colors
+            {% endif %}
+          </span>
+        </div>
+      </div>
+    </div>
+
+    {%- comment -%} Quick add mobile {%- endcomment -%}
+    {% if disable_quick_add == false %}
+      {% if settings.enable_quick_mobile %}
+        <div
+          class="
+            no-js--hide md:hidden absolute bottom-0 w-full pt-2
+            {% if settings.thumbnails_border_style == 'thumbnail' %}pb-2 px-2{% endif %}
+          "
+        >
+          {% if product.available %}
+            <form
+              action="/cart/add"
+              method="post"
+              enctype="multipart/form-data"
+              class="flex flex-wrap"
+              x-data="
+                {
+                  defaultVariantId: {{ product.variants[0].id }},
+                  defaultSellingPlanId: 0,
+                  quantity: 1,
+                }
+              "
+              @submit.prevent="
+                {% if product.tags contains 'sale' %}
+                  addCartItem(defaultVariantId, defaultSellingPlanId, quantity, true, { 'SALE': 'ALL SALES FINAL ON ITEM' });
+                {% else %}
+                  addCartItem(defaultVariantId, defaultSellingPlanId, quantity, true);
+                {% endif %}
+                button_loading = true;
+                setTimeout(function(){ button_loading = false}, 500);
+              "
+            >
+              {% if product.variants.size == 1 %}
+                <input
+                  name="id"
+                  :value="defaultVariantId"
+                  type="hidden"
+                >
+                <label
+                  :for="'quantity_product_item_' + defaultVariantId + '_desktop' + '{{ source }}'"
+                  class="sr-only"
+                >
+                  {{- 'products.general.quantity' | t -}}
+                </label>
+                <input
+                  :id="'quantity_product_item_' + defaultVariantId + '_desktop' + '{{ source }}'"
+                  class="!hidden"
+                  type="text"
+                  name="quantity"
+                  value="1"
+                  min="1"
+                  max=""
+                  x-model="quantity"
+                >
+                <button
+                  type="submit"
+                  role="button"
+                  class="!w-full btn btn--secondary btn--load invisible"
+                  :class="{ 'btn--loading' : cart_loading && button_loading }"
+                  :disabled="button_loading"
+                >
+                  <div class="btn__content">
+                    {% if product.metafields.custom.button_text %}
+                      {{ product.metafields.custom.button_text }}
+                    {% else %}
+                      {{ 'products.general.add_to_cart' | t }}
+                    {% endif %}
+                  </div>
+                  <div class="btn__spinner">
+                    {% render 'component__icon', icon: 'spinner', size: '24', class: '' %}
+                  </div>
+                </button>
+              {% else %}
+                <button
+                  type="button"
+                  class="!w-full btn btn--secondary btn--load invisible"
+                  :class="{ 'btn--loading' : button_loading }"
+                  :disabled="button_loading"
+                  @click="
+                    button_loading = true;
+                    fetchAndRenderQuickAdd('{{ product.handle }}', 'product');
+                    setTimeout(function(){ button_loading = false}, 500);
+                  "
+                >
+                  <div class="btn__content">
+                    {% if product.metafields.custom.button_text %}
+                      {{ product.metafields.custom.button_text }}
+                    {% else %}
+                      {{ 'products.general.add_to_cart' | t }}
+                    {% endif %}
+                  </div>
+                  <div class="btn__spinner">
+                    {% render 'component__icon', icon: 'spinner', size: '24', class: '' %}
+                  </div>
+                </button>
+              {% endif %}
+            </form>
+          {% endif %}
+        </div>
+      {% endif %}
+    {% endif %}
+
+    {%- comment -%} Quick add popup {%- endcomment -%}
+    <div id="js:quickAdd-{{ section.id }}-{{ product.handle }}"></div>
+  </div>
+{% endunless %}

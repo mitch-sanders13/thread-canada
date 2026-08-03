@@ -1,0 +1,13 @@
+{
+  "sections": {
+    "b1063b34-b1ff-4ef5-826f-5a574e09a940": {
+      "type": "page__sales-form",
+      "settings": {
+        "color_scheme": "color__bg-body color__text"
+      }
+    }
+  },
+  "order": [
+    "b1063b34-b1ff-4ef5-826f-5a574e09a940"
+  ]
+}

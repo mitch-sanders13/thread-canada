@@ -1,0 +1,39 @@
+{% comment %}
+  snippets/component__collection-schema.liquid
+
+  Renders CollectionPage + ItemList JSON-LD for SEO.
+  Must be rendered INSIDE a {% paginate %} block so
+  collection.products reflects only the products shown
+  on the current page.
+
+  Usage:
+    {% render 'component__collection-schema', collection: collection %}
+{% endcomment %}
+
+{%- if collection.products.size > 0 -%}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "CollectionPage",
+      "name": {{ collection.title | json }},
+      "url": {{ shop.url | append: collection.url | json }},
+      {%- if collection.description != blank -%}
+        "description": {{ collection.description | strip_html | json }},
+      {%- endif -%}
+      "mainEntity": {
+        "@type": "ItemList",
+        "numberOfItems": {{ collection.products.size }},
+        "itemListElement": [
+          {%- for product in collection.products -%}
+            {
+              "@type": "ListItem",
+              "position": {{ forloop.index }},
+              "url": {{ shop.url | append: product.url | json }},
+              "name": {{ product.title | json }}
+            }{%- unless forloop.last -%},{%- endunless -%}
+          {%- endfor -%}
+        ]
+      }
+    }
+  </script>
+{%- endif -%}

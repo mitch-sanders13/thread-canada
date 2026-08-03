@@ -1,0 +1,33 @@
+<!-- snippets/collection-faq__item.liquid -->
+{% comment %}
+  One FAQ accordion row for collection-faq section.
+
+  Accepts:
+    - title: question text
+    - content_html: rendered answer HTML
+    - open: boolean, expanded by default
+    - border_color: section border class
+    - shopify_attributes: optional editor attributes (theme blocks)
+{% endcomment %}
+
+{% liquid
+  assign faq_open = false
+  if open == true or open == 'true'
+    assign faq_open = true
+  endif
+%}
+
+{% capture accordion_content %}
+  <div class="px-4 pb-4">
+    <div class="max-w-prose">
+      {{ content_html }}
+    </div>
+  </div>
+{% endcapture %}
+<div class="border--width border--radius {{ border_color }}" {{ shopify_attributes }}>
+  {% render 'component__accordion',
+    button_label: title,
+    container_class: "w-full",
+    content: accordion_content,
+    open: faq_open %}
+</div>

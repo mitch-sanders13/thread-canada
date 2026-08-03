@@ -1,0 +1,140 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "type": "footer",
+  "name": "Footer group",
+  "sections": {
+    "a5c809f4-1c0c-4edc-ac3c-98dabefac083": {
+      "type": "navigation-slider",
+      "blocks": {
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-1": {
+          "type": "slide",
+          "settings": {
+            "image_featured": "shopify:\/\/shop_images\/vertical_4bcf936e-b9f6-4f10-b040-30ec3d6cb0aa.jpg",
+            "heading": "WALLETS",
+            "url": "shopify:\/\/collections\/all-wallets"
+          }
+        },
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-2": {
+          "type": "slide",
+          "settings": {
+            "image_featured": "shopify:\/\/shop_images\/lip_balm.jpg",
+            "heading": "ACCESSORIES",
+            "url": "shopify:\/\/collections\/all-accessories"
+          }
+        },
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-3": {
+          "type": "slide",
+          "settings": {
+            "image_featured": "shopify:\/\/shop_images\/cross_body.jpg",
+            "heading": "BAGS",
+            "url": "shopify:\/\/collections\/all-bags"
+          }
+        },
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-4": {
+          "type": "slide",
+          "settings": {
+            "image_featured": "shopify:\/\/shop_images\/airpods.jpg",
+            "heading": "SHOP ALL",
+            "url": "shopify:\/\/collections\/all"
+          }
+        }
+      },
+      "block_order": [
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-1",
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-2",
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-3",
+        "sections--15934949130378__a5c809f4-1c0c-4edc-ac3c-98dabefac083-slide-4"
+      ],
+      "disabled": true,
+      "settings": {
+        "spacing_top": 0,
+        "spacing_bottom": 0,
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "style_border": "border--t-width",
+        "enable_fixed_position": true,
+        "visibility": "md:hidden"
+      }
+    },
+    "db6f23ff-c8c2-428f-97d2-55c4d20911f7": {
+      "type": "attentive-bar",
+      "settings": {
+        "desktop_id": "164248",
+        "mobile_id": "164239",
+        "heading": "Sign up for exclusive updates!",
+        "content": "",
+        "button_label": "Sign up for Email\/SMS",
+        "spacing_top": 40,
+        "spacing_bottom": 40,
+        "color_scheme": "color__bg-tertiary color__tertiary",
+        "color_border": "color__border-divider-1",
+        "color_button": "btn btn--secondary",
+        "style_border": "",
+        "layout_horizontal": "window--wide",
+        "visibility": ""
+      }
+    },
+    "theme_footer": {
+      "type": "theme__footer",
+      "blocks": {
+        "5dc22179-9717-40d2-9d83-4532c904e6d1": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-1",
+            "block_title": "brand"
+          }
+        },
+        "150805eb-9862-49dd-b0c2-0111162d6fce": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-5",
+            "block_title": "support"
+          }
+        },
+        "a9085256-c495-4cf1-b259-ae6d916a8d10": {
+          "type": "location",
+          "settings": {
+            "block_title": "LOCATION",
+            "block_text": "241 W Center St. \n<br>\n<br>\nPROVO, UT 84601 USA"
+          }
+        },
+        "6ad6b950-210d-4cf8-b231-62c67db4980e": {
+          "type": "menu",
+          "settings": {
+            "menu": "footer-4",
+            "block_title": "sales"
+          }
+        }
+      },
+      "block_order": [
+        "5dc22179-9717-40d2-9d83-4532c904e6d1",
+        "150805eb-9862-49dd-b0c2-0111162d6fce",
+        "a9085256-c495-4cf1-b259-ae6d916a8d10",
+        "6ad6b950-210d-4cf8-b231-62c67db4980e"
+      ],
+      "settings": {
+        "main_color_scheme": "color__bg-body color__text",
+        "main_color_border": "color__border-divider-1",
+        "main_color_button": "btn btn--secondary",
+        "sub_color_scheme": "color__bg-body color__text",
+        "sub_color_border": "color__border-divider-1",
+        "sub_color_button": "btn btn--secondary",
+        "sub_enable_payment_icons": false,
+        "visibility": ""
+      }
+    }
+  },
+  "order": [
+    "a5c809f4-1c0c-4edc-ac3c-98dabefac083",
+    "db6f23ff-c8c2-428f-97d2-55c4d20911f7",
+    "theme_footer"
+  ]
+}

@@ -1,0 +1,232 @@
+<!-- snippets/product__add.liquid -->
+{% comment %}
+  Add to cart block for product sections. Includes quantity selector, variant picker, subscription options and addtional content.
+
+  Accepts:
+    - blocksettings: liquid object of block settings
+    - featured: boolean to assign product object from section settings, set this to true if block is used within a section rather than product template
+
+  Usage:
+    {% render 'product__add',
+      blocksettings: block.settings,
+      featured: true %}
+
+  Globals:
+    - settings.product_variant_selection: set variants style to dropdown or buttons
+    - settings.product_color_selection: set color option picker style to dropdown, buttons or swatches
+    - settings.type_seperator: setting to pick the type of seperator between text
+
+  Possible enhancements:
+    - Include nesting container within snippet.
+{% endcomment %}
+
+{% if featured %}
+  {%- assign product = section.settings.product -%}
+{% endif %}
+
+{%- comment -%}add{%- endcomment -%}
+<div class="flex items-stretch">
+  <div class="px-4 grow">
+    {% comment %} Old attentive BIS {% endcomment %}
+    {% comment %}
+      <div
+        x-show="!defaultAvailable && defaultVariantExists"
+        x-cloak>
+        <script
+          id="attn-waitlist-eligibility"
+          type="application/json">
+          {
+          {%- liquid
+          for variant in product.variants
+          assign eligibility = 'false'
+          if variant.inventory_quantity <= 0
+          assign eligibility = 'true'
+          endif
+          assign entry = '"' | append: variant.id | append: '":' | append: eligibility
+          unless forloop.last
+          assign entry = entry | append: ','
+          endunless
+
+          echo entry
+          endfor
+          -%}
+          }
+        </script>
+        <div id="attn-waitlist-trigger" class="btn btn--load !w-full h-full max-w-[350px]"></div>
+      </div>
+    {% endcomment %}
+
+    {% comment %} Choose options {% endcomment %}
+    <button
+      class="btn btn--load !w-full btn--plain h-full"
+      :class="{ 'btn--loading' : cart_loading && button_loading }"
+      type="button"
+      role="button"
+      disabled
+      :disabled="button_loading"
+      @click="choosing = true"
+      x-show="buttonDisabled && defaultAvailable"
+      x-cloak
+    >
+      <div class="btn__content">
+        {{ 'products.general.choose_options' | t }}
+      </div>
+    </button>
+
+    {% comment %} Sold Out - Original Position {% endcomment %}
+    <div
+      class="btn !w-full h-full cursor-default"
+      style="border: 2px solid #b5b9bd !important; background-color: white !important; color: #b5b9bd !important;"
+      x-show="!defaultAvailable && defaultVariantExists"
+      x-cloak
+    >
+      <div class="btn__content" style="color: #b5b9bd !important;">
+        {{ 'products.general.sold_out' | t }}
+      </div>
+    </div>
+
+    {% comment %} Unavailable {% endcomment %}
+    <button
+      class="btn btn--load !w-full btn--plain h-full"
+      :class="{ 'btn--loading' : cart_loading && button_loading }"
+      type="button"
+      role="button"
+      disabled
+      :disabled="button_loading"
+      x-show="!defaultVariantExists && allOptionsSelected"
+      x-cloak
+    >
+      <div class="btn__content">
+        {{ 'products.general.unavailable' | t }}
+      </div>
+    </button>
+
+    {% comment %} Add to cart {% endcomment %}
+    <button
+      class="btn btn--primary btn--load h-full !w-full"
+      type="submit"
+      role="button"
+      :class="{ 'btn--loading' : cart_loading && button_loading }"
+      :disabled="button_loading || incomplete_fields"
+      x-show="!buttonDisabled && defaultVariantExists && defaultAvailable"
+    >
+      <div class="btn__content">
+        {% if product.metafields.custom.button_text %}
+          {{ product.metafields.custom.button_text }}
+        {% else %}
+          {{ 'products.general.add_to_cart' | t }}
+        {% endif %}
+      </div>
+      <div class="btn__spinner">
+        {% render 'component__icon', icon: 'spinner', size: '24', class: '' %}
+      </div>
+    </button>
+  </div>
+
+  {% if blocksettings.enable_quantity %}
+    <div class="shrink-[2] pr-4 w-2/5">
+      <div
+        class="relative flex w-full overflow-hidden color__text color__border-divider-1 border--width hover:color__border-selected-1 border__input--radius"
+        x-data="
+          {
+            button_loading: false
+          }
+        "
+      >
+        <button
+          class="btn--smaller shrink-0 !rounded-none border--r-width color__border-divider-1"
+          title="{{ 'cart.general.decrease' | t }}"
+          :disabled="button_loading"
+          @click="
+            quantity--;
+            handleForm();
+            button_loading = true;
+            setTimeout(function(){ button_loading = false}, 500);
+          "
+        >
+          {% render 'component__icon', icon: 'minus', size: '14', class: '' %}
+        </button>
+        <input
+          id="{{ product.id }}-quantity"
+          class="form-input !border-0 text-center !rounded-none"
+          type="text"
+          name="quantity"
+          value="1"
+          placeholder="1"
+          min="1"
+          x-model="quantity"
+          @change.debounce="
+            button_loading = true;
+            handleForm();
+            setTimeout(function(){ button_loading = false}, 500);
+          "
+        >
+        <div
+          class="btn__spinner btn--smaller !w-auto !color__bg-body"
+          :class="{ '!visible color__bg-overlay-1 z-10' : button_loading }"
+        >
+          {% render 'component__icon', icon: 'spinner', size: '16', class: '' %}
+        </div>
+        <button
+          class="btn--smaller shrink-0 !rounded-none border--l-width color__border-divider-1"
+          title="{{ 'cart.general.increase' | t }}"
+          :disabled="button_loading"
+          @click="
+            quantity++;
+            handleForm();
+            button_loading = true;
+            setTimeout(function(){ button_loading = false}, 500);
+          "
+        >
+          {% render 'component__icon', icon: 'plus', size: '14', class: '' %}
+        </button>
+      </div>
+    </div>
+  {% endif %}
+
+  {% unless blocksettings.enable_quantity %}
+    <input
+      class="hidden"
+      type="number"
+      name="quantity"
+      placeholder="1"
+      min="1"
+      value="1"
+      x-model="quantity"
+      hidden
+    >
+  {% endunless %}
+</div>
+
+{% comment %} Attentive Back in Stock - Full Width {% endcomment %}
+<div
+  x-show="!defaultAvailable && defaultVariantExists"
+  x-cloak
+  class="mt-4 px-4"
+>
+  <!-- Attentive Back in Stock Button -->
+  <script
+    id="attn-waitlist-eligibility"
+    type="application/json">
+    {
+    {%- liquid
+    for variant in product.variants
+    assign eligibility = 'false'
+    if variant.inventory_quantity <= 0
+    assign eligibility = 'true'
+    endif
+    assign entry = '"' | append: variant.id | append: '":' | append: eligibility
+    unless forloop.last
+    assign entry = entry | append: ','
+    endunless
+
+    echo entry
+    endfor
+    -%}
+    }
+  </script>
+  <div 
+    id="attn-waitlist-trigger" 
+    class="btn btn--primary btn--load w-full min-h-12 [&_button]:indent-[-9999px] [&_button]:uppercase [&_button]:relative [&_button]:before:content-['notify_me_when_back_in_stock'] [&_button]:before:absolute [&_button]:before:left-1/2 [&_button]:before:top-1/2 [&_button]:before:-translate-x-1/2 [&_button]:before:-translate-y-1/2 [&_button]:before:indent-0 [&_button]:before:font-black [&_button]:before:tracking-widest [&_button]:before:whitespace-nowrap">
+  </div>
+</div>

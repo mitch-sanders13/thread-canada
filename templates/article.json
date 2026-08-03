@@ -1,0 +1,75 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "blog_hero_qHKkUM": {
+      "type": "blog-hero",
+      "name": "Blog Hero",
+      "settings": {
+        "show_crumbs": true,
+        "enable_image": true,
+        "enable_author": true,
+        "enable_date": true,
+        "visibility": "",
+        "color_scheme": "color__bg-body color__text",
+        "color_border": "color__border-divider-1",
+        "style_border": ""
+      }
+    },
+    "main": {
+      "type": "article__main",
+      "blocks": {
+        "821a01e2-b9bf-45dc-b208-835bf9ac938c": {
+          "type": "content",
+          "settings": {
+            "spacing_top": 20,
+            "spacing_bottom": 20,
+            "color_border": "color__border-divider-1",
+            "style_border": "border--b-width"
+          }
+        },
+        "797ba560-2717-42ee-a1dc-547f7f40f214": {
+          "type": "share",
+          "settings": {
+            "spacing_top": 20,
+            "spacing_bottom": 20,
+            "color_border": "color__border-divider-1",
+            "style_border": "border--b-width"
+          }
+        },
+        "f5ee0741-2dcf-40c5-8755-319620ca5fa2": {
+          "type": "comment",
+          "settings": {
+            "spacing_top": 10,
+            "spacing_bottom": 10,
+            "color_border": "color__border-divider-1",
+            "style_border": ""
+          }
+        }
+      },
+      "block_order": [
+        "821a01e2-b9bf-45dc-b208-835bf9ac938c",
+        "797ba560-2717-42ee-a1dc-547f7f40f214",
+        "f5ee0741-2dcf-40c5-8755-319620ca5fa2"
+      ],
+      "custom_css": [
+        ".rte img {width: 100%; margin-bottom: 2rem;}"
+      ],
+      "settings": {
+        "color_scheme": "color__bg-body color__text",
+        "layout_horizontal": "window--wide"
+      }
+    }
+  },
+  "order": [
+    "blog_hero_qHKkUM",
+    "main"
+  ]
+}

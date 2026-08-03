@@ -1,0 +1,7 @@
+{
+  "sections": {
+    "collection_faq": {
+      "editor_empty_state": "Aucune FAQ pour cette collection pour le moment. Ajoutez-les sur la fiche collection sous Métachamps (FAQ items), ou utilisez le champ JSON custom.collection_faq."
+    }
+  }
+}

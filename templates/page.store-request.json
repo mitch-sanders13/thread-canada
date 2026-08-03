@@ -1,0 +1,14 @@
+{
+  "sections": {
+    "page_store_request_4PxNLC": {
+      "type": "page__store-request",
+      "disabled": true,
+      "settings": {
+        "color_scheme": "color__bg-body color__text"
+      }
+    }
+  },
+  "order": [
+    "page_store_request_4PxNLC"
+  ]
+}
