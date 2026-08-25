@@ -2975,6 +2975,165 @@
     "groups": [
       "custom.overlay"
     ]
-  }
+  },
+  "presets": [
+    {
+      "name": "Product page",
+      "settings": {
+        "enable_default_variant": true,
+        "media_gallery_style": "grid",
+        "image_border": "!color__border-transparent",
+        "enable_zoom": false,
+        "enable_alt": false,
+        "enable_variant_images": true,
+        "media_color_scheme": "color__bg-overlay-1 color__text",
+        "media_ratio": "aspect-[1/1] aspect-w-1 aspect-h-1",
+        "media_object-sizing": "contain",
+        "enable_ratio": true,
+        "show_product_badges": true,
+        "color_scheme": "color__bg-body",
+        "color_border": "color__border-divider-1",
+        "layout_gallery_size": "w-full md:w-2/3",
+        "layout_horizontal": "md:window--wide"
+      },
+      "blocks": [
+        {
+          "type": "breadcrumb",
+          "settings": {
+            "spacing_top": 10,
+            "spacing_bottom": 10,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": ""
+          }
+        },
+        {
+          "type": "title",
+          "settings": {
+            "content": "",
+            "spacing_top": 0,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "",
+            "enable_thumbnails_product_type": false,
+            "enable_thumbnails_vendor": false,
+            "enable_sku": false
+          }
+        },
+        {
+          "type": "price",
+          "settings": {
+            "spacing_top": 0,
+            "spacing_bottom": 10,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": ""
+          }
+        },
+        {
+          "type": "countdown",
+          "settings": {
+            "countdown_tag": "promocallout",
+            "countdown_date": "2/14/2024",
+            "content": "",
+            "counter_suffix_bold": true,
+            "counter_suffix_size": "text-2xl",
+            "spacing_top": 20,
+            "spacing_bottom": 20,
+            "color_scheme": "color__bg-secondary color__secondary",
+            "style_border": "border--b-width"
+          }
+        },
+        {
+          "type": "options",
+          "settings": {
+            "spacing_top": 20,
+            "spacing_bottom": 0,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": ""
+          }
+        },
+        {
+          "type": "inventory",
+          "settings": {
+            "spacing_top": 10,
+            "spacing_bottom": 10,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "border--width",
+            "threshold": 40
+          }
+        },
+        {
+          "type": "add",
+          "settings": {
+            "content": "",
+            "spacing_top": 20,
+            "spacing_bottom": 20,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "border--b-width",
+            "enable_quantity": true,
+            "enable_dynamic_checkout": false
+          }
+        },
+        {
+          "type": "text",
+          "settings": {
+            "text_block_tag": "promocallout",
+            "content": "<p>BUY ONE GET ONE 50% OFF</p>",
+            "spacing_top": 10,
+            "spacing_bottom": 10,
+            "color_scheme": "color__bg-secondary color__secondary",
+            "style_border": "",
+            "layout_x_alignment": "text-center"
+          }
+        },
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "Details",
+            "content": "<p>{{ product.metafields.tabs.details | metafield_tag }}</p>",
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "border--b-width",
+            "enable_open": true
+          }
+        },
+        {
+          "type": "description",
+          "settings": {
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "border--b-width",
+            "enable_open": false
+          }
+        },
+        {
+          "type": "accordion",
+          "settings": {
+            "title": "Warranty",
+            "content": "<p>We stand by our products. Each one is made using durable materials and checked for quality before shipping. Our products hold some of your most valuable items, therefore you should buy one that you can rely on. For that reason, we have put a limited lifetime warranty on all orders (details below).  We have had customers who have been using their Thread Wallet products for many years without issue but we understand that accidents happen! </p><p><strong>Details: </strong></p><p>Thread Wallet products are made to last! However, if your item becomes defective, you qualify for a replacement.  Please keep in mind that <strong>products that have been stretched out due to over-stuffing, water damage, normal day to day wear and tear, etc. will not qualify for a replacement. </strong>For more information on our Warranty Policy, <a href=\"https://www.threadwallets.com/pages/warranty\" title=\"One Year Warranty\">click here</a>.</p>",
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "border--b-width",
+            "enable_open": false
+          }
+        },
+        {
+          "type": "upsell",
+          "settings": {
+            "title": "Mix & Match",
+            "products_count": 3,
+            "intent": "related",
+            "color_scheme": "color__bg-body color__text",
+            "style_border": ""
+          }
+        },
+        {
+          "type": "stickyadd",
+          "settings": {
+            "content": "",
+            "color_scheme": "color__bg-body color__text",
+            "on_scroll": true,
+            "visibility": "md:hidden"
+          }
+        }
+      ]
+    }
+  ]
 }
 {% endschema %}

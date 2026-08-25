@@ -66,13 +66,11 @@
       url("https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.otf?v=1712089722") format("opentype");
   }
 
-  @font-face {
-    font-family: "FormaDJRDisplay-Regular-Testing";
-    font-style: normal;
-    font-weight: 400;
-    font-display: swap;
-    src: url("{{ 'FormaDJRDisplay-Regular-Testing.woff2' | file_url }}") format("woff2");
-  }
+  {% comment %}
+    Forma DJR lived in US Content > Files. file_url points at THIS shop's Files,
+    so Canada 404s that woff2 on every page (including the product 404). Use the
+    theme's Shopify font picker until the file is uploaded on this store.
+  {% endcomment %}
 
   {{ type_font_body | font_face: font_display: 'swap' }}
   {{ type_font_body_bold | font_face: font_display: 'swap' }}
@@ -146,7 +144,7 @@
     --sizes-border-width: {{ settings.border_width }}px;
     --sizes-gap-width: {{ settings.layout_gap_size }}px;
 
-    --type-font-body-family: "FormaDJRDisplay-Regular-Testing", {{ settings.type_font_body.fallback_families }};
+    --type-font-body-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
     --type-font-body-style: {{ settings.type_font_body.style }};
     --type-font-body-weight: {{ settings.type_font_body.weight }};
     --type-font-body-letter-spacing: 0.08em;
