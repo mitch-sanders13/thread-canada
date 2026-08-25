@@ -123,7 +123,7 @@
     </button>
   </div>
 
-  {% if blocksettings.enable_quantity %}
+  {% if enable_quantity or blocksettings.enable_quantity %}
     <div class="shrink-[2] pr-4 w-2/5">
       <div
         class="relative flex w-full overflow-hidden color__text color__border-divider-1 border--width hover:color__border-selected-1 border__input--radius"
@@ -184,7 +184,7 @@
     </div>
   {% endif %}
 
-  {% unless blocksettings.enable_quantity %}
+  {% unless enable_quantity or blocksettings.enable_quantity %}
     <input
       class="hidden"
       type="number"

@@ -1,0 +1,65 @@
+{% comment %}
+  Product education rows from metafields.
+
+  The JSON template used education-grid sections that fail Theme Check, so they
+  cannot live in the product template. This snippet prints the same metafields
+  (title / subtitle / description / image) in a simple two-column layout.
+{% endcomment %}
+
+{% if product.metafields.education.title_1 != blank
+  or product.metafields.education.title_2 != blank
+  or product.metafields.education.title_3 != blank
+%}
+  <div class="window--wide py-10 color__bg-body color__text">
+    {% if product.metafields.education.title_1 != blank %}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center py-8">
+        <div class="md:col-span-1 px-4">
+          <h2 class="type__heading mb-2">{{ product.metafields.education.title_1.value }}</h2>
+          {% if product.metafields.education.subtitle_1 %}
+            <p class="font-bold mb-2">{{ product.metafields.education.subtitle_1.value }}</p>
+          {% endif %}
+          <div class="m-0--clear">{{ product.metafields.education.description_1 | metafield_tag }}</div>
+        </div>
+        <div class="md:col-span-2 px-4">
+          {% if product.metafields.education.image_1.value %}
+            {{ product.metafields.education.image_1.value | image_url: width: 1400 | image_tag: class: 'w-full h-auto', loading: 'lazy' }}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if product.metafields.education.title_2 != blank %}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center py-8">
+        <div class="md:col-span-2 px-4 md:order-1 order-2">
+          {% if product.metafields.education.image_2.value %}
+            {{ product.metafields.education.image_2.value | image_url: width: 1400 | image_tag: class: 'w-full h-auto', loading: 'lazy' }}
+          {% endif %}
+        </div>
+        <div class="md:col-span-1 px-4 md:order-2 order-1">
+          <h2 class="type__heading mb-2">{{ product.metafields.education.title_2.value }}</h2>
+          {% if product.metafields.education.subtitle_2 %}
+            <p class="font-bold mb-2">{{ product.metafields.education.subtitle_2.value }}</p>
+          {% endif %}
+          <div class="m-0--clear">{{ product.metafields.education.description_2 | metafield_tag }}</div>
+        </div>
+      </div>
+    {% endif %}
+
+    {% if product.metafields.education.title_3 != blank %}
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 items-center py-8">
+        <div class="md:col-span-1 px-4">
+          <h2 class="type__heading mb-2">{{ product.metafields.education.title_3.value }}</h2>
+          {% if product.metafields.education.subtitle_3 %}
+            <p class="font-bold mb-2">{{ product.metafields.education.subtitle_3.value }}</p>
+          {% endif %}
+          <div class="m-0--clear">{{ product.metafields.education.description_3 | metafield_tag }}</div>
+        </div>
+        <div class="md:col-span-2 px-4">
+          {% if product.metafields.education.image_3.value %}
+            {{ product.metafields.education.image_3.value | image_url: width: 1400 | image_tag: class: 'w-full h-auto', loading: 'lazy' }}
+          {% endif %}
+        </div>
+      </div>
+    {% endif %}
+  </div>
+{% endif %}
