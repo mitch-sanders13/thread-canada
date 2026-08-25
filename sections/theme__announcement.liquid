@@ -134,126 +134,122 @@
 
 {% schema %}
 {
-  "name":"t:sections.theme_announcement.name",
-  "settings":[
+  "name": "t:sections.theme_announcement.name",
+  "settings": [
     {
-      "type":"header",
-      "content":"t:sections.all.headers.header__1.content"
+      "type": "header",
+      "content": "t:sections.all.headers.header__1.content"
     },
     {
-      "type":"select",
-      "id":"color_scheme",
-      "label":"t:sections.all.colors.settings.color_scheme.label",
-      "options":[
+      "type": "select",
+      "id": "color_scheme",
+      "label": "t:sections.all.colors.settings.color_scheme.label",
+      "options": [
         {
-          "value":"color__bg-body color__text",
-          "label":"t:sections.all.colors.settings.color_scheme.options__1.label"
+          "value": "color__bg-body color__text",
+          "label": "t:sections.all.colors.settings.color_scheme.options__1.label"
         },
         {
-          "value":"color__bg-neutral color__text",
-          "label":"t:sections.all.colors.settings.color_scheme.options__2.label"
+          "value": "color__bg-neutral color__text",
+          "label": "t:sections.all.colors.settings.color_scheme.options__2.label"
         },
         {
-          "value":"color__bg-overlay-1 color__text",
-          "label":"t:sections.all.colors.settings.color_scheme.options__3.label"
+          "value": "color__bg-overlay-1 color__text",
+          "label": "t:sections.all.colors.settings.color_scheme.options__3.label"
         },
         {
-          "value":"color__bg-overlay-2 color__text",
-          "label":"t:sections.all.colors.settings.color_scheme.options__4.label"
+          "value": "color__bg-overlay-2 color__text",
+          "label": "t:sections.all.colors.settings.color_scheme.options__4.label"
         },
         {
-          "value":"color__bg-overlay-3 color__text",
-          "label":"t:sections.all.colors.settings.color_scheme.options__5.label"
+          "value": "color__bg-overlay-3 color__text",
+          "label": "t:sections.all.colors.settings.color_scheme.options__5.label"
         },
         {
-          "value":"color__bg-primary color__primary",
-          "label":"t:sections.all.colors.settings.color_scheme.options__6.label"
+          "value": "color__bg-primary color__primary",
+          "label": "t:sections.all.colors.settings.color_scheme.options__6.label"
         },
         {
-          "value":"color__bg-secondary color__secondary",
-          "label":"t:sections.all.colors.settings.color_scheme.options__7.label"
+          "value": "color__bg-secondary color__secondary",
+          "label": "t:sections.all.colors.settings.color_scheme.options__7.label"
         },
         {
-          "value":"color__bg-tertiary color__tertiary",
-          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
+          "value": "color__bg-tertiary color__tertiary",
+          "label": "t:sections.all.colors.settings.color_scheme.options__8.label"
         }
       ],
-      "default":"color__bg-overlay-1 color__text"
+      "default": "color__bg-overlay-1 color__text"
     },
     {
-      "type":"header",
-      "content":"t:sections.all.headers.header__3.content"
+      "type": "header",
+      "content": "t:sections.all.headers.header__3.content"
     },
     {
-      "type":"select",
-      "id":"layout_alignment",
-      "label":"t:sections.theme_announcement.settings.layout_alignment.label",
-      "options":[
+      "type": "select",
+      "id": "layout_alignment",
+      "label": "t:sections.theme_announcement.settings.layout_alignment.label",
+      "options": [
         {
-          "value":"left",
-          "label":"t:sections.theme_announcement.settings.layout_alignment.options__1.label"
+          "value": "left",
+          "label": "t:sections.theme_announcement.settings.layout_alignment.options__1.label"
         },
         {
-          "value":"center",
-          "label":"t:sections.theme_announcement.settings.layout_alignment.options__2.label"
+          "value": "center",
+          "label": "t:sections.theme_announcement.settings.layout_alignment.options__2.label"
         }
       ],
-      "default":"center"
+      "default": "center"
     },
     {
-      "type":"header",
-      "content":"t:sections.all.headers.header__8.content"
+      "type": "header",
+      "content": "t:sections.all.headers.header__8.content"
     },
     {
-      "type":"select",
-      "id":"visibility",
-      "label":"t:sections.all.visibility.label",
-      "options":[
+      "type": "select",
+      "id": "visibility",
+      "label": "t:sections.all.visibility.label",
+      "options": [
         {
-          "value":"",
-          "label":"t:sections.all.visibility.options__1.label"
+          "value": "",
+          "label": "t:sections.all.visibility.options__1.label"
         },
         {
-          "value":"md:hidden",
-          "label":"t:sections.all.visibility.options__2.label"
+          "value": "md:hidden",
+          "label": "t:sections.all.visibility.options__2.label"
         },
         {
-          "value":"hidden md:block",
-          "label":"t:sections.all.visibility.options__3.label"
+          "value": "hidden md:block",
+          "label": "t:sections.all.visibility.options__3.label"
         }
       ],
-      "default":""
+      "default": ""
     },
     {
-      "type":"checkbox",
-      "id":"show_account_link",
-      "label":"t:sections.theme_announcement.settings.show_account_link.label",
+      "type": "checkbox",
+      "id": "show_account_link",
+      "label": "t:sections.theme_announcement.settings.show_account_link.label",
       "default": true
     }
   ],
-  "blocks":[
+  "blocks": [
     {
-      "type":"text",
-      "name":"t:sections.theme_announcement.blocks.text.name",
-      "limit":10,
-      "settings":[
+      "type": "text",
+      "name": "t:sections.theme_announcement.blocks.text.name",
+      "limit": 10,
+      "settings": [
         {
-          "type":"richtext",
-          "id":"content",
-          "label":"t:sections.theme_announcement.blocks.text.settings.content.label",
-          "default":{
-            "en":"<p>Make announcements or share a promotion.</p>",
-            "es": "<p>Haz anuncios o comparte una promoción.</p>",
-            "it": "<p>Fai annunci o condividi una promozione.</p>",
-            "de": "<p>Machen Sie Ankündigungen oder teilen Sie eine Werbeaktion.</p>",
-            "fr": "<p>Faites des annonces ou partagez une promotion.</p>"
-          }
+          "type": "richtext",
+          "id": "content",
+          "label": "t:sections.theme_announcement.blocks.text.settings.content.label",
+          "default": "<p>Make announcements or share a promotion.</p>"
         }
       ]
     }
   ],
   "disabled_on": {
-    "groups": ["custom.overlay"]
+    "groups": [
+      "custom.overlay"
+    ]
   }
 }
 {% endschema %}

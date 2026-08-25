@@ -287,65 +287,53 @@
 
 {% schema %}
 {
-  "name":"t:sections.theme_age_verification.name",
-  "settings":[
+  "name": "t:sections.theme_age_verification.name",
+  "settings": [
     {
-      "type":"checkbox",
-      "id":"enable_age_verification",
-      "label":"t:sections.theme_age_verification.settings.enable_age_verification.label",
-      "default":false
+      "type": "checkbox",
+      "id": "enable_age_verification",
+      "label": "t:sections.theme_age_verification.settings.enable_age_verification.label",
+      "default": false
     },
     {
-      "type":"select",
-      "id":"age_verification_style",
-      "label":"t:sections.theme_age_verification.settings.age_verification_style.label",
-      "options":[
+      "type": "select",
+      "id": "age_verification_style",
+      "label": "t:sections.theme_age_verification.settings.age_verification_style.label",
+      "options": [
         {
-          "value":"full_date",
-          "label":"t:sections.theme_age_verification.settings.age_verification_style.options__1.label"
+          "value": "full_date",
+          "label": "t:sections.theme_age_verification.settings.age_verification_style.options__1.label"
         },
         {
-          "value":"confirmation",
-          "label":"t:sections.theme_age_verification.settings.age_verification_style.options__2.label"
+          "value": "confirmation",
+          "label": "t:sections.theme_age_verification.settings.age_verification_style.options__2.label"
         }
       ]
     },
     {
-      "type":"range",
-      "id":"age_limit",
-      "label":"t:sections.theme_age_verification.settings.age_limit.label",
+      "type": "range",
+      "id": "age_limit",
+      "label": "t:sections.theme_age_verification.settings.age_limit.label",
       "min": 1,
       "max": 99,
       "step": 1,
       "default": 18
     },
     {
-      "type":"header",
-      "content":"t:sections.all.headers.header__4.content"
+      "type": "header",
+      "content": "t:sections.all.headers.header__4.content"
     },
     {
-      "type":"text",
-      "id":"heading",
-      "label":"t:sections.all.content.settings.heading.label",
-      "default": {
-        "en": "Verify your age",
-        "es": "Verifica tu edad",
-        "it": "Verifica la tua età",
-        "de": "Überprüfen Sie Ihr Alter",
-        "fr": "Vérifier votre âge"
-      }
+      "type": "text",
+      "id": "heading",
+      "label": "t:sections.all.content.settings.heading.label",
+      "default": "Verify your age"
     },
     {
-      "type":"richtext",
-      "id":"content",
-      "label":"t:sections.all.content.settings.content.label",
-      "default": {
-        "en": "<p>Please confirm that you are over the age of 18 to proceed.<\/p>",
-        "es": "<p>Por favor, confirme que es mayor de 18 años para continuar.</p>",
-        "it": "<p>Conferma di avere più di 18 anni per procedere.</p>",
-        "de": "<p>Bitte bestätigen Sie, dass Sie über 18 Jahre alt sind, um fortzufahren.</p>",
-        "fr": "<p>Veuillez confirmer que vous avez plus de 18 ans pour continuer.</p>"
-      }
+      "type": "richtext",
+      "id": "content",
+      "label": "t:sections.all.content.settings.content.label",
+      "default": "<p>Please confirm that you are over the age of 18 to proceed.</p>"
     }
   ]
 }
