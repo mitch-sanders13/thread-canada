@@ -1,0 +1,416 @@
+{% comment %}
+  Everyday Carry Set bundler body: slot tabs, type filters, hero,
+  swatches (with in-grid Add/Swap), progress, and Add to Cart CTA
+  once the set is complete.
+
+  Heading + savings are the first DOM child so mobile stacks
+  intro → gallery → details. Desktop grid areas pin the intro to
+  the top of the right column (same visual as before).
+{% endcomment %}
+
+{% doc %}
+  Everyday Carry Set bundler layout.
+  @param {string} cart_label
+  @param {string} discount_type
+  @param {number} discount_value
+  @param {string} [heading]
+  @param {string} [savings_label]
+{% enddoc %}
+
+{%- assign _cart_label = cart_label | default: 'Add Bundle to Cart' -%}
+
+<div
+  class="mtb-pdp tri-pdp{% unless heading == blank and savings_label == blank %} tri-pdp--has-intro{% endunless %}"
+  x-show="slots.length > 0"
+  x-cloak>
+  {%- unless heading == blank and savings_label == blank -%}
+    <div class="tri-pdp__page-intro">
+      {%- unless heading == blank -%}
+        <h2 class="tri-pdp__page-heading">{{ heading }}</h2>
+      {%- endunless -%}
+      {%- unless savings_label == blank -%}
+        <p class="mtb-pdp__savings">{{ savings_label }}</p>
+      {%- endunless -%}
+    </div>
+  {%- endunless -%}
+
+  <div
+    class="mtb-pdp__media"
+    :class="{ 'mtb-pdp__media--solo': previewImages().length <= 1 }">
+    <div
+      class="mtb-pdp__thumbs"
+      x-show="previewImages().length > 1"
+      x-cloak
+      role="listbox"
+      aria-label="Product images">
+      <template x-for="(image, imgIdx) in previewImages()" :key="(image.hero || image.thumb || '') + '-' + imgIdx">
+        <button
+          type="button"
+          role="option"
+          class="mtb-pdp__thumb"
+          :class="{
+            'is-active': galleryIndex === imgIdx,
+            'is-video': image.mediaType === 'video' || image.mediaType === 'external_video'
+          }"
+          :aria-selected="galleryIndex === imgIdx"
+          :aria-label="(previewProduct()?.title || 'Product') + (image.mediaType === 'video' || image.mediaType === 'external_video' ? ' video ' : ' image ') + (imgIdx + 1)"
+          @click="selectGallery(imgIdx)"
+          @mouseenter="prefetchUrl(image.hero900 || image.hero)">
+          <img
+            :src="image.thumb"
+            width="80"
+            height="80"
+            :alt="(previewProduct()?.title || '') + ' image ' + (imgIdx + 1)"
+            loading="lazy"
+            decoding="async" />
+        </button>
+      </template>
+    </div>
+
+    {%- comment -%}
+      Main hero — sized like the PDP gallery main column, with side
+      arrows + dots when there is more than one product image.
+      Videos play muted/looped (same as PDP); thumbs show a play badge.
+    {%- endcomment -%}
+    <div class="mtb-pdp__hero-wrap">
+      <div
+        class="mtb-pdp__hero"
+        :class="{
+          'is-loading': !heroReady,
+          'is-video': isHeroVideo() || isHeroExternalVideo()
+        }">
+        <template x-if="isHeroVideo()">
+          <video
+            class="mtb-pdp__hero-video"
+            :key="'vid-' + heroVideoUrl"
+            :src="heroVideoUrl"
+            :poster="heroSrc || null"
+            autoplay
+            loop
+            muted
+            playsinline
+            @loadeddata="heroReady = true"></video>
+        </template>
+        <template x-if="isHeroExternalVideo() && heroEmbedUrl()">
+          <iframe
+            class="mtb-pdp__hero-embed"
+            :key="'ext-' + heroExternalHost + '-' + heroExternalId"
+            :src="heroEmbedUrl()"
+            :title="heroAlt || 'Product video'"
+            allow="autoplay; encrypted-media; picture-in-picture"
+            allowfullscreen
+            loading="lazy"
+            @load="heroReady = true"></iframe>
+        </template>
+        <img
+          x-show="!isHeroVideo() && !isHeroExternalVideo() && heroSrc"
+          :src="heroSrc"
+          :srcset="heroSrcset || null"
+          sizes="(min-width: 990px) 55vw, 100vw"
+          width="1200"
+          height="1200"
+          :alt="heroAlt"
+          decoding="async"
+          fetchpriority="high" />
+      </div>
+
+      <template x-if="previewImages().length > 1">
+        <div class="mtb-pdp__hero-arrows" aria-hidden="false">
+          <button
+            type="button"
+            class="mtb-pdp__hero-arrow mtb-pdp__hero-arrow--prev btn btn--plain btn--small shadow-sm"
+            aria-label="Previous image"
+            @click="galleryPrev()">
+            {% render 'component__icon', icon: 'arrow-left', size: '20', class: '' %}
+          </button>
+          <button
+            type="button"
+            class="mtb-pdp__hero-arrow mtb-pdp__hero-arrow--next btn btn--plain btn--small shadow-sm"
+            aria-label="Next image"
+            @click="galleryNext()">
+            {% render 'component__icon', icon: 'arrow-right', size: '20', class: '' %}
+          </button>
+        </div>
+      </template>
+
+      <div
+        class="mtb-pdp__hero-dots"
+        x-show="previewImages().length > 1 && previewImages().length <= 12"
+        x-cloak
+        role="tablist"
+        aria-label="Image pagination">
+        <template x-for="(image, imgIdx) in previewImages()" :key="'dot-' + imgIdx">
+          <button
+            type="button"
+            class="mtb-pdp__hero-dot"
+            role="tab"
+            :class="{ 'is-active': galleryIndex === imgIdx }"
+            :aria-selected="galleryIndex === imgIdx"
+            :aria-label="'Image ' + (imgIdx + 1)"
+            @click="selectGallery(imgIdx)"></button>
+        </template>
+      </div>
+    </div>
+  </div>
+
+  {%- comment -%}
+    Mobile-only product title/price above the gallery — same pattern as
+    the PDP (md:hidden summary before media). Desktop keeps the copy
+    inside .mtb-pdp__info via .tri-pdp__desktop-only.
+  {%- endcomment -%}
+  <div class="tri-pdp__mobile-only tri-pdp__mobile-summary">
+    <div x-show="previewProduct()" x-cloak>
+      <h3 class="mtb-pdp__title" x-text="previewProduct()?.title || ''"></h3>
+      <p class="mtb-pdp__price" x-text="previewProduct() ? formatMoney(previewProduct().price) : ''"></p>
+    </div>
+  </div>
+
+  <div class="mtb-pdp__info">
+    <div class="tri-pdp__desktop-only" x-show="previewProduct()" x-cloak>
+      <h3 class="mtb-pdp__title" x-text="previewProduct()?.title || ''"></h3>
+      <p class="mtb-pdp__price" x-text="previewProduct() ? formatMoney(previewProduct().price) : ''"></p>
+    </div>
+
+    <div class="tri-pdp__slots" role="tablist" aria-label="Bundle slots">
+      <template x-for="(slot, sIdx) in slots" :key="slot.key">
+        {%- comment -%}
+          Div (not button) so a nested Remove control is valid HTML.
+          Click/keyboard still selects the slot; Remove uses @click.stop.
+        {%- endcomment -%}
+        <div
+          role="tab"
+          class="tri-pdp__slot"
+          tabindex="0"
+          :class="{
+            'is-active': activeSlotIndex === sIdx,
+            'is-filled': slotFilled(sIdx),
+            'is-empty': !slotFilled(sIdx),
+            'is-locked': slot.locked,
+            'is-next': isNextSlot(sIdx)
+          }"
+          :aria-selected="activeSlotIndex === sIdx"
+          :aria-label="slot.label + (slotFilled(sIdx) ? ', selected' : ', still needs a style')"
+          @click="selectSlot(sIdx)"
+          @keydown.enter.prevent="selectSlot(sIdx)"
+          @keydown.space.prevent="selectSlot(sIdx)">
+          <span
+            class="tri-pdp__slot-label"
+            x-html="(slot.label || '').replace(/ /g, '<br>')"></span>
+          {%- comment -%}
+            Outer thumb is the positioning box for the corner badge (kept
+            overflow:visible so the badge isn't clipped); the inner frame
+            clips + rounds the actual product photo.
+          {%- endcomment -%}
+          <span class="tri-pdp__slot-thumb">
+            <span class="tri-pdp__slot-thumb-frame">
+              <img
+                :src="slotThumb(sIdx)"
+                width="56"
+                height="56"
+                :alt="''"
+                :class="{ 'is-silhouette': !slotFilled(sIdx) }"
+                loading="lazy"
+                decoding="async" />
+            </span>
+            {%- comment -%}
+              Quiet dark badge in the thumb corner — same visual language as
+              the style-swatch "current pick" check below, so filled vs.
+              locked reads as a status dot instead of a red/green alert.
+            {%- endcomment -%}
+            <button
+              type="button"
+              class="tri-pdp__slot-remove"
+              x-show="slotFilled(sIdx) && !slot.locked"
+              x-cloak
+              :aria-label="'Remove ' + (slot.label || 'item') + ' from bundle'"
+              @click.stop="removePick(sIdx)">
+              <span aria-hidden="true">&times;</span>
+            </button>
+            <span
+              class="tri-pdp__slot-check"
+              x-show="slotFilled(sIdx) && slot.locked"
+              x-cloak
+              title="Locked from this product page"
+              aria-hidden="true">
+              <svg width="9" height="9" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </span>
+        </div>
+      </template>
+    </div>
+
+    {%- comment -%}
+      Title row matches PDP related-styles: "Select Your Wallet" left,
+      style count + prev/next arrows right-justified on the same line.
+    {%- endcomment -%}
+    <div
+      class="mtb-pdp__styles-header"
+      :class="{ 'mtb-pdp__styles-header--paginated': swatchHasPagination }">
+      <div class="mtb-pdp__styles-titlerow">
+        <h4 class="mtb-pdp__styles-label">
+          Select Your <span x-text="activeSlot()?.label || 'Style'"></span>
+        </h4>
+        <span
+          class="mtb-pdp__styles-count"
+          x-text="filteredProducts().length + (filteredProducts().length === 1 ? ' style' : ' styles')"></span>
+        <div class="mtb-pdp__styles-arrows">
+          <button
+            type="button"
+            class="mtb-pdp__styles-arrow btn btn--plain btn--small shadow-sm"
+            aria-label="Previous styles"
+            :disabled="!swatchCanPrev"
+            @click="scrollSwatches(-1)">
+            {% render 'component__icon', icon: 'chevron-up', size: '20', class: '' %}
+          </button>
+          <button
+            type="button"
+            class="mtb-pdp__styles-arrow btn btn--plain btn--small shadow-sm"
+            aria-label="Next styles"
+            :disabled="!swatchCanNext"
+            @click="scrollSwatches(1)">
+            {% render 'component__icon', icon: 'chevron-down', size: '20', class: '' %}
+          </button>
+        </div>
+      </div>
+      <p class="tri-pdp__locked-note type--small" x-show="activeSlot()?.locked" x-cloak>
+        Locked from this product page
+      </p>
+    </div>
+
+    <div
+      class="tri-pdp__type-filters"
+      x-show="showTypeFilters()"
+      x-cloak
+      role="group"
+      :aria-label="(activeSlot()?.label || 'Product') + ' type filters'">
+      <button
+        type="button"
+        class="tri-pdp__type-filter"
+        :class="{ 'is-active': typeFilter === 'all' }"
+        @click="setTypeFilter('all')">
+        <span>All</span>
+      </button>
+      <template x-for="type in activeTypeFilters()" :key="type">
+        <button
+          type="button"
+          class="tri-pdp__type-filter"
+          :class="{ 'is-active': typeFilter === type }"
+          @click="setTypeFilter(type)">
+          <span x-text="type"></span>
+        </button>
+      </template>
+    </div>
+
+    <div
+      class="mtb-pdp__swatches"
+      x-ref="swatchGrid"
+      role="listbox"
+      :aria-label="(activeSlot()?.label || 'Product') + ' styles'"
+      @scroll.passive="updateSwatchArrows()">
+      <template x-for="product in filteredProducts()" :key="product.handle">
+        {%- comment -%}
+          Div (not button) so the Add/Swap control can be a real nested
+          button without invalid HTML. Click/keyboard still previews.
+        {%- endcomment -%}
+        <div
+          role="option"
+          class="mtb-pdp__swatch"
+          :tabindex="(!product.available || !!activeSlot()?.locked) ? -1 : 0"
+          :class="{
+            'is-current': isPreview(product.handle),
+            'is-unavailable': !product.available || !!activeSlot()?.locked,
+            'is-picked': activeSlot()?.selectedHandle === product.handle
+          }"
+          :aria-selected="isPreview(product.handle)"
+          :aria-disabled="!product.available || !!activeSlot()?.locked"
+          :aria-label="product.title"
+          @mouseenter="prefetchProduct(product.handle)"
+          @focus="prefetchProduct(product.handle)"
+          @click="selectPreview(product.handle)"
+          @keydown.enter.prevent="selectPreview(product.handle)"
+          @keydown.space.prevent="selectPreview(product.handle)">
+          <span class="mtb-pdp__swatch-img">
+            <img
+              :src="product.swatchImage"
+              width="120"
+              height="120"
+              :alt="product.title"
+              loading="lazy"
+              decoding="async" />
+            <span
+              class="mtb-pdp__swatch-check"
+              x-show="isPreview(product.handle) || activeSlot()?.selectedHandle === product.handle"
+              aria-hidden="true">
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" aria-hidden="true">
+                <path d="M2.5 6.2L4.8 8.5L9.5 3.5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </span>
+          </span>
+          <span class="mtb-pdp__swatch-name" x-text="shortName(product.title)"></span>
+          <button
+            type="button"
+            class="mtb-pdp__swatch-action btn btn--primary"
+            x-show="showPreviewAction(product.handle)"
+            x-cloak
+            @click.stop="addToBundle()"
+            x-text="previewActionLabel()"></button>
+        </div>
+      </template>
+    </div>
+
+    <p
+      class="tri-pdp__filter-empty type--small"
+      x-show="showTypeFilters() && filteredProducts().length === 0"
+      x-cloak>
+      No styles in this filter. Try All or another type.
+    </p>
+
+    <div class="mtb-pdp__progress" aria-label="Bundle progress">
+      <template x-for="i in dotIndexes()" :key="i">
+        <span
+          class="mtb-pdp__dot"
+          :class="{ 'is-filled': totalSelected() >= i }"
+          aria-hidden="true"></span>
+      </template>
+      <span
+        class="mtb-pdp__progress-label type--small"
+        x-text="totalSelected() + ' of ' + requiredCount + ' added'"></span>
+    </div>
+
+    <div class="mtb-pdp__cta" x-show="isComplete()" x-cloak>
+      <button
+        type="button"
+        class="btn btn--primary w-full"
+        :disabled="!canAddToCart() || cartLoading"
+        :class="{ 'opacity-50 cursor-not-allowed': !canAddToCart() || cartLoading }"
+        @click="finalizeBundle()">
+        <span x-show="!cartLoading">{{ _cart_label }} &mdash; Save {{ discount_value | default: 20 }}%</span>
+        <span x-show="cartLoading" x-cloak>Adding&hellip;</span>
+      </button>
+    </div>
+
+    <div class="mtb-pdp__summary" x-show="totalSelected() > 0" x-cloak>
+      <p class="mtb-pdp__summary-total">
+        <span class="mtb-pdp__summary-label">Bundle total:</span>
+        <strong
+          class="mtb-pdp__summary-now"
+          x-text="formatMoney(isComplete() ? totalCents() : subtotalCents())"></strong>
+        <s
+          class="mtb-pdp__summary-was"
+          x-show="isComplete() && discountCents() > 0"
+          x-text="formatMoney(subtotalCents())"
+          x-cloak></s>
+      </p>
+    </div>
+  </div>
+</div>
+
+<p
+  class="type--small italic text-center"
+  style="padding: 24px 16px;"
+  x-show="slots.length === 0"
+  x-cloak>
+  No Everyday Carry Set products available.
+</p>
