@@ -1,4 +1,9 @@
 <!-- sections/product__main.liquid -->
+{% comment %}
+  Shopify schema defaults must be plain strings, not { "en": "...", "es": "..." } objects.
+  Locale-object defaults caused GitHub theme sync to skip this file, which then skipped
+  templates/product.json and 404'd every product page in preview.
+{% endcomment %}
 {% comment %} 
   Loop through different blocks to create a product page.
 
@@ -420,24 +425,24 @@
       "default": "grid"
     },
     {
-      "type":"select",
-      "id":"image_border",
-      "label":"t:sections.all.colors.settings.color_border.label",
-      "options":[
+      "type": "select",
+      "id": "image_border",
+      "label": "t:sections.all.colors.settings.color_border.label",
+      "options": [
         {
-          "value":"color__border-divider-1",
-          "label":"t:sections.all.colors.settings.color_border.options__1.label"
+          "value": "color__border-divider-1",
+          "label": "t:sections.all.colors.settings.color_border.options__1.label"
         },
         {
-          "value":"color__border-selected-1",
-          "label":"t:sections.all.colors.settings.color_border.options__2.label"
+          "value": "color__border-selected-1",
+          "label": "t:sections.all.colors.settings.color_border.options__2.label"
         },
         {
-          "value":"!color__border-transparent",
-          "label":"t:sections.all.colors.settings.color_border.options__3.label"
+          "value": "!color__border-transparent",
+          "label": "t:sections.all.colors.settings.color_border.options__3.label"
         }
       ],
-      "default":"!color__border-transparent"
+      "default": "!color__border-transparent"
     },
     {
       "type": "checkbox",
@@ -498,8 +503,8 @@
           "label": "t:sections.all.colors.settings.color_scheme.options__7.label"
         },
         {
-          "value":"color__bg-tertiary color__tertiary",
-          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
+          "value": "color__bg-tertiary color__tertiary",
+          "label": "t:sections.all.colors.settings.color_scheme.options__8.label"
         }
       ],
       "default": "color__bg-overlay-1 color__text"
@@ -587,8 +592,8 @@
           "label": "t:sections.all.colors.settings.color_scheme.options__7.label"
         },
         {
-          "value":"color__bg-tertiary color__tertiary",
-          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
+          "value": "color__bg-tertiary color__tertiary",
+          "label": "t:sections.all.colors.settings.color_scheme.options__8.label"
         }
       ],
       "default": "color__bg-body color__text"
@@ -677,14 +682,14 @@
           "content": "t:sections.all.headers.header__4.content"
         },
         {
-          "type":"text",
-          "id":"field_label",
-          "label":"t:sections.product_main.blocks.custom.settings.field_label.label"
+          "type": "text",
+          "id": "field_label",
+          "label": "t:sections.product_main.blocks.custom.settings.field_label.label"
         },
         {
-          "type":"checkbox",
-          "id":"required_field",
-          "label":"t:sections.product_main.blocks.custom.settings.required_field.label",
+          "type": "checkbox",
+          "id": "required_field",
+          "label": "t:sections.product_main.blocks.custom.settings.required_field.label",
           "default": false
         },
         {
@@ -1111,22 +1116,16 @@
       "limit": 10,
       "settings": [
         {
-            "type":"text",
-            "id":"text_block_tag",
-            "label":"Tag",
-            "info":"Only show this block when product has this tag. Leave blank to always show the block."
+          "type": "text",
+          "id": "text_block_tag",
+          "label": "Tag",
+          "info": "Only show this block when product has this tag. Leave blank to always show the block."
         },
         {
           "type": "richtext",
           "id": "content",
           "label": "t:sections.all.content.settings.content.label",
-          "default": {
-            "en": "<p>Highlight key selling features of your product</p>",
-            "es": "<p>Resalte las características clave de venta de su producto</p>",
-            "it": "<p>Evidenzia le principali caratteristiche di vendita del tuo prodotto</p>",
-            "de": "<p>Heben Sie die wichtigsten Verkaufsmerkmale Ihres Produkts hervor</p>",
-            "fr": "<p>Mettez en évidence les principales caractéristiques de vente de votre produit</p>"
-          }
+          "default": "<p>Highlight key selling features of your product</p>"
         },
         {
           "type": "header",
@@ -1221,8 +1220,8 @@
           "default": ""
         },
         {
-          "type":"header",
-          "content":"t:sections.all.headers.header__3.content"
+          "type": "header",
+          "content": "t:sections.all.headers.header__3.content"
         },
         {
           "type": "select",
@@ -1252,336 +1251,336 @@
       "limit": 10,
       "settings": [
         {
-          "type":"select",
-          "id":"icon",
-          "label":"t:sections.all.icons.name",
-          "options":[
-             {
-                "value":"",
-                "label":"t:sections.all.icons.options.none.label"
-             },
-             {
-                "value":"activity",
-                "label":"t:sections.all.icons.options.activity.label"
-             },
-             {
-                "value":"alert-circle",
-                "label":"t:sections.all.icons.options.alert-circle.label"
-             },
-             {
-                "value":"alert-triangle",
-                "label":"t:sections.all.icons.options.alert-triangle.label"
-             },
-             {
-                "value":"anchor",
-                "label":"t:sections.all.icons.options.anchor.label"
-             },
-             {
-                "value":"archive",
-                "label":"t:sections.all.icons.options.archive.label"
-             },
-             {
-                "value":"award",
-                "label":"t:sections.all.icons.options.award.label"
-             },
-             {
-                "value":"at-sign",
-                "label":"t:sections.all.icons.options.at-sign.label"
-             },
-             {
-                "value":"bell",
-                "label":"t:sections.all.icons.options.bell.label"
-             },
-             {
-                "value":"book-open",
-                "label":"t:sections.all.icons.options.book-open.label"
-             },
-             {
-                "value":"book",
-                "label":"t:sections.all.icons.options.book.label"
-             },
-             {
-                "value":"bookmark",
-                "label":"t:sections.all.icons.options.bookmark.label"
-             },
-             {
-                "value":"box",
-                "label":"t:sections.all.icons.options.box.label"
-             },
-             {
-                "value":"briefcase",
-                "label":"t:sections.all.icons.options.briefcase.label"
-             },
-             {
-                "value":"calendar",
-                "label":"t:sections.all.icons.options.calendar.label"
-             },
-             {
-                "value":"camera",
-                "label":"t:sections.all.icons.options.camera.label"
-             },
-             {
-                "value":"check",
-                "label":"t:sections.all.icons.options.check.label"
-             },
-             {
-                "value":"check-square",
-                "label":"t:sections.all.icons.options.check-square.label"
-             },
-             {
-                "value":"clipboard",
-                "label":"t:sections.all.icons.options.clipboard.label"
-             },
-             {
-                "value":"cloud",
-                "label":"t:sections.all.icons.options.cloud.label"
-             },
-             {
-                "value":"coffee",
-                "label":"t:sections.all.icons.options.coffee.label"
-             },
-             {
-                "value":"code",
-                "label":"t:sections.all.icons.options.code.label"
-             },
-             {
-                "value":"cpu",
-                "label":"t:sections.all.icons.options.cpu.label"
-             },
-             {
-                "value":"droplet",
-                "label":"t:sections.all.icons.options.droplet.label"
-             },
-             {
-                "value":"dollar-sign",
-                "label":"t:sections.all.icons.options.dollar-sign.label"
-             },
-             {
-                "value":"edit",
-                "label":"t:sections.all.icons.options.edit.label"
-             },
-             {
-                "value":"eye",
-                "label":"t:sections.all.icons.options.eye.label"
-             },
-             {
-                "value":"flag",
-                "label":"t:sections.all.icons.options.flag.label"
-             },
-             {
-                "value":"folder",
-                "label":"t:sections.all.icons.options.folder.label"
-             },
-             {
-                "value":"gift",
-                "label":"t:sections.all.icons.options.gift.label"
-             },
-             {
-                "value":"globe",
-                "label":"t:sections.all.icons.options.globe.label"
-             },
-             {
-                "value":"hash",
-                "label":"t:sections.all.icons.options.hash.label"
-             },
-             {
-                "value":"headphones",
-                "label":"t:sections.all.icons.options.headphones.label"
-             },
-             {
-                "value":"heart",
-                "label":"t:sections.all.icons.options.heart.label"
-             },
-             {
-                "value":"help-circle",
-                "label":"t:sections.all.icons.options.help-circle.label"
-             },
-             {
-                "value":"home",
-                "label":"t:sections.all.icons.options.home.label"
-             },
-             {
-                "value":"image",
-                "label":"t:sections.all.icons.options.image.label"
-             },
-             {
-                "value":"inbox",
-                "label":"t:sections.all.icons.options.inbox.label"
-             },
-             {
-                "value":"info",
-                "label":"t:sections.all.icons.options.info.label"
-             },
-             {
-                "value":"key",
-                "label":"t:sections.all.icons.options.key.label"
-             },
-             {
-                "value":"life-buoy",
-                "label":"t:sections.all.icons.options.life-buoy.label"
-             },
-             {
-                "value":"link",
-                "label":"t:sections.all.icons.options.link.label"
-             },
-             {
-                "value":"lock",
-                "label":"t:sections.all.icons.options.lock.label"
-             },
-             {
-                "value":"mail",
-                "label":"t:sections.all.icons.options.mail.label"
-             },
-             {
-                "value":"map-pin",
-                "label":"t:sections.all.icons.options.map-pin.label"
-             },
-             {
-                "value":"map",
-                "label":"t:sections.all.icons.options.map.label"
-             },
-             {
-                "value":"meh",
-                "label":"t:sections.all.icons.options.meh.label"
-             },
-             {
-                "value":"monitor",
-                "label":"t:sections.all.icons.options.monitor.label"
-             },
-             {
-                "value":"mouse-pointer",
-                "label":"t:sections.all.icons.options.mouse-pointer.label"
-             },
-             {
-                "value":"music",
-                "label":"t:sections.all.icons.options.music.label"
-             },
-             {
-                "value":"package",
-                "label":"t:sections.all.icons.options.package.label"
-             },
-             {
-                "value":"paperclip",
-                "label":"t:sections.all.icons.options.paperclip.label"
-             },
-             {
-                "value":"save",
-                "label":"t:sections.all.icons.options.save.label"
-             },
-             {
-                "value":"settings",
-                "label":"t:sections.all.icons.options.settings.label"
-             },
-             {
-                "value":"shield",
-                "label":"t:sections.all.icons.options.shield.label"
-             },
-             {
-                "value":"shopping-bag",
-                "label":"t:sections.all.icons.options.shopping-bag.label"
-             },
-             {
-                "value":"slash",
-                "label":"t:sections.all.icons.options.slash.label"
-             },
-             {
-                "value":"sliders",
-                "label":"t:sections.all.icons.options.sliders.label"
-             },
-             {
-                "value":"smile",
-                "label":"t:sections.all.icons.options.smile.label"
-             },
-             {
-                "value":"speaker",
-                "label":"t:sections.all.icons.options.speaker.label"
-             },
-             {
-                "value":"star",
-                "label":"t:sections.all.icons.options.star.label"
-             },
-             {
-                "value":"sun",
-                "label":"t:sections.all.icons.options.sun.label"
-             },
-             {
-                "value":"sunrise",
-                "label":"t:sections.all.icons.options.sunrise.label"
-             },
-             {
-                "value":"sunset",
-                "label":"t:sections.all.icons.options.sunset.label"
-             },
-             {
-                "value":"table",
-                "label":"t:sections.all.icons.options.table.label"
-             },
-             {
-                "value":"tag",
-                "label":"t:sections.all.icons.options.tag.label"
-             },
-             {
-                "value":"thermometer",
-                "label":"t:sections.all.icons.options.thermometer.label"
-             },
-             {
-                "value":"thumbs-up",
-                "label":"t:sections.all.icons.options.thumbs-up.label"
-             },
-             {
-                "value":"thumbs-down",
-                "label":"t:sections.all.icons.options.thumbs-down.label"
-             },
-             {
-                "value":"trending-up",
-                "label":"t:sections.all.icons.options.trending-up.label"
-             },
-             {
-                "value":"tool",
-                "label":"t:sections.all.icons.options.tool.label"
-             },
-             {
-                "value":"trash",
-                "label":"t:sections.all.icons.options.trash.label"
-             },
-             {
-                "value":"truck",
-                "label":"t:sections.all.icons.options.truck.label"
-             },
-             {
-                "value":"tv",
-                "label":"t:sections.all.icons.options.tv.label"
-             },
-             {
-                "value":"umbrella",
-                "label":"t:sections.all.icons.options.umbrella.label"
-             },
-             {
-                "value":"unlock",
-                "label":"t:sections.all.icons.options.unlock.label"
-             },
-             {
-                "value":"user-check",
-                "label":"t:sections.all.icons.options.user-check.label"
-             },
-             {
-                "value":"user-plus",
-                "label":"t:sections.all.icons.options.user-plus.label"
-             },
-             {
-                "value":"user",
-                "label":"t:sections.all.icons.options.user.label"
-             },
-             {
-                "value":"users",
-                "label":"t:sections.all.icons.options.users.label"
-             },
-             {
-                "value":"zap",
-                "label":"t:sections.all.icons.options.zap.label"
-             }
+          "type": "select",
+          "id": "icon",
+          "label": "t:sections.all.icons.name",
+          "options": [
+            {
+              "value": "",
+              "label": "t:sections.all.icons.options.none.label"
+            },
+            {
+              "value": "activity",
+              "label": "t:sections.all.icons.options.activity.label"
+            },
+            {
+              "value": "alert-circle",
+              "label": "t:sections.all.icons.options.alert-circle.label"
+            },
+            {
+              "value": "alert-triangle",
+              "label": "t:sections.all.icons.options.alert-triangle.label"
+            },
+            {
+              "value": "anchor",
+              "label": "t:sections.all.icons.options.anchor.label"
+            },
+            {
+              "value": "archive",
+              "label": "t:sections.all.icons.options.archive.label"
+            },
+            {
+              "value": "award",
+              "label": "t:sections.all.icons.options.award.label"
+            },
+            {
+              "value": "at-sign",
+              "label": "t:sections.all.icons.options.at-sign.label"
+            },
+            {
+              "value": "bell",
+              "label": "t:sections.all.icons.options.bell.label"
+            },
+            {
+              "value": "book-open",
+              "label": "t:sections.all.icons.options.book-open.label"
+            },
+            {
+              "value": "book",
+              "label": "t:sections.all.icons.options.book.label"
+            },
+            {
+              "value": "bookmark",
+              "label": "t:sections.all.icons.options.bookmark.label"
+            },
+            {
+              "value": "box",
+              "label": "t:sections.all.icons.options.box.label"
+            },
+            {
+              "value": "briefcase",
+              "label": "t:sections.all.icons.options.briefcase.label"
+            },
+            {
+              "value": "calendar",
+              "label": "t:sections.all.icons.options.calendar.label"
+            },
+            {
+              "value": "camera",
+              "label": "t:sections.all.icons.options.camera.label"
+            },
+            {
+              "value": "check",
+              "label": "t:sections.all.icons.options.check.label"
+            },
+            {
+              "value": "check-square",
+              "label": "t:sections.all.icons.options.check-square.label"
+            },
+            {
+              "value": "clipboard",
+              "label": "t:sections.all.icons.options.clipboard.label"
+            },
+            {
+              "value": "cloud",
+              "label": "t:sections.all.icons.options.cloud.label"
+            },
+            {
+              "value": "coffee",
+              "label": "t:sections.all.icons.options.coffee.label"
+            },
+            {
+              "value": "code",
+              "label": "t:sections.all.icons.options.code.label"
+            },
+            {
+              "value": "cpu",
+              "label": "t:sections.all.icons.options.cpu.label"
+            },
+            {
+              "value": "droplet",
+              "label": "t:sections.all.icons.options.droplet.label"
+            },
+            {
+              "value": "dollar-sign",
+              "label": "t:sections.all.icons.options.dollar-sign.label"
+            },
+            {
+              "value": "edit",
+              "label": "t:sections.all.icons.options.edit.label"
+            },
+            {
+              "value": "eye",
+              "label": "t:sections.all.icons.options.eye.label"
+            },
+            {
+              "value": "flag",
+              "label": "t:sections.all.icons.options.flag.label"
+            },
+            {
+              "value": "folder",
+              "label": "t:sections.all.icons.options.folder.label"
+            },
+            {
+              "value": "gift",
+              "label": "t:sections.all.icons.options.gift.label"
+            },
+            {
+              "value": "globe",
+              "label": "t:sections.all.icons.options.globe.label"
+            },
+            {
+              "value": "hash",
+              "label": "t:sections.all.icons.options.hash.label"
+            },
+            {
+              "value": "headphones",
+              "label": "t:sections.all.icons.options.headphones.label"
+            },
+            {
+              "value": "heart",
+              "label": "t:sections.all.icons.options.heart.label"
+            },
+            {
+              "value": "help-circle",
+              "label": "t:sections.all.icons.options.help-circle.label"
+            },
+            {
+              "value": "home",
+              "label": "t:sections.all.icons.options.home.label"
+            },
+            {
+              "value": "image",
+              "label": "t:sections.all.icons.options.image.label"
+            },
+            {
+              "value": "inbox",
+              "label": "t:sections.all.icons.options.inbox.label"
+            },
+            {
+              "value": "info",
+              "label": "t:sections.all.icons.options.info.label"
+            },
+            {
+              "value": "key",
+              "label": "t:sections.all.icons.options.key.label"
+            },
+            {
+              "value": "life-buoy",
+              "label": "t:sections.all.icons.options.life-buoy.label"
+            },
+            {
+              "value": "link",
+              "label": "t:sections.all.icons.options.link.label"
+            },
+            {
+              "value": "lock",
+              "label": "t:sections.all.icons.options.lock.label"
+            },
+            {
+              "value": "mail",
+              "label": "t:sections.all.icons.options.mail.label"
+            },
+            {
+              "value": "map-pin",
+              "label": "t:sections.all.icons.options.map-pin.label"
+            },
+            {
+              "value": "map",
+              "label": "t:sections.all.icons.options.map.label"
+            },
+            {
+              "value": "meh",
+              "label": "t:sections.all.icons.options.meh.label"
+            },
+            {
+              "value": "monitor",
+              "label": "t:sections.all.icons.options.monitor.label"
+            },
+            {
+              "value": "mouse-pointer",
+              "label": "t:sections.all.icons.options.mouse-pointer.label"
+            },
+            {
+              "value": "music",
+              "label": "t:sections.all.icons.options.music.label"
+            },
+            {
+              "value": "package",
+              "label": "t:sections.all.icons.options.package.label"
+            },
+            {
+              "value": "paperclip",
+              "label": "t:sections.all.icons.options.paperclip.label"
+            },
+            {
+              "value": "save",
+              "label": "t:sections.all.icons.options.save.label"
+            },
+            {
+              "value": "settings",
+              "label": "t:sections.all.icons.options.settings.label"
+            },
+            {
+              "value": "shield",
+              "label": "t:sections.all.icons.options.shield.label"
+            },
+            {
+              "value": "shopping-bag",
+              "label": "t:sections.all.icons.options.shopping-bag.label"
+            },
+            {
+              "value": "slash",
+              "label": "t:sections.all.icons.options.slash.label"
+            },
+            {
+              "value": "sliders",
+              "label": "t:sections.all.icons.options.sliders.label"
+            },
+            {
+              "value": "smile",
+              "label": "t:sections.all.icons.options.smile.label"
+            },
+            {
+              "value": "speaker",
+              "label": "t:sections.all.icons.options.speaker.label"
+            },
+            {
+              "value": "star",
+              "label": "t:sections.all.icons.options.star.label"
+            },
+            {
+              "value": "sun",
+              "label": "t:sections.all.icons.options.sun.label"
+            },
+            {
+              "value": "sunrise",
+              "label": "t:sections.all.icons.options.sunrise.label"
+            },
+            {
+              "value": "sunset",
+              "label": "t:sections.all.icons.options.sunset.label"
+            },
+            {
+              "value": "table",
+              "label": "t:sections.all.icons.options.table.label"
+            },
+            {
+              "value": "tag",
+              "label": "t:sections.all.icons.options.tag.label"
+            },
+            {
+              "value": "thermometer",
+              "label": "t:sections.all.icons.options.thermometer.label"
+            },
+            {
+              "value": "thumbs-up",
+              "label": "t:sections.all.icons.options.thumbs-up.label"
+            },
+            {
+              "value": "thumbs-down",
+              "label": "t:sections.all.icons.options.thumbs-down.label"
+            },
+            {
+              "value": "trending-up",
+              "label": "t:sections.all.icons.options.trending-up.label"
+            },
+            {
+              "value": "tool",
+              "label": "t:sections.all.icons.options.tool.label"
+            },
+            {
+              "value": "trash",
+              "label": "t:sections.all.icons.options.trash.label"
+            },
+            {
+              "value": "truck",
+              "label": "t:sections.all.icons.options.truck.label"
+            },
+            {
+              "value": "tv",
+              "label": "t:sections.all.icons.options.tv.label"
+            },
+            {
+              "value": "umbrella",
+              "label": "t:sections.all.icons.options.umbrella.label"
+            },
+            {
+              "value": "unlock",
+              "label": "t:sections.all.icons.options.unlock.label"
+            },
+            {
+              "value": "user-check",
+              "label": "t:sections.all.icons.options.user-check.label"
+            },
+            {
+              "value": "user-plus",
+              "label": "t:sections.all.icons.options.user-plus.label"
+            },
+            {
+              "value": "user",
+              "label": "t:sections.all.icons.options.user.label"
+            },
+            {
+              "value": "users",
+              "label": "t:sections.all.icons.options.users.label"
+            },
+            {
+              "value": "zap",
+              "label": "t:sections.all.icons.options.zap.label"
+            }
           ],
-          "default":""
+          "default": ""
         },
         {
           "type": "text",
@@ -1727,7 +1726,7 @@
           ],
           "default": "color__bg-body color__text"
         },
-                {
+        {
           "type": "header",
           "content": "t:sections.all.headers.header__2.content"
         },
@@ -1779,25 +1778,13 @@
           "type": "text",
           "id": "title",
           "label": "t:sections.product_main.blocks.accordion.settings.title.label",
-          "default": {
-            "en": "Details",
-            "es": "Detalles",
-            "it": "Dettagli",
-            "de": "Details",
-            "fr": "Détails"
-          }
+          "default": "Details"
         },
         {
           "type": "richtext",
           "id": "content",
           "label": "t:sections.product_main.blocks.accordion.settings.content.label",
-          "default": {
-            "en": "<p>Include more information about your product details.</p>",
-            "es": "<p>Incluye más información sobre los detalles de tu producto.</p>",
-            "it": "<p>Includi ulteriori informazioni sui dettagli del tuo prodotto.</p>",
-            "de": "<p>Fügen Sie weitere Informationen zu Ihren Produktdetails hinzu.</p>",
-            "fr": "<p>Incluez plus d’informations sur les détails de votre produit.</p>"
-          }
+          "default": "<p>Include more information about your product details.</p>"
         },
         {
           "type": "header",
@@ -1897,13 +1884,7 @@
           "type": "text",
           "id": "title",
           "label": "t:sections.product_main.blocks.popup.settings.title.label",
-          "default": {
-            "en": "See more",
-            "es": "Ver más",
-            "it": "Scopri di più",
-            "de": "Mehr anzeigen",
-            "fr": "Voir plus"
-          }
+          "default": "See more"
         },
         {
           "type": "page",
@@ -2320,13 +2301,7 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.product_main.blocks.add.settings.content.label",
-          "default": {
-            "en": "<p>Remind customers of offers like free shipping and lifetime warranty</p>",
-            "es": "<p>Recuerde a los clientes ofertas como envío gratuito y garantía de por vida</p>",
-            "it": "<p>Ricorda ai clienti offerte come la spedizione gratuita e la garanzia a vita</p>",
-            "de": "<p>Erinnern Sie Kunden an Angebote wie kostenlosen Versand und lebenslange Garantie</p>",
-            "fr": "<p>Rappelez aux clients des offres telles que la livraison gratuite et la garantie à vie</p>"
-          }
+          "default": "<p>Remind customers of offers like free shipping and lifetime warranty</p>"
         },
         {
           "type": "header",
@@ -2447,13 +2422,7 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.product_main.blocks.stickyadd.settings.content.label",
-          "default": {
-            "en": "<p>Remind customers of offers like free shipping and lifetime warranty</p>",
-            "es": "<p>Recuerde a los clientes ofertas como envío gratuito y garantía de por vida</p>",
-            "it": "<p>Ricorda ai clienti offerte come la spedizione gratuita e la garanzia a vita</p>",
-            "de": "<p>Erinnern Sie Kunden an Angebote wie kostenlosen Versand und lebenslange Garantie</p>",
-            "fr": "<p>Rappelez aux clients des offres telles que la livraison gratuite et la garantie à vie</p>"
-          }
+          "default": "<p>Remind customers of offers like free shipping and lifetime warranty</p>"
         },
         {
           "type": "header",
@@ -2505,24 +2474,24 @@
           "label": "t:sections.product_main.blocks.stickyadd.settings.on_scroll.label"
         },
         {
-          "type":"select",
-          "id":"visibility",
-          "label":"t:sections.all.visibility.label",
-          "options":[
+          "type": "select",
+          "id": "visibility",
+          "label": "t:sections.all.visibility.label",
+          "options": [
             {
-              "value":"",
-              "label":"t:sections.all.visibility.options__1.label"
+              "value": "",
+              "label": "t:sections.all.visibility.options__1.label"
             },
             {
-              "value":"md:hidden",
-              "label":"t:sections.all.visibility.options__2.label"
+              "value": "md:hidden",
+              "label": "t:sections.all.visibility.options__2.label"
             },
             {
-              "value":"hidden md:block",
-              "label":"t:sections.all.visibility.options__3.label"
+              "value": "hidden md:block",
+              "label": "t:sections.all.visibility.options__3.label"
             }
           ],
-          "default":"md:hidden"
+          "default": "md:hidden"
         }
       ]
     },
@@ -2539,13 +2508,7 @@
           "type": "text",
           "id": "title",
           "label": "t:sections.product_main.blocks.accordion.settings.title.label",
-          "default": {
-            "en": "You may also like",
-            "es": "También te puede interesar",
-            "it": "Potrebbe interessarti anche",
-            "de": "Das könnte Sie auch interessieren",
-            "fr": "Vous aimerez peut-être aussi"
-          }
+          "default": "You may also like"
         },
         {
           "type": "range",
@@ -2855,28 +2818,22 @@
       "limit": 1,
       "settings": [
         {
-            "type":"text",
-            "id":"countdown_tag",
-            "label":"Tag",
-            "info":"Only show this block when product has this tag. Leave blank to always show the block."
+          "type": "text",
+          "id": "countdown_tag",
+          "label": "Tag",
+          "info": "Only show this block when product has this tag. Leave blank to always show the block."
         },
         {
-          "type":"text",
-          "id":"countdown_date",
-          "label":"Date",
-          "info":"Enter a date in the following format: mm/dd/yyyy."
+          "type": "text",
+          "id": "countdown_date",
+          "label": "Date",
+          "info": "Enter a date in the following format: mm/dd/yyyy."
         },
         {
           "type": "richtext",
           "id": "content",
           "label": "t:sections.all.content.settings.content.label",
-          "default": {
-            "en": "<p>Highlight key selling features of your product</p>",
-            "es": "<p>Resalte las características clave de venta de su producto</p>",
-            "it": "<p>Evidenzia le principali caratteristiche di vendita del tuo prodotto</p>",
-            "de": "<p>Heben Sie die wichtigsten Verkaufsmerkmale Ihres Produkts hervor</p>",
-            "fr": "<p>Mettez en évidence les principales caractéristiques de vente de votre produit</p>"
-          }
+          "default": "<p>Highlight key selling features of your product</p>"
         },
         {
           "type": "header",
@@ -2917,12 +2874,6 @@
           ],
           "default": "text-2xl"
         },
-        
-        
-        
-        
-        
-        
         {
           "type": "header",
           "content": "t:sections.all.headers.header__22.content"
@@ -3019,7 +2970,9 @@
     }
   ],
   "disabled_on": {
-    "groups": ["custom.overlay"]
+    "groups": [
+      "custom.overlay"
+    ]
   }
 }
 {% endschema %}

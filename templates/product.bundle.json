@@ -1,3 +1,6 @@
+/*
+ * Revalidate the bundle product template alongside the default product template.
+ */
 {
   "sections": {
     "text_yKAePU": {

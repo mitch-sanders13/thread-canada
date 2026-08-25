@@ -1,3 +1,9 @@
+/*
+ * Revalidate the default product template after fixing section schema defaults.
+ * Shopify's GitHub sync rejects section files whose schema "default" values are
+ * locale objects instead of strings. product__main.liquid had that problem, so
+ * this template never landed in the live theme and every product URL 404'd.
+ */
 {
   "sections": {
     "shogun-helper": {
