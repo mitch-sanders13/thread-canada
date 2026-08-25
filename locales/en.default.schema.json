@@ -255,6 +255,9 @@
             "label": "Full"
           }
         },
+        "layout_horizontal_description": {
+          "label": "Description width"
+        },
         "layout_gap_size": {
           "label": "Grid margin",
           "info": "All grid elements will use spacing set by the grid margin."
