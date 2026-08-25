@@ -3,6 +3,8 @@
   Shopify schema defaults must be plain strings, not { "en": "...", "es": "..." } objects.
   Locale-object defaults caused GitHub theme sync to skip this file, which then skipped
   templates/product.json and 404'd every product page in preview.
+  Product JSON no longer references education-grid / recommendations-grid / Okendo so
+  a failed companion section cannot block the default product template from syncing.
 {% endcomment %}
 {% comment %} 
   Loop through different blocks to create a product page.
