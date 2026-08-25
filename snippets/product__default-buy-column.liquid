@@ -1,0 +1,62 @@
+{% comment %}
+  Buy column used when product__main has no theme-editor blocks.
+
+  Static {% section 'product__main' %} stores blocks in settings_data.json.
+  GitHub theme sync does not reliably push that file, so the gallery (hardcoded
+  in the section) renders and the title / swatches / ATC column stays empty.
+  These are the same snippets the JSON template used, with safe defaults.
+{% endcomment %}
+
+<div class="w-full">
+  {% render 'product__title', blocksettings: section.settings %}
+
+  <div
+    class="px-4 {{ section.settings.color_border }}"
+    style="padding-top:0;padding-bottom:10px;"
+  >
+    <div class="relative flex items-end justify-between">
+      {% render 'product__price', blocksettings: section.settings %}
+    </div>
+  </div>
+
+  <div
+    class="options flex flex-col gap-2 {{ section.settings.color_border }}"
+    style="padding-top:20px;padding-bottom:0;"
+  >
+    {% render 'product__options', blocksettings: section.settings %}
+  </div>
+
+  {% render 'product__inventory', blocksettings: section.settings %}
+
+  <div
+    class="{{ section.settings.color_border }}"
+    style="padding-top:20px;padding-bottom:20px;"
+  >
+    <div
+      data-pdp-primary-atc
+      x-intersect:enter="stickyadd = false"
+      x-intersect:leave="stickyadd = true"
+    >
+      {% render 'product__add', blocksettings: section.settings, enable_quantity: true %}
+    </div>
+  </div>
+
+  {% render 'product__description', blocksettings: section.settings %}
+
+  {% if product.metafields.tabs.details %}
+    {% capture details_content %}
+      {{ product.metafields.tabs.details | metafield_tag }}
+    {% endcapture %}
+    {% capture details_class %}
+      px-4 border--b-width {{ section.settings.color_border }}
+    {% endcapture %}
+    {% render 'component__accordion',
+      open: true,
+      container_class: details_class,
+      inner_class: 'mb-4',
+      button_class: '!px-0',
+      button_label: 'Details',
+      content: details_content
+    %}
+  {% endif %}
+</div>

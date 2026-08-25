@@ -105,6 +105,10 @@
 
         {% form "product", product %}
 
+          {% if section.blocks.size == 0 %}
+            {% render 'product__default-buy-column' %}
+          {% else %}
+
           {% comment %} Desktop only blocks {% endcomment %}
           <div class="hidden w-full md:block">
             {% for block in section.blocks %}
@@ -229,6 +233,7 @@
 
               {%- endcase -%}
           {% endfor %}
+          {% endif %}
         {% endform %}
 
         {% for block in section.blocks %}
