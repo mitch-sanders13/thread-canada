@@ -1,0 +1,1423 @@
+{% comment %}
+  Shared Everyday Carry Set bundler instance (page section + cart drawer).
+
+  Market Tote–style picker with three typed slots:
+    Wallet → Lanyard → Chapstick Holder
+
+  Cart line property "Bundle Slot" still uses Wallet / Lanyard / Chapstick.
+  "_bundle_type" is stamped as everyday_carry for the Discount Function.
+  so cart grouping, inline edit, and upsell keep working.
+
+  PDP CTAs link here with ?slot_<key>=<handle> to pre-select (not lock)
+  the product the customer came from.
+
+  Catalog size: Liquid embeds the first ~50 products per slot for a fast
+  first paint. Alpine then pages /collections/<handle>/products.json in
+  the background (same approach as bundle__cart-edit-data) so type
+  filters and swatches cover large collections like lanyards.
+{% endcomment %}
+
+{% doc %}
+  @param {string} instance_id - Unique id (section.id or drawer id)
+  @param {string} [heading]
+  @param {string} [savings_label]
+  @param {string} [add_bundle_label]
+  @param {string} [cart_label]
+  @param {string} [discount_type]
+  @param {number} [discount_value]
+  @param {string} [discount_code]
+  @param {object} [wallet_collection]
+  @param {object} [lanyard_collection]
+  @param {object} [chapstick_collection]
+  @param {number} [spacing_top]
+  @param {number} [spacing_bottom]
+  @param {string} [layout_horizontal]
+  @param {string} [color_scheme]
+  @param {string} [color_border]
+  @param {string} [style_border]
+  @param {string} [visibility]
+  @param {boolean} [compact]
+{% enddoc %}
+
+{%- liquid
+  assign instance_id = instance_id | default: 'trifecta'
+  assign section_id = 'bundle-builder-' | append: instance_id
+  assign js_id = instance_id | replace: '-', '_'
+
+  assign discount_type = discount_type | default: 'percent'
+  assign discount_value = discount_value | default: 20
+  assign add_bundle_label = add_bundle_label | default: 'Add to Bundle'
+  assign cart_label = cart_label | default: 'Add Bundle to Cart'
+  if compact
+    assign heading = heading | default: ''
+  else
+    assign heading = heading | default: 'Build Your Everyday Carry Set'
+  endif
+  assign savings_label = savings_label | default: 'Save 20% when you bundle a wallet, lanyard, and chapstick holder'
+
+  if discount_code == blank
+    assign discount_code = settings.trifecta_discount_code | default: ''
+  endif
+
+  assign wallet_coll = wallet_collection
+  if wallet_coll == blank
+    if settings.trifecta_wallet_collection != blank
+      assign wallet_coll = settings.trifecta_wallet_collection
+    else
+      assign wallet_coll = collections['all-wallets']
+    endif
+  endif
+
+  assign lanyard_coll = lanyard_collection
+  if lanyard_coll == blank
+    if settings.trifecta_lanyard_collection != blank
+      assign lanyard_coll = settings.trifecta_lanyard_collection
+    else
+      assign lanyard_coll = collections['lanyards']
+    endif
+  endif
+
+  assign chapstick_coll = chapstick_collection
+  if chapstick_coll == blank
+    if settings.trifecta_chapstick_collection != blank
+      assign chapstick_coll = settings.trifecta_chapstick_collection
+    else
+      assign chapstick_coll = collections['chapstick-holder-keychains']
+    endif
+  endif
+
+  assign spacing_top = spacing_top | default: 60
+  assign spacing_bottom = spacing_bottom | default: 60
+  if compact
+    assign spacing_top = 0
+    assign spacing_bottom = 16
+  endif
+  assign layout_horizontal = layout_horizontal | default: 'window'
+  assign color_scheme = color_scheme | default: 'color__bg-body color__text'
+  assign color_border = color_border | default: 'color__border-divider-1'
+  assign style_border = style_border | default: ''
+  assign visibility = visibility | default: ''
+-%}
+
+{%- comment -%}
+  Capture product JSON per slot so the Alpine data island stays readable.
+{%- endcomment -%}
+{%- capture slot_products_wallet -%}
+  {%- if wallet_coll != blank -%}
+    {%- comment -%}
+      Liquid caps collection.products at 50/page. Embed the first page for
+      fast paint; Alpine _loadMoreProducts fetches the rest via products.json.
+      Skip Bundle / trifecta SKUs (prebuilt sets) — same as best-sellers.
+      All wallet types are included; Elastic / Vertical / Zip stay first
+      in the type-filter pills (see walletPreferredTypes in Alpine).
+    {%- endcomment -%}
+    {%- assign _ecs_emitted = 0 -%}
+    {%- paginate wallet_coll.products by 100 -%}
+      {%- for product in wallet_coll.products limit: 100 -%}
+        {%- if product.type == 'Bundle' or product.tags contains 'trifecta' -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- if _ecs_emitted >= 50 -%}
+          {%- break -%}
+        {%- endif -%}
+        {%- if _ecs_emitted > 0 -%},{%- endif -%}
+        {%- assign _ecs_emitted = _ecs_emitted | plus: 1 -%}
+        {%- assign first_variant = product.selected_or_first_available_variant -%}
+        {%- assign color_tag = '' -%}
+        {%- for tag in product.tags -%}
+          {%- assign tag_lc = tag | downcase | strip -%}
+          {%- if tag_lc contains 'color_' -%}
+            {%- assign color_tag = tag_lc | remove_first: 'color_' -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ first_variant.price | json }},
+          "compareAtPrice": {{ first_variant.compare_at_price | default: 0 | json }},
+          "available": {{ first_variant.available | json }},
+          "variantId": {{ first_variant.id | json }},
+          "type": {{ product.type | json }},
+          "colorTag": {{ color_tag | json }},
+          "swatchImage": {{ product.featured_image | image_url: width: 200 | json }},
+          "images": {% render 'bundle__gallery-frames', product: product %}
+        }
+      {%- endfor -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture slot_products_lanyard -%}
+  {%- if lanyard_coll != blank -%}
+    {%- comment -%}
+      Liquid caps collection.products at 50/page. Embed the first page for
+      fast paint; Alpine _loadMoreProducts fetches the rest via products.json.
+      Skip Bundle / trifecta SKUs (prebuilt sets) — same as best-sellers.
+    {%- endcomment -%}
+    {%- assign _ecs_emitted = 0 -%}
+    {%- paginate lanyard_coll.products by 100 -%}
+      {%- for product in lanyard_coll.products limit: 100 -%}
+        {%- if product.type == 'Bundle' or product.tags contains 'trifecta' -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- if _ecs_emitted >= 50 -%}
+          {%- break -%}
+        {%- endif -%}
+        {%- if _ecs_emitted > 0 -%},{%- endif -%}
+        {%- assign _ecs_emitted = _ecs_emitted | plus: 1 -%}
+        {%- assign first_variant = product.selected_or_first_available_variant -%}
+        {%- assign color_tag = '' -%}
+        {%- for tag in product.tags -%}
+          {%- assign tag_lc = tag | downcase | strip -%}
+          {%- if tag_lc contains 'color_' -%}
+            {%- assign color_tag = tag_lc | remove_first: 'color_' -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ first_variant.price | json }},
+          "compareAtPrice": {{ first_variant.compare_at_price | default: 0 | json }},
+          "available": {{ first_variant.available | json }},
+          "variantId": {{ first_variant.id | json }},
+          "type": {{ product.type | json }},
+          "colorTag": {{ color_tag | json }},
+          "swatchImage": {{ product.featured_image | image_url: width: 200 | json }},
+          "images": {% render 'bundle__gallery-frames', product: product %}
+        }
+      {%- endfor -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+{%- capture slot_products_chapstick -%}
+  {%- if chapstick_coll != blank -%}
+    {%- comment -%}
+      Liquid caps collection.products at 50/page. Embed the first page for
+      fast paint; Alpine _loadMoreProducts fetches the rest via products.json.
+      Skip Bundle / trifecta SKUs (prebuilt sets) — same as best-sellers.
+    {%- endcomment -%}
+    {%- assign _ecs_emitted = 0 -%}
+    {%- paginate chapstick_coll.products by 100 -%}
+      {%- for product in chapstick_coll.products limit: 100 -%}
+        {%- if product.type == 'Bundle' or product.tags contains 'trifecta' -%}
+          {%- continue -%}
+        {%- endif -%}
+        {%- if _ecs_emitted >= 50 -%}
+          {%- break -%}
+        {%- endif -%}
+        {%- if _ecs_emitted > 0 -%},{%- endif -%}
+        {%- assign _ecs_emitted = _ecs_emitted | plus: 1 -%}
+        {%- assign first_variant = product.selected_or_first_available_variant -%}
+        {%- assign color_tag = '' -%}
+        {%- for tag in product.tags -%}
+          {%- assign tag_lc = tag | downcase | strip -%}
+          {%- if tag_lc contains 'color_' -%}
+            {%- assign color_tag = tag_lc | remove_first: 'color_' -%}
+            {%- break -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {
+          "handle": {{ product.handle | json }},
+          "title": {{ product.title | json }},
+          "url": {{ product.url | json }},
+          "price": {{ first_variant.price | json }},
+          "compareAtPrice": {{ first_variant.compare_at_price | default: 0 | json }},
+          "available": {{ first_variant.available | json }},
+          "variantId": {{ first_variant.id | json }},
+          "type": {{ product.type | json }},
+          "colorTag": {{ color_tag | json }},
+          "swatchImage": {{ product.featured_image | image_url: width: 200 | json }},
+          "images": {% render 'bundle__gallery-frames', product: product %}
+        }
+      {%- endfor -%}
+    {%- endpaginate -%}
+  {%- endif -%}
+{%- endcapture -%}
+
+<section
+  id="{{ section_id }}"
+  class="
+    {{ visibility }}
+    {{ color_scheme }}
+    {{ color_border }}
+    {{ style_border }}
+  ">
+  <div
+    class="trifecta-bundler {{ layout_horizontal }}"
+    style="
+      padding-top:{{ spacing_top }}px;
+      padding-bottom:{{ spacing_bottom }}px;
+    "
+    x-data="bundleBuilder_{{ js_id }}">
+
+    {% comment %}
+      Heading + savings (and mobile title placement) are handled inside
+      bundle-builder__pdp-layout so mobile stacks correctly without a
+      centered gold strip above the layout.
+    {% endcomment %}
+    {% render 'bundle-builder__pdp-layout',
+        cart_label: cart_label,
+        discount_type: discount_type,
+        discount_value: discount_value,
+        heading: heading,
+        savings_label: savings_label %}
+
+    <p
+      class="type--small px-4 pb-4 text-center"
+      x-show="incompleteReason"
+      x-text="incompleteReason"
+      x-cloak></p>
+
+  </div>
+</section>
+
+<script type="application/json" id="{{ section_id }}-data">
+{
+  "discountCode": {{ discount_code | strip | json }},
+  "slots": [
+    {
+      "key": "Wallet",
+      "label": "Wallet",
+      "silhouette": "https://cdn.shopify.com/s/files/1/1030/4291/files/mystery_elastic.jpg?v=1761880186",
+      "collectionHandle": {{ wallet_coll.handle | default: '' | json }},
+      "products": [{{ slot_products_wallet | strip }}]
+    },
+    {
+      "key": "Lanyard",
+      "label": "Lanyard",
+      "silhouette": "https://cdn.shopify.com/s/files/1/1030/4291/files/mystery_lanyard.jpg?v=1761880151",
+      "collectionHandle": {{ lanyard_coll.handle | default: '' | json }},
+      "products": [{{ slot_products_lanyard | strip }}]
+    },
+    {
+      "key": "Chapstick",
+      "label": "Chapstick Holder",
+      "silhouette": "https://cdn.shopify.com/s/files/1/1030/4291/files/mystery_lp.jpg?v=1761880027",
+      "collectionHandle": {{ chapstick_coll.handle | default: '' | json }},
+      "products": [{{ slot_products_chapstick | strip }}]
+    }
+  ]
+}
+</script>
+
+<script>
+(function() {
+  function bundleBuilderFactory_{{ js_id }}() {
+    return {
+      slots: [],
+      activeSlotIndex: 0,
+      previewHandle: null,
+      typeFilter: 'all',
+      galleryIndex: 0,
+      heroSrc: '',
+      heroSrcset: '',
+      heroAlt: '',
+      heroReady: false,
+      // Hero media kind — image | video | external_video (PDP parity).
+      heroMediaType: 'image',
+      heroVideoUrl: '',
+      heroExternalHost: '',
+      heroExternalId: '',
+      _pendingHero: '',
+      _prefetchCache: {},
+      _heroCache: {},
+      // Full PDP media gallery (images + videos) loaded once per handle.
+      _galleryHydrated: {},
+      _galleryHydrating: {},
+      requiredCount: 3,
+      cartLoading: false,
+      incompleteReason: '',
+      discountCode: '',
+      editingBundleId: null,
+      editingKeys: [],
+      // Swatch-grid arrow state (mirrors PDP related-styles pagination).
+      swatchHasPagination: false,
+      swatchCanPrev: false,
+      swatchCanNext: false,
+      _swatchResizeObs: null,
+      // URL deep-link items to re-apply after AJAX pages load (handle may
+      // sit past Liquid's first-50 collection page).
+      _pendingPrefillItems: [],
+      // Wallet type-filter order: Elastic / Vertical / Zip first, then
+      // every other wallet type present in the collection (A–Z).
+      walletPreferredTypes: [
+        'Elastic Wallet',
+        'Vertical Leather Wallet',
+        'Leather Zip Wallet'
+      ],
+      // Lanyard type-filter order: Wrist → Neck → Keychain Clip first,
+      // then every other lanyard type present (A–Z). Both "Wrist Lanyard"
+      // and "Wide Wrist Lanyard" are listed so whichever Shopify type the
+      // catalog uses still lands in the lead pill slot.
+      lanyardPreferredTypes: [
+        'Wrist Lanyard',
+        'Wide Wrist Lanyard',
+        'Neck Lanyard',
+        'Keychain Clip'
+      ],
+
+      init() {
+        var dataEl = document.getElementById('{{ section_id }}-data');
+        if (!dataEl) return;
+        var data;
+        try { data = JSON.parse(dataEl.textContent); }
+        catch (e) { console.error('[bundle-builder] bad JSON data', e); return; }
+
+        var self = this;
+        this.discountCode = (data.discountCode || '').trim();
+        this.slots = (data.slots || []).map(function(slot) {
+          return {
+            key: slot.key,
+            label: slot.label,
+            silhouette: slot.silhouette || '',
+            collectionHandle: slot.collectionHandle || '',
+            products: (slot.products || []).filter(function(p) {
+              if (self._isExcludedProduct(p, slot.key)) return false;
+              return true;
+            }),
+            selectedHandle: null,
+            locked: false
+          };
+        });
+        this.requiredCount = this.slots.length || 3;
+        this.galleryIndex = 0;
+        this.typeFilter = 'all';
+        this._prefetchCache = {};
+        this._heroCache = {};
+        this._galleryHydrated = {};
+        this._galleryHydrating = {};
+        this._pendingPrefillItems = [];
+        this.activeSlotIndex = 0;
+        this._syncPreviewFromActive(true);
+        this._readUrlPrefill();
+
+        // Liquid only embeds the first ~50 products per collection.
+        // Background-fetch the rest so type filters / swatches cover
+        // large catalogs (e.g. lanyards 1000+). Same pattern as cart edit.
+        this.slots.forEach(function(slot, sIdx) {
+          if (slot.collectionHandle) self._loadMoreProducts(slot.collectionHandle, sIdx);
+        });
+
+        // Keep arrow disabled state in sync when the grid size or filter changes.
+        this.$watch('typeFilter', function() { self.resetSwatchScroll(); });
+        this.$watch('activeSlotIndex', function() { self.resetSwatchScroll(); });
+        // When the selected style changes, pull the full media list (PDP parity).
+        this.$watch('previewHandle', function(handle) {
+          if (handle) self.hydrateGalleryFor(handle);
+        });
+        if (this.previewHandle) this.hydrateGalleryFor(this.previewHandle);
+        this.$nextTick(function() { self._bindSwatchResize(); self.updateSwatchArrows(); });
+      },
+
+      _readUrlPrefill() {
+        try {
+          var params = new URLSearchParams(window.location.search || '');
+          var items = [];
+          this.slots.forEach(function(slot) {
+            var handle = params.get('slot_' + slot.key.toLowerCase());
+            if (handle) items.push({ slotLabel: slot.key, handle: handle, key: null });
+          });
+          if (!items.length) return;
+          var replaceKeys = (params.get('replace_keys') || '').split(',').filter(Boolean);
+          this._pendingPrefillItems = items.slice();
+          this._prefillSlots({ items: items });
+          this.editingBundleId = null;
+          this.editingKeys = replaceKeys;
+
+          if (replaceKeys.length) {
+            // Cart upsell: jump to the first slot still needing a pick.
+            var next = this.firstIncompleteSlot();
+            this.activeSlotIndex = next >= 0 ? next : 0;
+            this.typeFilter = 'all';
+            this._syncPreviewFromActive(true);
+          } else {
+            // PDP deep link: land on the product the customer came from
+            // (selected, not locked) so they see it immediately.
+            var landIdx = -1;
+            var first = items[0];
+            if (first) {
+              var target = (first.slotLabel || '').toLowerCase();
+              for (var j = 0; j < this.slots.length; j++) {
+                if (this.slots[j].key.toLowerCase() === target) {
+                  landIdx = j;
+                  break;
+                }
+              }
+            }
+            this.activeSlotIndex = landIdx >= 0 ? landIdx : 0;
+            this._syncPreviewFromActive(true);
+            this._matchTypeFilterToPreview();
+          }
+        } catch (e) {
+          console.error('[bundle-builder] url prefill failed', e);
+        }
+      },
+
+      // Re-apply pending URL prefills after AJAX pages add more products.
+      _retryPendingPrefill() {
+        if (!this._pendingPrefillItems || !this._pendingPrefillItems.length) return;
+        var before = this.totalSelected();
+        this._prefillSlots({ items: this._pendingPrefillItems });
+        if (this.totalSelected() !== before && this.activeSlot()) {
+          this._syncPreviewFromActive(true);
+          this._matchTypeFilterToPreview();
+        }
+      },
+
+      _isExcludedProduct(p, slotKey) {
+        var t = ((p && (p.type || p.product_type)) || '').toLowerCase();
+        if (t === 'bundle') return true;
+        var tags = (p && p.tags) || '';
+        if (Array.isArray(tags)) tags = tags.join(',');
+        if (typeof tags === 'string' && tags.toLowerCase().indexOf('trifecta') !== -1) return true;
+        return false;
+      },
+
+      _colorTagFromTags(tags) {
+        var list = [];
+        if (Array.isArray(tags)) list = tags;
+        else if (typeof tags === 'string') list = tags.split(',');
+        for (var i = 0; i < list.length; i++) {
+          var tag = String(list[i] || '').toLowerCase().trim();
+          if (tag.indexOf('color_') === 0) return tag.slice(6);
+        }
+        return '';
+      },
+
+      _normalizeAjaxProduct(p, slotKey) {
+        if (!p || !p.variants || !p.variants.length) return null;
+        if (this._isExcludedProduct(p, slotKey)) return null;
+        var v = p.variants[0];
+        // products.json returns variant.price as a dollar string ("15.99").
+        var priceCents;
+        if (typeof v.price === 'number') {
+          priceCents = v.price;
+        } else {
+          priceCents = Math.round(parseFloat(v.price || '0') * 100);
+        }
+        var images = [];
+        (p.images || []).slice(0, 8).forEach(function(img) {
+          var src = (img && (img.src || img)) || '';
+          if (!src) return;
+          images.push({
+            thumb: src,
+            hero: src,
+            hero600: src,
+            hero900: src
+          });
+        });
+        var swatch = images.length ? images[0].thumb : '';
+        return {
+          handle: p.handle,
+          title: p.title || '',
+          url: '/products/' + p.handle,
+          price: priceCents,
+          compareAtPrice: 0,
+          available: v.available !== false,
+          variantId: v.id,
+          type: p.product_type || '',
+          colorTag: this._colorTagFromTags(p.tags),
+          swatchImage: swatch,
+          images: images
+        };
+      },
+
+      _loadMoreProducts(handle, sIdx) {
+        // Fetches up to ~1500 products from /collections/<handle>/products.json
+        // (250 per page, max 6 pages) and merges handles not already present.
+        // Mirrors snippets/bundle__cart-edit-data.liquid.
+        var self = this;
+        var MAX_PAGES = 6;
+        var PAGE_SIZE = 250;
+
+        function fetchPage(page) {
+          var url = window.Shopify.routes.root + 'collections/' + encodeURIComponent(handle)
+            + '/products.json?limit=' + PAGE_SIZE + '&page=' + page;
+          return fetch(url, { credentials: 'same-origin' })
+            .then(function(r) { return r.ok ? r.json() : { products: [] }; })
+            .then(function(data) {
+              var slot = self.slots[sIdx];
+              if (!slot || !data || !Array.isArray(data.products) || !data.products.length) {
+                return false;
+              }
+              var existing = {};
+              slot.products.forEach(function(p) { existing[p.handle] = true; });
+              data.products.forEach(function(raw) {
+                if (existing[raw.handle]) return;
+                var normalized = self._normalizeAjaxProduct(raw, slot.key);
+                if (!normalized) return;
+                existing[normalized.handle] = true;
+                slot.products.push(normalized);
+              });
+              self._retryPendingPrefill();
+              // New swatches may unlock horizontal overflow — refresh arrows.
+              if (sIdx === self.activeSlotIndex) {
+                self.$nextTick(function() { self.updateSwatchArrows(); });
+              }
+              return data.products.length >= PAGE_SIZE;
+            });
+        }
+
+        (function loop(page) {
+          if (page > MAX_PAGES) return;
+          fetchPage(page).then(function(hasMore) {
+            if (hasMore) loop(page + 1);
+          }).catch(function(err) {
+            console.warn('[bundle-builder] page', page, 'fetch failed', err);
+          });
+        })(1);
+      },
+
+      activeSlot() {
+        return this.slots[this.activeSlotIndex] || null;
+      },
+
+      activeProducts() {
+        var slot = this.activeSlot();
+        return slot ? slot.products : [];
+      },
+
+      activeTypeFilters() {
+        var slot = this.activeSlot();
+        var present = {};
+        this.activeProducts().forEach(function(p) {
+          var t = (p.type || '').trim();
+          if (t) present[t] = true;
+        });
+        var types = [];
+        // Preferred types first (wallet / lanyard), then the rest A–Z.
+        var preferred = null;
+        if (slot && slot.key === 'Wallet') preferred = this.walletPreferredTypes || [];
+        else if (slot && slot.key === 'Lanyard') preferred = this.lanyardPreferredTypes || [];
+        if (preferred) {
+          preferred.forEach(function(t) {
+            if (present[t]) types.push(t);
+          });
+          Object.keys(present).sort(function(a, b) { return a.localeCompare(b); }).forEach(function(t) {
+            if (preferred.indexOf(t) === -1) types.push(t);
+          });
+          return types;
+        }
+        Object.keys(present).forEach(function(t) { types.push(t); });
+        types.sort(function(a, b) { return a.localeCompare(b); });
+        return types;
+      },
+
+      showTypeFilters() {
+        return this.activeTypeFilters().length > 1;
+      },
+
+      filteredProducts() {
+        var products = this.activeProducts();
+        if (!this.typeFilter || this.typeFilter === 'all') return products;
+        var filter = this.typeFilter;
+        return products.filter(function(p) { return p.type === filter; });
+      },
+
+      shortTypeLabel(type) {
+        if (!type) return '';
+        return type
+          .replace(/\s+Holder Keychain$/i, '')
+          .replace(/\s+Keychain$/i, '')
+          .replace(/\s+Wallet$/i, '')
+          .replace(/\s+Lanyard$/i, '')
+          .trim() || type;
+      },
+
+      setTypeFilter(type) {
+        this.typeFilter = type || 'all';
+        var list = this.filteredProducts();
+        var self = this;
+        var stillVisible = list.some(function(p) { return p.handle === self.previewHandle; });
+        if (!stillVisible) {
+          var first = this._firstAvailable(list);
+          if (first) {
+            this.previewHandle = first.handle;
+            this.galleryIndex = 0;
+            this.applyHero(true);
+          }
+        }
+        this.resetSwatchScroll();
+      },
+
+      /* Swatch paging — vertical scroll (compact 4/5-col grid). */
+      updateSwatchArrows() {
+        var grid = this.$refs.swatchGrid;
+        if (!grid) {
+          this.swatchHasPagination = false;
+          this.swatchCanPrev = false;
+          this.swatchCanNext = false;
+          return;
+        }
+        var max = grid.scrollHeight - grid.clientHeight;
+        var hasOverflow = max > 1;
+        this.swatchHasPagination = hasOverflow;
+        if (!hasOverflow) {
+          this.swatchCanPrev = false;
+          this.swatchCanNext = false;
+          return;
+        }
+        this.swatchCanPrev = grid.scrollTop > 1;
+        this.swatchCanNext = grid.scrollTop < max - 1;
+      },
+
+      scrollSwatches(dir) {
+        var grid = this.$refs.swatchGrid;
+        if (!grid) return;
+        var step = Math.max(grid.clientHeight * 0.85, 120);
+        grid.scrollBy({ top: dir * step, behavior: 'smooth' });
+      },
+
+      resetSwatchScroll() {
+        var self = this;
+        this.$nextTick(function() {
+          var grid = self.$refs.swatchGrid;
+          if (grid) grid.scrollTop = 0;
+          self.updateSwatchArrows();
+        });
+      },
+
+      _bindSwatchResize() {
+        var grid = this.$refs.swatchGrid;
+        if (!grid || typeof ResizeObserver === 'undefined') return;
+        if (this._swatchResizeObs) this._swatchResizeObs.disconnect();
+        var self = this;
+        this._swatchResizeObs = new ResizeObserver(function() { self.updateSwatchArrows(); });
+        this._swatchResizeObs.observe(grid);
+      },
+
+      _matchTypeFilterToPreview() {
+        var p = this.previewProduct();
+        if (p && p.type && this.activeTypeFilters().length > 1) {
+          this.typeFilter = p.type;
+        } else {
+          this.typeFilter = 'all';
+        }
+      },
+
+      _firstAvailable(products) {
+        if (!products || !products.length) return null;
+        return products.find(function(p){ return p.available; }) || products[0] || null;
+      },
+
+      _syncPreviewFromActive(useSwatchPlaceholder) {
+        var slot = this.activeSlot();
+        if (!slot) {
+          this.previewHandle = null;
+          return;
+        }
+        var selected = slot.selectedHandle
+          ? this.productByHandleInSlot(this.activeSlotIndex, slot.selectedHandle)
+          : null;
+        var pool = this.filteredProducts();
+        if (!pool.length) pool = slot.products;
+        var fallback = this._firstAvailable(pool);
+        this.previewHandle = (selected || fallback) ? (selected || fallback).handle : null;
+        this.galleryIndex = 0;
+        this.applyHero(!!useSwatchPlaceholder);
+      },
+
+      selectSlot(idx) {
+        if (idx < 0 || idx >= this.slots.length) return;
+        this.activeSlotIndex = idx;
+        this.typeFilter = 'all';
+        this._syncPreviewFromActive(true);
+        // If this slot already has a pick, filter to that product's type.
+        var slot = this.activeSlot();
+        if (slot && slot.selectedHandle) {
+          this._matchTypeFilterToPreview();
+        }
+      },
+
+      lockSlot(slotLabel, productHandle) {
+        var target = (slotLabel || '').toLowerCase();
+        for (var i = 0; i < this.slots.length; i++) {
+          var slot = this.slots[i];
+          if (slot.key.toLowerCase() !== target && slot.label.toLowerCase() !== target) continue;
+          var match = slot.products.find(function(p){ return p.handle === productHandle; });
+          if (!match) {
+            console.warn('[bundle-builder] product not in slot catalog', slotLabel, productHandle);
+            return false;
+          }
+          slot.selectedHandle = productHandle;
+          slot.locked = true;
+          var next = this.firstIncompleteSlot();
+          this.activeSlotIndex = next >= 0 ? next : i;
+          this.typeFilter = 'all';
+          this._syncPreviewFromActive(true);
+          return true;
+        }
+        console.warn('[bundle-builder] no slot with label', slotLabel);
+        return false;
+      },
+
+      _prefillSlots(payload) {
+        if (!payload || !payload.items) return;
+        var self = this;
+        payload.items.forEach(function(it) {
+          var target = (it.slotLabel || '').toLowerCase();
+          for (var i = 0; i < self.slots.length; i++) {
+            var slot = self.slots[i];
+            if (slot.key.toLowerCase() !== target && slot.label.toLowerCase() !== target) continue;
+            var found = slot.products.find(function(p){ return p.handle === it.handle; });
+            if (found) {
+              slot.selectedHandle = it.handle;
+              slot.locked = false;
+            }
+            break;
+          }
+        });
+      },
+
+      prefillFromCart(payload) {
+        this._prefillSlots(payload);
+        this.editingBundleId = (payload && payload.bundleId) || null;
+        this.editingKeys = (payload && payload.items || []).map(function(p){ return p.key; }).filter(Boolean);
+        this.activeSlotIndex = 0;
+        this.typeFilter = 'all';
+        this._syncPreviewFromActive(true);
+      },
+
+      prefillForUpsell(payload) {
+        this._prefillSlots(payload);
+        this.editingBundleId = null;
+        this.editingKeys = (payload && payload.items || []).map(function(p){ return p.key; }).filter(Boolean);
+        var next = this.firstIncompleteSlot();
+        this.activeSlotIndex = next >= 0 ? next : 0;
+        this.typeFilter = 'all';
+        this._syncPreviewFromActive(true);
+      },
+
+      productByHandleInSlot(slotIdx, handle) {
+        var slot = this.slots[slotIdx];
+        if (!slot) return null;
+        return slot.products.find(function(p){ return p.handle === handle; }) || null;
+      },
+
+      productByHandle(handle) {
+        for (var i = 0; i < this.slots.length; i++) {
+          var p = this.productByHandleInSlot(i, handle);
+          if (p) return p;
+        }
+        return null;
+      },
+
+      previewProduct() {
+        return this.productByHandleInSlot(this.activeSlotIndex, this.previewHandle)
+          || this._firstAvailable(this.activeProducts());
+      },
+
+      previewImages() {
+        var p = this.previewProduct();
+        return (p && p.images && p.images.length) ? p.images : [];
+      },
+
+      currentHero() {
+        var images = this.previewImages();
+        if (!images.length) {
+          var p = this.previewProduct();
+          if (!p) return null;
+          return {
+            thumb: p.swatchImage,
+            hero: p.swatchImage,
+            hero600: p.swatchImage,
+            hero900: p.swatchImage
+          };
+        }
+        var idx = this.galleryIndex;
+        if (idx < 0 || idx >= images.length) idx = 0;
+        return images[idx];
+      },
+
+      heroSrcsetFor(image) {
+        if (!image) return '';
+        // Videos use poster stills only — no responsive srcset swap.
+        if (image.mediaType === 'video' || image.mediaType === 'external_video') return '';
+        return (image.hero600 || '') + ' 600w, ' + (image.hero900 || '') + ' 900w, ' + (image.hero || '') + ' 1200w';
+      },
+
+      // Include frame URL so hydrate (which replaces images at the same
+      // index) cannot revive a stale pre-hydrate cache entry.
+      _heroCacheKey() {
+        var image = this.currentHero();
+        var frame = (image && (image.hero || image.videoUrl || image.thumb)) || '';
+        return this.activeSlotIndex + '|' + (this.previewHandle || '') + '|' + this.galleryIndex + '|' + frame;
+      },
+
+      _clearHeroCacheForHandle(handle) {
+        if (!handle) return;
+        var needle = '|' + handle + '|';
+        Object.keys(this._heroCache).forEach(function(key) {
+          if (key.indexOf(needle) !== -1) delete this._heroCache[key];
+        }.bind(this));
+      },
+
+      isHeroVideo() {
+        return this.heroMediaType === 'video' && !!this.heroVideoUrl;
+      },
+
+      isHeroExternalVideo() {
+        return this.heroMediaType === 'external_video' && !!this.heroExternalId;
+      },
+
+      // YouTube / Vimeo embed — muted autoplay loop, same idea as PDP.
+      heroEmbedUrl() {
+        if (!this.isHeroExternalVideo()) return '';
+        var id = encodeURIComponent(this.heroExternalId);
+        var host = String(this.heroExternalHost || '').toLowerCase();
+        if (host === 'youtube') {
+          return 'https://www.youtube.com/embed/' + id + '?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=' + id;
+        }
+        if (host === 'vimeo') {
+          return 'https://player.vimeo.com/video/' + id + '?autoplay=1&muted=1&loop=1&background=1';
+        }
+        return '';
+      },
+
+      _setHeroMediaMeta(image) {
+        var type = (image && image.mediaType) || 'image';
+        this.heroMediaType = type;
+        this.heroVideoUrl = (image && image.videoUrl) || '';
+        this.heroExternalHost = (image && image.externalHost) || '';
+        this.heroExternalId = (image && image.externalId) || '';
+      },
+
+      applyHero(useSwatchPlaceholder) {
+        var p = this.previewProduct();
+        var image = this.currentHero();
+        if (!p || !image) return;
+
+        this.heroAlt = p.title || '';
+        this._setHeroMediaMeta(image);
+
+        // Hosted / external video — show poster + play element immediately.
+        if (this.isHeroVideo() || this.isHeroExternalVideo()) {
+          this._pendingHero = '';
+          this.heroSrc = image.hero || image.thumb || p.swatchImage || '';
+          this.heroSrcset = '';
+          this.heroReady = true;
+          return;
+        }
+
+        var cacheKey = this._heroCacheKey();
+        var cached = this._heroCache[cacheKey];
+        if (cached) {
+          if (this.heroSrc === cached.src && this.heroReady) return;
+          this._pendingHero = cached.src;
+          this.heroSrc = cached.src;
+          this.heroSrcset = cached.srcset || '';
+          this.heroReady = true;
+          return;
+        }
+
+        var placeholder = useSwatchPlaceholder
+          ? (p.swatchImage || image.thumb || image.hero600 || image.hero)
+          : (image.thumb || p.swatchImage || image.hero600 || image.hero);
+
+        var target = image.hero || image.hero900 || placeholder;
+        var targetSrcset = this.heroSrcsetFor(image);
+
+        if (this.heroSrc === target && this.heroReady) return;
+
+        // Keep the current sharp frame while the next hero loads — avoids
+        // the blurry upscaled-swatch flash that made swaps feel clunky.
+        var keepCurrent = !!(this.heroSrc && this.heroReady);
+        if (!keepCurrent) {
+          this.heroSrc = placeholder;
+          this.heroSrcset = '';
+          // Show the placeholder immediately (no blank/blur frame).
+          this.heroReady = true;
+        }
+        this._loadHero(target, targetSrcset, cacheKey);
+      },
+
+      _loadHero(src, srcset, cacheKey) {
+        if (!src) return;
+        this._pendingHero = src;
+        var self = this;
+        var img = new Image();
+        img.onload = function() {
+          if (self._pendingHero !== src) return;
+          var shouldFade = !!(self.heroSrc && self.heroSrc !== src);
+          self.heroSrc = src;
+          self.heroSrcset = srcset || '';
+          if (shouldFade) {
+            // Brief opacity pulse so the swap reads as a fade, not a pop.
+            self.heroReady = false;
+            requestAnimationFrame(function() {
+              requestAnimationFrame(function() {
+                if (self._pendingHero !== src) return;
+                self.heroReady = true;
+              });
+            });
+          } else {
+            self.heroReady = true;
+          }
+          if (cacheKey) {
+            self._heroCache[cacheKey] = { src: src, srcset: srcset || '' };
+          }
+        };
+        img.onerror = function() {
+          if (self._pendingHero !== src) return;
+          self.heroReady = true;
+        };
+        if (srcset) {
+          img.sizes = '(min-width: 990px) 45vw, 100vw';
+          img.srcset = srcset;
+        }
+        img.src = src;
+      },
+
+      // Shopify CDN: append/replace ?width= so thumbs/heroes match Liquid image_url sizes.
+      _cdnWidth(src, width) {
+        if (!src) return '';
+        var url = String(src);
+        if (url.indexOf('//') === 0) url = 'https:' + url;
+        try {
+          var u = new URL(url, window.location.origin);
+          u.searchParams.set('width', String(width));
+          return u.toString();
+        } catch (e) {
+          return url;
+        }
+      },
+
+      // Pick the best playable URL from Shopify product.js video sources.
+      _bestVideoUrl(mediaItem) {
+        var sources = (mediaItem && mediaItem.sources) || [];
+        var mp4 = '';
+        var fallback = '';
+        for (var i = 0; i < sources.length; i++) {
+          var s = sources[i];
+          if (!s || !s.url) continue;
+          if (!fallback) fallback = s.url;
+          var fmt = String(s.format || '').toLowerCase();
+          var mime = String(s.mime_type || '').toLowerCase();
+          if (fmt === 'mp4' || mime === 'video/mp4') {
+            mp4 = s.url;
+            break;
+          }
+        }
+        return mp4 || fallback || '';
+      },
+
+      // Build gallery frames from /products/{handle}.js media (images + videos),
+      // matching the PDP which uses product.media — not product.images alone.
+      _mediaToGalleryImages(productJson) {
+        var self = this;
+        var frames = [];
+        var media = (productJson && productJson.media) || [];
+        var MAX = 12;
+
+        function pushFrame(src, mediaType, extra) {
+          if (!src || frames.length >= MAX) return;
+          var frame = {
+            thumb: self._cdnWidth(src, 160),
+            hero: self._cdnWidth(src, 1200),
+            hero600: self._cdnWidth(src, 600),
+            hero900: self._cdnWidth(src, 900),
+            mediaType: mediaType || 'image',
+            videoUrl: '',
+            externalHost: '',
+            externalId: ''
+          };
+          if (extra) {
+            if (extra.videoUrl) frame.videoUrl = extra.videoUrl;
+            if (extra.externalHost) frame.externalHost = extra.externalHost;
+            if (extra.externalId) frame.externalId = extra.externalId;
+          }
+          frames.push(frame);
+        }
+
+        media.forEach(function(m) {
+          if (!m || frames.length >= MAX) return;
+          var type = m.media_type || 'image';
+          var src = '';
+          if (m.preview_image && m.preview_image.src) src = m.preview_image.src;
+          else if (m.src && (type === 'image' || !m.media_type)) src = m.src;
+
+          if (type === 'video') {
+            if (!src) return;
+            pushFrame(src, 'video', { videoUrl: self._bestVideoUrl(m) });
+            return;
+          }
+          if (type === 'external_video') {
+            if (!src) return;
+            pushFrame(src, 'external_video', {
+              externalHost: m.host || '',
+              externalId: m.external_id || ''
+            });
+            return;
+          }
+          // Skip 3D models and unknown types in the bundler gallery.
+          if (type !== 'image') return;
+          if (src) pushFrame(src, 'image');
+        });
+
+        // Fallback when media is empty — still images only.
+        if (!frames.length && productJson && productJson.images) {
+          (productJson.images || []).forEach(function(img) {
+            var src = (img && (img.src || img)) || '';
+            pushFrame(src, 'image');
+          });
+        }
+        return frames;
+      },
+
+      _applyHydratedGallery(handle, gallery) {
+        if (!handle || !gallery || !gallery.length) return;
+        this._clearHeroCacheForHandle(handle);
+        // Same handle can appear in one slot only, but update every match
+        // so slot switches stay consistent.
+        for (var i = 0; i < this.slots.length; i++) {
+          var p = this.productByHandleInSlot(i, handle);
+          if (!p) continue;
+          p.images = gallery;
+          p.galleryHydrated = true;
+        }
+      },
+
+      // Fetch full PDP media once per handle and swap into the catalog entry.
+      hydrateGalleryFor(handle) {
+        if (!handle) return;
+        if (this._galleryHydrated[handle] || this._galleryHydrating[handle]) return;
+        var existing = this.productByHandle(handle);
+        if (existing && existing.galleryHydrated) {
+          this._galleryHydrated[handle] = true;
+          return;
+        }
+
+        var self = this;
+        this._galleryHydrating[handle] = true;
+        var root = (window.Shopify && window.Shopify.routes && window.Shopify.routes.root) || '/';
+        var url = root + 'products/' + encodeURIComponent(handle) + '.js';
+
+        fetch(url, { credentials: 'same-origin' })
+          .then(function(r) { return r.ok ? r.json() : null; })
+          .then(function(data) {
+            self._galleryHydrating[handle] = false;
+            if (!data) return;
+            var gallery = self._mediaToGalleryImages(data);
+            if (!gallery.length) {
+              self._galleryHydrated[handle] = true;
+              return;
+            }
+            self._applyHydratedGallery(handle, gallery);
+            self._galleryHydrated[handle] = true;
+            // Refresh hero/thumbs if this is still the selected style.
+            if (self.previewHandle === handle) {
+              if (self.galleryIndex >= gallery.length) self.galleryIndex = 0;
+              self.applyHero(false);
+            }
+          })
+          .catch(function(err) {
+            self._galleryHydrating[handle] = false;
+            console.warn('[bundle-builder] gallery hydrate failed', handle, err);
+          });
+      },
+
+      prefetchProduct(handle) {
+        var p = this.productByHandleInSlot(this.activeSlotIndex, handle);
+        if (!p) return;
+        // Start media hydrate early so thumbs are ready when clicked.
+        this.hydrateGalleryFor(handle);
+        var image = (p.images && p.images[0]) || null;
+        var url = image
+          ? (image.hero900 || image.hero || p.swatchImage)
+          : p.swatchImage;
+        this.prefetchUrl(url);
+      },
+
+      prefetchUrl(url) {
+        if (!url || this._prefetchCache[url]) return;
+        this._prefetchCache[url] = true;
+        var img = new Image();
+        img.src = url;
+      },
+
+      selectGallery(index) {
+        var images = this.previewImages();
+        if (index < 0 || index >= images.length) return;
+        this.galleryIndex = index;
+        this.applyHero(false);
+      },
+
+      galleryPrev() {
+        var images = this.previewImages();
+        if (images.length < 2) return;
+        var next = this.galleryIndex - 1;
+        if (next < 0) next = images.length - 1;
+        this.selectGallery(next);
+      },
+
+      galleryNext() {
+        var images = this.previewImages();
+        if (images.length < 2) return;
+        var next = this.galleryIndex + 1;
+        if (next >= images.length) next = 0;
+        this.selectGallery(next);
+      },
+
+      shortName(title) {
+        if (!title) return '';
+        var idx = title.indexOf(' - ');
+        return idx > 0 ? title.slice(0, idx) : title;
+      },
+
+      selectPreview(handle) {
+        var p = this.productByHandleInSlot(this.activeSlotIndex, handle);
+        if (!p || !p.available) return;
+        var slot = this.activeSlot();
+        if (slot && slot.locked) return;
+        this.previewHandle = handle;
+        this.galleryIndex = 0;
+        // false = keep prior sharp hero while the new frame loads (no blur flash).
+        this.applyHero(false);
+      },
+
+      isPreview(handle) {
+        return this.previewHandle === handle;
+      },
+
+      totalSelected() {
+        var n = 0;
+        for (var i = 0; i < this.slots.length; i++) {
+          if (this.slots[i].selectedHandle) n++;
+        }
+        return n;
+      },
+
+      remainingCount() {
+        return Math.max(0, this.requiredCount - this.totalSelected());
+      },
+
+      dotIndexes() {
+        var out = [];
+        for (var i = 1; i <= this.requiredCount; i++) out.push(i);
+        return out;
+      },
+
+      firstIncompleteSlot() {
+        for (var i = 0; i < this.slots.length; i++) {
+          if (!this.slots[i].selectedHandle) return i;
+        }
+        return -1;
+      },
+
+      isComplete() {
+        return this.totalSelected() === this.requiredCount;
+      },
+
+      canAddToBundle() {
+        var slot = this.activeSlot();
+        if (!slot || slot.locked) return false;
+        var p = this.previewProduct();
+        return !!(p && p.available);
+      },
+
+      /* True when the previewed swatch is not yet the active slot's pick. */
+      showPreviewAction(handle) {
+        if (!this.isPreview(handle) || !this.canAddToBundle()) return false;
+        var slot = this.activeSlot();
+        return !!(slot && slot.selectedHandle !== handle);
+      },
+
+      previewActionLabel() {
+        var slot = this.activeSlot();
+        return (slot && slot.selectedHandle) ? 'Swap' : 'Add';
+      },
+
+      addToBundle() {
+        if (!this.canAddToBundle()) return;
+        var slot = this.activeSlot();
+        slot.selectedHandle = this.previewHandle;
+        var next = this.firstIncompleteSlot();
+        if (next >= 0) {
+          this.selectSlot(next);
+        }
+      },
+
+      removePick(slotIdx) {
+        var slot = this.slots[slotIdx];
+        if (!slot || slot.locked) return;
+        slot.selectedHandle = null;
+        // Land on the cleared slot so the customer can pick a replacement.
+        this.selectSlot(slotIdx);
+      },
+
+      pickProduct(slotIdx) {
+        var slot = this.slots[slotIdx];
+        if (!slot || !slot.selectedHandle) return null;
+        return this.productByHandleInSlot(slotIdx, slot.selectedHandle);
+      },
+
+      slotFilled(slotIdx) {
+        return !!(this.slots[slotIdx] && this.slots[slotIdx].selectedHandle);
+      },
+
+      // True for the next empty slot the customer hasn't touched yet — lets
+      // the UI gently pulse that one tab (show, don't tell) instead of
+      // needing an instructional text line. Suppressed once it's the
+      // active tab (already has attention) or the set is complete.
+      isNextSlot(slotIdx) {
+        if (this.isComplete()) return false;
+        if (this.slotFilled(slotIdx)) return false;
+        return this.firstIncompleteSlot() === slotIdx;
+      },
+
+      // Selected product swatch, or the slot silhouette when empty.
+      slotThumb(slotIdx) {
+        var slot = this.slots[slotIdx];
+        if (!slot) return '';
+        if (slot.selectedHandle) {
+          var p = this.pickProduct(slotIdx);
+          if (p && p.swatchImage) return p.swatchImage;
+        }
+        return slot.silhouette || '';
+      },
+
+      subtotalCents() {
+        var sum = 0;
+        for (var i = 0; i < this.slots.length; i++) {
+          var p = this.pickProduct(i);
+          if (p) sum += p.price;
+        }
+        return sum;
+      },
+
+      discountCents() {
+        var sub = this.subtotalCents();
+        if (!this.canAddToCart()) return 0;
+        {% case discount_type %}
+          {% when 'percent' %}
+            return Math.round(sub * ({{ discount_value | default: 0 }} / 100));
+          {% when 'fixed_off' %}
+            return Math.min(sub, {{ discount_value | default: 0 | times: 100 }});
+          {% else %}
+            return 0;
+        {% endcase %}
+      },
+
+      totalCents() {
+        if (!this.canAddToCart()) return this.subtotalCents();
+        return Math.max(0, this.subtotalCents() - this.discountCents());
+      },
+
+      formatMoney(cents) {
+        if (typeof cents !== 'number') return '';
+        if (window.Shopify && window.Shopify.formatMoney) {
+          return window.Shopify.formatMoney(cents, '{{ cart.currency.symbol }}');
+        }
+        return '$' + (cents / 100).toFixed(2);
+      },
+
+      canAddToCart() {
+        if (!this.isComplete()) return false;
+        for (var i = 0; i < this.slots.length; i++) {
+          var p = this.pickProduct(i);
+          if (!p || !p.available) return false;
+        }
+        return true;
+      },
+
+      finalizeBundle() {
+        if (!this.canAddToCart() || this.cartLoading) return Promise.resolve();
+        this.cartLoading = true;
+        this.incompleteReason = '';
+
+        var bundleId = 'tri_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8);
+        var items = [];
+        for (var i = 0; i < this.slots.length; i++) {
+          var slot = this.slots[i];
+          var p = this.pickProduct(i);
+          if (!p) continue;
+          items.push({
+            id: p.variantId,
+            quantity: 1,
+            properties: {
+              'Bundle Slot': slot.key,
+              '_bundle_id': bundleId,
+              '_bundle_type': 'everyday_carry'
+            }
+          });
+        }
+
+        var self = this;
+        var rootScope = (window.Alpine && document.body) ? window.Alpine.$data(document.body) : null;
+        var isEditingExistingBundle = !!this.editingBundleId;
+        var editingKeys = this.editingKeys.slice();
+        var hasEditingKeys = editingKeys.length > 0;
+
+        return fetch(window.Shopify.routes.root + 'cart/add.js', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ items: items })
+        })
+        .then(function(r){
+          return r.json().then(function(body){
+            if (!r.ok) throw Object.assign(new Error('Add to cart failed'), { body: body });
+            return body;
+          });
+        })
+        .then(function(){
+          if (hasEditingKeys && rootScope && typeof rootScope.changeCartItemQuantity === 'function') {
+            return editingKeys.reduce(function(chain, key) {
+              return chain.then(function() {
+                return rootScope.changeCartItemQuantity(key, 0, false, false);
+              });
+            }, Promise.resolve());
+          }
+        })
+        .then(function() {
+          if (isEditingExistingBundle) {
+            if (rootScope && typeof rootScope.updateCart === 'function') {
+              rootScope.updateCart(true);
+            }
+            window.dispatchEvent(new CustomEvent('bundle-drawer:close'));
+            return;
+          }
+          if (self.discountCode) {
+            fetch('/discount/' + encodeURIComponent(self.discountCode), {
+              method: 'GET',
+              credentials: 'same-origin'
+            }).catch(function(){});
+          }
+          if (rootScope && typeof rootScope.updateCart === 'function') {
+            rootScope.updateCart(true);
+          }
+          window.dispatchEvent(new CustomEvent('bundle-drawer:close'));
+        })
+        .catch(function(err){
+          var msg = (err && err.body && err.body.description) || 'Could not add bundle to cart. Please try again.';
+          self.incompleteReason = msg;
+          if (rootScope) {
+            rootScope.error_title = (err && err.body && err.body.message) || 'Something went wrong';
+            rootScope.error_message = msg;
+            rootScope.show_alert = true;
+          }
+          console.error('[bundle-builder]', err);
+        })
+        .finally(function(){
+          self.cartLoading = false;
+        });
+      }
+    };
+  }
+
+  window.bundleBuilder_{{ js_id }} = bundleBuilderFactory_{{ js_id }};
+
+  function registerBundleBuilder_{{ js_id }}() {
+    if (!window.Alpine || typeof window.Alpine.data !== 'function') return false;
+    window.Alpine.data('bundleBuilder_{{ js_id }}', bundleBuilderFactory_{{ js_id }});
+    return true;
+  }
+  if (!registerBundleBuilder_{{ js_id }}()) {
+    document.addEventListener('alpine:init', registerBundleBuilder_{{ js_id }});
+  }
+})();
+</script>

@@ -4,8 +4,8 @@
     "theme_name": "Thread",
     "theme_version": "5.0.60",
     "theme_author": "Brickspace Lab",
-    "theme_documentation_url": "https:\/\/www.notion.so\/brickspacelab\/Paper-help-center-84ce6b9217574833a7d9b9f4053cb403",
-    "theme_support_url": "https:\/\/tally.so\/r\/mJ9z4X"
+    "theme_documentation_url": "https://www.notion.so/brickspacelab/Paper-help-center-84ce6b9217574833a7d9b9f4053cb403",
+    "theme_support_url": "https://tally.so/r/mJ9z4X"
   },
   {
     "name": "t:settings_schema.colors.name",
@@ -381,11 +381,11 @@
         "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.label",
         "options": [
           {
-            "value": "aspect-[2\/3] aspect-w-2 aspect-h-3",
+            "value": "aspect-[2/3] aspect-w-2 aspect-h-3",
             "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.options__1.label"
           },
           {
-            "value": "aspect-[1\/1] aspect-w-1 aspect-h-1",
+            "value": "aspect-[1/1] aspect-w-1 aspect-h-1",
             "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.options__2.label"
           },
           {
@@ -393,7 +393,7 @@
             "label": "Landscape"
           }
         ],
-        "default": "aspect-[2\/3] aspect-w-2 aspect-h-3"
+        "default": "aspect-[2/3] aspect-w-2 aspect-h-3"
       },
       {
         "type": "select",
@@ -513,11 +513,11 @@
         "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.label",
         "options": [
           {
-            "value": "aspect-[2\/3] aspect-w-2 aspect-h-3",
+            "value": "aspect-[2/3] aspect-w-2 aspect-h-3",
             "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.options__1.label"
           },
           {
-            "value": "aspect-[1\/1] aspect-w-1 aspect-h-1",
+            "value": "aspect-[1/1] aspect-w-1 aspect-h-1",
             "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.options__2.label"
           },
           {
@@ -525,7 +525,7 @@
             "label": "Landscape"
           }
         ],
-        "default": "aspect-[2\/3] aspect-w-2 aspect-h-3"
+        "default": "aspect-[2/3] aspect-w-2 aspect-h-3"
       },
       {
         "type": "select",
@@ -604,11 +604,11 @@
         "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.label",
         "options": [
           {
-            "value": "aspect-[2\/3] aspect-w-2 aspect-h-3",
+            "value": "aspect-[2/3] aspect-w-2 aspect-h-3",
             "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.options__1.label"
           },
           {
-            "value": "aspect-[1\/1] aspect-w-1 aspect-h-1",
+            "value": "aspect-[1/1] aspect-w-1 aspect-h-1",
             "label": "t:settings_schema.thumbnails.settings.thumbnails_ratio.options__2.label"
           },
           {
@@ -616,7 +616,7 @@
             "label": "Landscape"
           }
         ],
-        "default": "aspect-[2\/3] aspect-w-2 aspect-h-3"
+        "default": "aspect-[2/3] aspect-w-2 aspect-h-3"
       },
       {
         "type": "select",
@@ -1065,13 +1065,13 @@
         "type": "liquid",
         "id": "snippet_head",
         "label": "Head snippets",
-        "info": "This will be injected before the closing <\/head> tag."
+        "info": "This will be injected before the closing </head> tag."
       },
       {
         "type": "liquid",
         "id": "snippet_body",
         "label": "Body snippets",
-        "info": "This will be injected before the closing <\/body> tag."
+        "info": "This will be injected before the closing </body> tag."
       }
     ]
   },
@@ -1153,6 +1153,1937 @@
         "id": "application_background_color",
         "label": "Background color",
         "default": "#ffffff"
+      }
+    ]
+  },
+  {
+    "name": "Everyday Carry Set",
+    "settings": [
+      {
+        "type": "header",
+        "content": "Cart upsell"
+      },
+      {
+        "type": "paragraph",
+        "content": "When a customer has a bundle-eligible product in their cart but hasn't built a complete Everyday Carry Set, show a complete-your-set upsell panel in the cart drawer. Pick the collections that define what counts as a Wallet, Lanyard, and Chapstick for the upsell."
+      },
+      {
+        "type": "checkbox",
+        "id": "trifecta_upsell_enable",
+        "label": "Show \"Complete your Everyday Carry Set\" upsell in cart drawer",
+        "default": false
+      },
+      {
+        "type": "collection",
+        "id": "trifecta_wallet_collection",
+        "label": "Wallet eligibility collection",
+        "info": "Every product in this collection counts as a Wallet for the Everyday Carry Set upsell."
+      },
+      {
+        "type": "collection",
+        "id": "trifecta_lanyard_collection",
+        "label": "Lanyard eligibility collection"
+      },
+      {
+        "type": "collection",
+        "id": "trifecta_chapstick_collection",
+        "label": "Chapstick eligibility collection"
+      },
+      {
+        "type": "richtext",
+        "id": "trifecta_upsell_copy",
+        "label": "Upsell panel copy",
+        "default": "<p><strong>Complete your Everyday Carry Set</strong> and save 20%</p>"
+      },
+      {
+        "type": "text",
+        "id": "trifecta_upsell_button",
+        "label": "Upsell button text",
+        "default": "Complete your Everyday Carry Set"
+      },
+      {
+        "type": "header",
+        "content": "PDP CTA + Frequently Bought Together"
+      },
+      {
+        "type": "paragraph",
+        "content": "On Elastic / Vertical Leather / Leather Zip wallets, plus Lanyard / Chapstick Holder types, show (1) a Bundle CTA that links to the bundler page with this product selected, and (2) underneath it the Frequently Bought Together inline preview (3 cards + Add Bundle). Slot type lists live in snippets/bundle__pdp-cta.liquid and snippets/bundle__pdp-fbt.liquid."
+      },
+      {
+        "type": "checkbox",
+        "id": "trifecta_pdp_preview_enable",
+        "label": "Show Everyday Carry Set CTA + FBT on eligible PDPs",
+        "default": true
+      },
+      {
+        "type": "text",
+        "id": "trifecta_pdp_cta_text",
+        "label": "PDP CTA button text",
+        "default": "Build an Everyday Carry Set \u2014 Save 20%"
+      },
+      {
+        "type": "text",
+        "id": "trifecta_pdp_preview_heading",
+        "label": "Frequently Bought Together heading",
+        "default": "Frequently Bought Together"
+      },
+      {
+        "type": "paragraph",
+        "content": "Default product type per slot for FBT companion picks. Color-match still ranks above type-match. Leave blank to skip type preference. Case-sensitive \u2014 must match Shopify product type exactly."
+      },
+      {
+        "type": "text",
+        "id": "trifecta_default_wallet_type",
+        "label": "Default wallet type",
+        "default": "Vertical Leather Wallet"
+      },
+      {
+        "type": "text",
+        "id": "trifecta_default_lanyard_type",
+        "label": "Default lanyard type",
+        "default": "Neck Lanyard"
+      },
+      {
+        "type": "text",
+        "id": "trifecta_default_chapstick_type",
+        "label": "Default chapstick type",
+        "default": "Chapstick Holder Keychain"
+      },
+      {
+        "type": "text",
+        "id": "trifecta_page_path",
+        "label": "Standalone bundler page path",
+        "default": "/pages/build-your-trifecta",
+        "info": "Page that uses the Everyday Carry Set bundler template (page.bundle-builder)."
+      },
+      {
+        "type": "text",
+        "id": "trifecta_drawer_title",
+        "label": "Drawer title",
+        "default": "Build Your Everyday Carry Set"
+      },
+      {
+        "type": "text",
+        "id": "trifecta_pdp_sticky_text",
+        "label": "Sticky bar upgrade strip text",
+        "info": "Shown above the sticky add-to-cart button on eligible PDPs. Tap goes to the bundler page with this product selected. Leave blank to hide the strip even when the CTA is enabled.",
+        "default": "Save 20% with an Everyday Carry Set \u2014 Build Bundle"
+      },
+      {
+        "type": "header",
+        "content": "Checkout discount"
+      },
+      {
+        "type": "paragraph",
+        "content": "Prefer the Thread Bundle Discount Function (apps/bundle-discount) for checkout: it applies 20% only to lines stamped with _bundle_id. Leave this code blank. Only fill a code if you intentionally want a silent /discount/CODE attach (public codes can be scraped)."
+      },
+      {
+        "type": "text",
+        "id": "trifecta_discount_code",
+        "label": "Everyday Carry Set discount code (optional)",
+        "info": "Leave blank when using the Bundle Discount Function or an automatic discount. If set, must match a Discount code in admin."
+      },
+      {
+        "type": "header",
+        "content": "Bundle heading \u2014 'Save 20% with an Everyday Carry Set'"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_heading_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_heading_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 10,
+        "max": 40,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_heading_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 10,
+        "max": 40,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "select",
+        "id": "trifecta_heading_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          },
+          {
+            "value": "800",
+            "label": "Extra bold"
+          }
+        ],
+        "default": "700"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_heading_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          },
+          {
+            "value": "lowercase",
+            "label": "lowercase"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_heading_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          },
+          {
+            "value": "0.12em",
+            "label": "Wider"
+          },
+          {
+            "value": "0.2em",
+            "label": "Extra wide"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_heading_align",
+        "label": "Alignment",
+        "options": [
+          {
+            "value": "left",
+            "label": "Left"
+          },
+          {
+            "value": "center",
+            "label": "Center"
+          },
+          {
+            "value": "right",
+            "label": "Right"
+          }
+        ],
+        "default": "left"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_heading_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Card slot label \u2014 'Wallet' / 'Lanyard' / 'Chapstick'"
+      },
+      {
+        "type": "checkbox",
+        "id": "trifecta_show_slot_label",
+        "label": "Show slot label",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "trifecta_slot_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_slot_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 11
+      },
+      {
+        "type": "range",
+        "id": "trifecta_slot_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 11
+      },
+      {
+        "type": "select",
+        "id": "trifecta_slot_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          },
+          {
+            "value": "800",
+            "label": "Extra bold"
+          }
+        ],
+        "default": "700"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_slot_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          },
+          {
+            "value": "lowercase",
+            "label": "lowercase"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          }
+        ],
+        "default": "uppercase"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_slot_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          },
+          {
+            "value": "0.12em",
+            "label": "Wider"
+          },
+          {
+            "value": "0.2em",
+            "label": "Extra wide"
+          }
+        ],
+        "default": "0.08em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_slot_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Card product title"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtitle_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemtitle_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemtitle_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtitle_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "500"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtitle_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          },
+          {
+            "value": "lowercase",
+            "label": "lowercase"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtitle_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_itemtitle_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Card product type \u2014 line below the name"
+      },
+      {
+        "type": "paragraph",
+        "content": "The card name shows only the part of the product title before the dash (e.g. 'Clark' from 'Clark - Elastic Wallet'). This optional line shows the product type below it."
+      },
+      {
+        "type": "checkbox",
+        "id": "trifecta_show_item_type",
+        "label": "Show product type",
+        "default": true
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtype_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemtype_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 11
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemtype_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 11
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtype_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "300",
+            "label": "Light"
+          },
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "400"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtype_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          },
+          {
+            "value": "lowercase",
+            "label": "lowercase"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemtype_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          },
+          {
+            "value": "0.12em",
+            "label": "Wider"
+          },
+          {
+            "value": "0.2em",
+            "label": "Extra wide"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_itemtype_color",
+        "label": "Color",
+        "info": "Leave blank for a muted version of the card text color."
+      },
+      {
+        "type": "header",
+        "content": "Card price"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemprice_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemprice_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemprice_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 8,
+        "max": 20,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemprice_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "400"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemprice_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_itemprice_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_itemprice_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Card 'Change' hint"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_hint_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_hint_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 8,
+        "max": 32,
+        "step": 1,
+        "default": 11
+      },
+      {
+        "type": "range",
+        "id": "trifecta_hint_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 8,
+        "max": 32,
+        "step": 1,
+        "default": 11
+      },
+      {
+        "type": "select",
+        "id": "trifecta_hint_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "600"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_hint_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          }
+        ],
+        "default": "uppercase"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_hint_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          },
+          {
+            "value": "0.12em",
+            "label": "Wider"
+          }
+        ],
+        "default": "0.05em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_hint_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Dropdown header \u2014 'Choose your X'"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dh_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dh_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 10,
+        "max": 32,
+        "step": 1,
+        "default": 13
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dh_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 10,
+        "max": 24,
+        "step": 1,
+        "default": 13
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dh_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "500"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dh_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dh_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_dh_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Dropdown 'Filter by type' label + pills"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dt_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dt_size_d",
+        "label": "Pill size \u2014 desktop (px)",
+        "min": 9,
+        "max": 24,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dt_size_m",
+        "label": "Pill size \u2014 mobile (px)",
+        "min": 9,
+        "max": 18,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dt_weight",
+        "label": "Pill weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "700"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dt_transform",
+        "label": "Pill case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dt_ls",
+        "label": "Pill letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dt_pad_v",
+        "label": "Pill padding (vertical, px)",
+        "min": 2,
+        "max": 16,
+        "step": 1,
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dt_pad_h",
+        "label": "Pill padding (horizontal, px)",
+        "min": 6,
+        "max": 32,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dt_gap",
+        "label": "Gap between pills (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "color",
+        "id": "trifecta_dt_color",
+        "label": "Pill text (inactive)"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_dt_active_color",
+        "label": "Pill text (active)"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_dt_active_bg",
+        "label": "Pill background (active)"
+      },
+      {
+        "type": "header",
+        "content": "Dropdown swatch name (label under each thumbnail)"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dn_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dn_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 8,
+        "max": 18,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dn_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 8,
+        "max": 18,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dn_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "400"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dn_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          },
+          {
+            "value": "capitalize",
+            "label": "Capitalize"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_dn_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_dn_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Bundle total label \u2014 'Bundle total:'"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_total_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_total_size_d",
+        "label": "Size \u2014 desktop (px)",
+        "min": 10,
+        "max": 32,
+        "step": 1,
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "trifecta_total_size_m",
+        "label": "Size \u2014 mobile (px)",
+        "min": 10,
+        "max": 24,
+        "step": 1,
+        "default": 14
+      },
+      {
+        "type": "select",
+        "id": "trifecta_total_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "500"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_total_transform",
+        "label": "Case",
+        "options": [
+          {
+            "value": "none",
+            "label": "Default"
+          },
+          {
+            "value": "uppercase",
+            "label": "UPPERCASE"
+          }
+        ],
+        "default": "none"
+      },
+      {
+        "type": "select",
+        "id": "trifecta_total_ls",
+        "label": "Letter spacing",
+        "options": [
+          {
+            "value": "0em",
+            "label": "None"
+          },
+          {
+            "value": "0.02em",
+            "label": "Tight"
+          },
+          {
+            "value": "0.05em",
+            "label": "Normal"
+          },
+          {
+            "value": "0.08em",
+            "label": "Wide"
+          }
+        ],
+        "default": "0em"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_total_color",
+        "label": "Color"
+      },
+      {
+        "type": "header",
+        "content": "Bundle total \u2014 price numbers"
+      },
+      {
+        "type": "paragraph",
+        "content": "By default the price numbers match the PDP's Price block typography. Turn on the override to style them independently with the settings below."
+      },
+      {
+        "type": "checkbox",
+        "id": "trifecta_price_override",
+        "label": "Use custom price styling",
+        "default": false
+      },
+      {
+        "type": "select",
+        "id": "trifecta_price_font",
+        "label": "Font",
+        "options": [
+          {
+            "value": "",
+            "label": "Inherit"
+          },
+          {
+            "value": "body",
+            "label": "Body"
+          },
+          {
+            "value": "heading",
+            "label": "Heading"
+          },
+          {
+            "value": "handwritten",
+            "label": "Handwritten"
+          }
+        ],
+        "default": ""
+      },
+      {
+        "type": "range",
+        "id": "trifecta_price_size_d",
+        "label": "Price size \u2014 desktop (px)",
+        "min": 10,
+        "max": 32,
+        "step": 1,
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "trifecta_price_size_m",
+        "label": "Price size \u2014 mobile (px)",
+        "min": 10,
+        "max": 24,
+        "step": 1,
+        "default": 14
+      },
+      {
+        "type": "select",
+        "id": "trifecta_price_weight",
+        "label": "Weight",
+        "options": [
+          {
+            "value": "300",
+            "label": "Light"
+          },
+          {
+            "value": "400",
+            "label": "Regular"
+          },
+          {
+            "value": "500",
+            "label": "Medium"
+          },
+          {
+            "value": "600",
+            "label": "Semi-bold"
+          },
+          {
+            "value": "700",
+            "label": "Bold"
+          }
+        ],
+        "default": "600"
+      },
+      {
+        "type": "color",
+        "id": "trifecta_price_color",
+        "label": "Price color"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_was_size_d",
+        "label": "Compare-at size \u2014 desktop (px)",
+        "min": 8,
+        "max": 28,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_was_size_m",
+        "label": "Compare-at size \u2014 mobile (px)",
+        "min": 8,
+        "max": 22,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "color",
+        "id": "trifecta_was_color",
+        "label": "Compare-at color",
+        "info": "The struck-through pre-discount total."
+      },
+      {
+        "type": "header",
+        "content": "Spacing \u2014 Bundle container"
+      },
+      {
+        "type": "checkbox",
+        "id": "trifecta_show_dividers",
+        "label": "Show divider lines above and below",
+        "default": true
+      },
+      {
+        "type": "range",
+        "id": "trifecta_margin_top_d",
+        "label": "Margin top \u2014 desktop (px)",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_margin_top_m",
+        "label": "Margin top \u2014 mobile (px)",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_margin_bot_d",
+        "label": "Margin bottom \u2014 desktop (px)",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_margin_bot_m",
+        "label": "Margin bottom \u2014 mobile (px)",
+        "min": 0,
+        "max": 64,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_pad_v_d",
+        "label": "Inner padding (vertical) \u2014 desktop (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_pad_v_m",
+        "label": "Inner padding (vertical) \u2014 mobile (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_pad_h_d",
+        "label": "Inner padding (horizontal) \u2014 desktop (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "range",
+        "id": "trifecta_pad_h_m",
+        "label": "Inner padding (horizontal) \u2014 mobile (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 16
+      },
+      {
+        "type": "header",
+        "content": "Spacing \u2014 Heading + Card row"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_heading_mb",
+        "label": "Heading margin below (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_items_gap",
+        "label": "Gap between the 3 cards (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "trifecta_items_mb",
+        "label": "Items row margin below (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "header",
+        "content": "Item card \u2014 Outline"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_card_border_w",
+        "label": "Outline border weight (px)",
+        "min": 0,
+        "max": 6,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "color",
+        "id": "trifecta_card_border_color",
+        "label": "Outline border color",
+        "info": "Leave blank to inherit from the theme's divider color."
+      },
+      {
+        "type": "header",
+        "content": "Item card \u2014 Checkbox (top-right corner)"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_checkbox_size",
+        "label": "Box size (px)",
+        "min": 14,
+        "max": 36,
+        "step": 1,
+        "default": 22
+      },
+      {
+        "type": "range",
+        "id": "trifecta_checkbox_offset",
+        "label": "Inset from corner (px)",
+        "min": 0,
+        "max": 16,
+        "step": 1,
+        "default": 6
+      },
+      {
+        "type": "range",
+        "id": "trifecta_checkbox_radius",
+        "label": "Corner radius (px)",
+        "min": 0,
+        "max": 18,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "trifecta_checkbox_border_w",
+        "label": "Outline weight (px)",
+        "min": 0,
+        "max": 4,
+        "step": 0.5,
+        "default": 1.5
+      },
+      {
+        "type": "color",
+        "id": "trifecta_checkbox_border_color",
+        "label": "Outline color \u2014 unchecked",
+        "info": "Leave blank to inherit from the theme's divider color."
+      },
+      {
+        "type": "color",
+        "id": "trifecta_checkbox_bg",
+        "label": "Background \u2014 unchecked",
+        "info": "Leave blank for the theme's body background."
+      },
+      {
+        "type": "color",
+        "id": "trifecta_checkbox_checked_color",
+        "label": "Fill + outline \u2014 checked",
+        "info": "Leave blank for the theme's primary color (the current blue)."
+      },
+      {
+        "type": "color",
+        "id": "trifecta_checkbox_mark_color",
+        "label": "Checkmark color",
+        "info": "Leave blank for white."
+      },
+      {
+        "type": "header",
+        "content": "Spacing \u2014 Item card internals"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_card_pad",
+        "label": "Card bottom padding (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "trifecta_card_gap",
+        "label": "Card image-to-text gap (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 6
+      },
+      {
+        "type": "range",
+        "id": "trifecta_slot_mt",
+        "label": "Slot label margin top (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 4
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemtitle_mt",
+        "label": "Product title margin top (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemtype_mt",
+        "label": "Product type margin top (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 1
+      },
+      {
+        "type": "range",
+        "id": "trifecta_itemprice_mt",
+        "label": "Price margin top (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 2
+      },
+      {
+        "type": "range",
+        "id": "trifecta_hint_mt",
+        "label": "'Change' hint margin top (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 3
+      },
+      {
+        "type": "header",
+        "content": "Spacing \u2014 Totals + CTA"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_summary_mb",
+        "label": "Summary margin below (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_actions_mt",
+        "label": "Action button margin top (px)",
+        "min": 0,
+        "max": 48,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "header",
+        "content": "Spacing \u2014 Dropdown (Change panel)"
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dropdown_pad",
+        "label": "Dropdown padding (px)",
+        "min": 4,
+        "max": 32,
+        "step": 1,
+        "default": 12
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dh_mb",
+        "label": "Dropdown header margin below (px)",
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "default": 10
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dt_mb",
+        "label": "Filter pill row margin below (px)",
+        "min": 0,
+        "max": 32,
+        "step": 1,
+        "default": 14
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dropdown_grid_gap",
+        "label": "Dropdown swatch grid gap (px)",
+        "min": 0,
+        "max": 24,
+        "step": 1,
+        "default": 8
+      },
+      {
+        "type": "range",
+        "id": "trifecta_dropdown_swatch_min",
+        "label": "Dropdown swatch min width (px)",
+        "min": 48,
+        "max": 160,
+        "step": 4,
+        "default": 72
+      }
+    ]
+  },
+  {
+    "name": "Market Tote bundle",
+    "settings": [
+      {
+        "type": "paragraph",
+        "content": "Buy-3 Market Tote bundler. Prefer the Thread Bundle Discount Function (apps/bundle-discount): 20% on lines stamped with _bundle_id / market_tote. Leave the discount code blank. Only fill a code if you want a silent /discount/CODE attach after add-to-cart."
+      },
+      {
+        "type": "checkbox",
+        "id": "market_tote_pdp_enable",
+        "label": "Show \"Build a tote bundle\" CTA on Market Tote PDPs",
+        "default": true
+      },
+      {
+        "type": "collection",
+        "id": "market_tote_collection",
+        "label": "Market Tote collection",
+        "info": "Used for PDP eligibility and as the default product source. Prefer reusable-market-tote-bags."
+      },
+      {
+        "type": "text",
+        "id": "market_tote_page_path",
+        "label": "Bundler page path",
+        "default": "/collections/reusable-market-tote-bags",
+        "info": "Where the PDP CTA sends customers. Defaults to the Market Tote collection (bundler section is on that template). A dedicated page with the market-tote-bundler template also works. CTA appends ?preselect=<handle>#build-your-tote-bundle."
+      },
+      {
+        "type": "text",
+        "id": "market_tote_pdp_cta_text",
+        "label": "PDP button text",
+        "default": "Build a tote bundle \u2014 Save 20%"
+      },
+      {
+        "type": "text",
+        "id": "market_tote_drawer_title",
+        "label": "Drawer title (legacy)",
+        "default": "Build Your Tote Bundle",
+        "info": "Only used if the drawer snippet is rendered elsewhere. PDP CTAs navigate to the bundler page instead."
+      },
+      {
+        "type": "header",
+        "content": "Checkout discount"
+      },
+      {
+        "type": "text",
+        "id": "market_tote_discount_code",
+        "label": "Market Tote discount code (optional)",
+        "info": "Leave blank when using an automatic discount. If set, must match a Discount code in admin. Section-level discount_code overrides this when set."
       }
     ]
   }
