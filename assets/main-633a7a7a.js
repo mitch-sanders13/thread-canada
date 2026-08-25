@@ -1449,7 +1449,7 @@ const collections = {
         const hoverAttribute = hoverImage ? `@mouseover="second_image='${hoverImage}'"` : "";
         const swatchHtml = `
           <a
-            href="/products/${product.handle}"
+            href="${window.Shopify.routes.root}products/${product.handle}"
             title="${this.escapeHtmlAttr(product.title)}"
             class="btn btn--plain btn--small bg-center !w-6 !h-6 !min-h-[1.5rem] !min-w-[1.5rem] bg-contain !rounded-full !p-0"
             style="background-image: url('${swatchImageUrl}');"
@@ -1754,7 +1754,7 @@ const collections = {
       const imgLoading = inHiddenRest ? "lazy" : "eager";
       return `
         <a
-          href="/products/${product.handle}"
+          href="${window.Shopify.routes.root}products/${product.handle}"
           aria-label="${this.escapeHtmlAttr(product.title)}"
           data-pdp-swatch-tile
           class="relative flex min-h-[44px] w-full min-w-0 flex-col overflow-hidden rounded-md bg-transparent transition-transform duration-200 ease-out hover:scale-[1.02] ${borderClass} ${scaleClass} !no-underline"

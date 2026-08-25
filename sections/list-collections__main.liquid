@@ -9,10 +9,13 @@
     - Toggle page padding on to use the same padding as the rest of your site.
 {% endcomment %}
 
-{% # Redirect to collections/all %} 
+{% comment %}
+  Redirect to the "all products" collection. `routes.all_products_collection_url`
+  is resolved by Shopify for this store and locale, so it never points at the US site.
+{% endcomment %}
 <script>
   document.addEventListener("DOMContentLoaded", function() {
-    window.location.href = "https://threadwallets.com/collections/all";
+    window.location.href = "{{ routes.all_products_collection_url }}";
   });
 </script>
 

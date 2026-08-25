@@ -12,11 +12,16 @@
     - This template isn't primarly used since the cart drawer will be used instead.
 {% endcomment %}
 
+{% comment %}
+  The cart drawer replaces this page, so send shoppers back to the storefront.
+  `routes.root_url` keeps the redirect on THIS store (and inside the correct
+  locale/market subfolder) instead of hardcoding the US domain.
+{% endcomment %}
 <script>
-  window.location.href = 'https://threadwallets.com/?cart
+  window.location.href = '{{ routes.root_url }}?cart';
 </script>
 
-<section class="{{ section.settings.page_color_scheme }}" x-init="window.location.href = 'https://threadwallets.com/?cart'">
+<section class="{{ section.settings.page_color_scheme }}">
 
   <div class="py-24
     {{ settings.layout_horizontal }}">
