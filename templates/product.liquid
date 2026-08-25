@@ -1,0 +1,12 @@
+{% comment %}
+  Liquid product template.
+
+  GitHub theme sync on this store has repeatedly skipped templates/product.json
+  (it depended on sections that fail Theme Check). Shopify then has no product
+  template, so /products/* returns HTTP 404 and the 404 "Search banner" layout.
+
+  A Liquid template is accepted independently of those JSON section references.
+  product.json is removed so this file is the only default product template.
+{% endcomment %}
+
+{% section 'product__main' %}
