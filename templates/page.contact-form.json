@@ -1,12 +1,5 @@
 {
   "sections": {
-    "main": {
-      "type": "page__main",
-      "settings": {
-        "color_scheme": "color__bg-body color__text",
-        "layout_horizontal": "window--wide"
-      }
-    },
     "contact": {
       "type": "page__contact",
       "settings": {
@@ -16,7 +9,6 @@
     }
   },
   "order": [
-    "main",
     "contact"
   ]
 }
