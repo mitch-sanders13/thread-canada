@@ -14,7 +14,7 @@
       "disabled": true,
       "settings": {
         "image_background_desktop": "{{ collection.metafields.custom.desktop_banner.value }}",
-        "image_background_mobile": "{{ collection.metafields.custom.mobile_banner.value }}",
+        "image_background_mobile": "",
         "color_scheme": "color__bg-overlay-1 color__text",
         "color_text": "color__light",
         "color_border": "color__border-divider-1",
@@ -52,8 +52,8 @@
         "content_fG3b6A": {
           "type": "content",
           "settings": {
-            "video": "shopify://files/videos/thread_fanny_pack_FP_pdp_video.mp4",
-            "mobile_video": "shopify://files/videos/thread_fanny_pack_FP_pdp_video.mp4",
+            "video": "",
+            "mobile_video": "",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
