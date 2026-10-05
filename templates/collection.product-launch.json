@@ -4,7 +4,7 @@
       "type": "collection__banner",
       "disabled": true,
       "settings": {
-        "image_background_desktop": "{{ collection.metafields.custom.desktop_banner.value }}",
+        "image_background_desktop": "",
         "image_background_mobile": "",
         "color_scheme": "color__bg-overlay-1 color__text",
         "color_text": "color__light",
