@@ -14,7 +14,7 @@
       "disabled": true,
       "settings": {
         "image_background_desktop": "{{ collection.metafields.custom.desktop_banner.value }}",
-        "image_background_mobile": "{{ collection.metafields.custom.mobile_banner.value }}",
+        "image_background_mobile": "",
         "color_scheme": "color__bg-overlay-1 color__text",
         "color_text": "color__light",
         "color_border": "color__border-divider-1",

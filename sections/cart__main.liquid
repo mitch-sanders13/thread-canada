@@ -116,8 +116,9 @@
                   <div class="flex items-center justify-between">
 
                     <div x-data="{ key: '{{ item.key }}', quantity: {{ item.quantity }} }">
+                      {% assign quantity_input_id = 'quantity-' | append: forloop.index %}
                       {% render 'component__quantity-input',
-                        id: 'quantity-' | append: forloop.index,
+                        id: quantity_input_id,
                         model: 'quantity',
                         decrease_action: 'changeCartItemQuantity(key, quantity - 1, false, false); quantity--; button_loading = true; setTimeout(function(){ button_loading = false }, 1000);',
                         increase_action: 'changeCartItemQuantity(key, quantity + 1, false, false); quantity++; button_loading = true; setTimeout(function(){ button_loading = false }, 1000);',

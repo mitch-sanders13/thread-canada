@@ -125,8 +125,9 @@
 
   {% if blocksettings.enable_quantity %}
     <div class="shrink-[2] pr-4 w-2/5">
+      {% assign quantity_input_id = product.id | append: '-quantity' %}
       {% render 'component__quantity-input',
-        id: product.id | append: '-quantity',
+        id: quantity_input_id,
         model: 'quantity',
         input_name: 'quantity',
         wrapper_class: 'w-full',
