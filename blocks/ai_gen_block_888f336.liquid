@@ -22,8 +22,8 @@
 
   .ai-contact-form__heading-{{ ai_gen_id }} {
     margin: 0;
-    font-family: {{ settings.type_font_heading.family }}, {{ settings.type_font_heading.fallback_families }};
-    font-weight: {{ settings.type_font_heading.weight }};
+    font-family: var(--type-font-header-family);
+    font-weight: var(--type-font-header-weight);
     font-size: {{ block.settings.heading_size }}px;
     color: {{ block.settings.heading_color }};
     text-align: {{ block.settings.text_alignment }};
@@ -31,8 +31,8 @@
 
   .ai-contact-form__subtext-{{ ai_gen_id }} {
     margin: 0;
-    font-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
-    font-weight: {{ settings.type_font_body.weight }};
+    font-family: var(--type-font-body-family);
+    font-weight: var(--type-font-body-weight);
     font-size: {{ block.settings.subtext_size }}px;
     color: {{ block.settings.subtext_color }};
     text-align: {{ block.settings.text_alignment }};
@@ -51,8 +51,8 @@
   }
 
   .ai-contact-form__label-{{ ai_gen_id }} {
-    font-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
-    font-weight: {{ settings.type_font_body.weight }};
+    font-family: var(--type-font-body-family);
+    font-weight: var(--type-font-body-weight);
     font-size: 14px;
     color: {{ block.settings.label_color }};
   }
@@ -61,8 +61,8 @@
   .ai-contact-form__textarea-{{ ai_gen_id }} {
     width: 100%;
     padding: 12px 16px;
-    font-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
-    font-weight: {{ settings.type_font_body.weight }};
+    font-family: var(--type-font-body-family);
+    font-weight: var(--type-font-body-weight);
     font-size: 16px;
     color: {{ block.settings.input_text_color }};
     background-color: {{ block.settings.input_background_color }};
@@ -83,8 +83,8 @@
 
   .ai-contact-form__button-{{ ai_gen_id }} {
     padding: 14px 32px;
-    font-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
-    font-weight: {{ settings.type_font_body.weight }};
+    font-family: var(--type-font-button-family);
+    font-weight: var(--type-font-button-weight);
     font-size: 16px;
     color: {{ block.settings.button_text_color }};
     background-color: {{ block.settings.button_color }};
@@ -100,8 +100,8 @@
 
   .ai-contact-form__success-{{ ai_gen_id }} {
     padding: 16px;
-    font-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
-    font-weight: {{ settings.type_font_body.weight }};
+    font-family: var(--type-font-body-family);
+    font-weight: var(--type-font-body-weight);
     color: {{ block.settings.success_text_color }};
     background-color: {{ block.settings.success_background_color }};
     border-radius: {{ block.settings.border_radius }}px;
@@ -110,8 +110,8 @@
 
   .ai-contact-form__error-{{ ai_gen_id }} {
     padding: 16px;
-    font-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
-    font-weight: {{ settings.type_font_body.weight }};
+    font-family: var(--type-font-body-family);
+    font-weight: var(--type-font-body-weight);
     color: {{ block.settings.error_text_color }};
     background-color: {{ block.settings.error_background_color }};
     border-radius: {{ block.settings.border_radius }}px;

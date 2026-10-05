@@ -1,16 +1,7 @@
 <!-- sections/product__main.liquid -->
 {% comment %}
-  Shopify schema defaults must be plain strings, not { "en": "...", "es": "..." } objects.
-  Locale-object defaults caused GitHub theme sync to skip this file, which then skipped
-  templates/product.json and 404'd every product page in preview.
-  Product JSON no longer references education-grid / recommendations-grid / Okendo so
-  a failed companion section cannot block the default product template from syncing.
-{% endcomment %}
-{% comment %} 
   Loop through different blocks to create a product page.
 
-  Globals:
-    - settings.layout_horizontal: horizontaly margin
     - settings.thumbmails_color_scheme: set color of items
 
   Possible enhancements:
@@ -21,69 +12,47 @@
     - Multiple product templates can be created from the theme editor.
 {% endcomment %}
 
-{%- liquid
-  assign pdp_rail_gap = 24
-  assign header_sticky = false
+{% liquid
+  assign gallery_sticky_top_class = 'md:top-10'
   if settings.header_position == 'sticky' or settings.header_position == 'dynamic'
-    assign header_sticky = true
+    assign gallery_sticky_top_class = 'md:top-[calc(var(--header-height,0px)+1.5rem)]'
   endif
-  if header_sticky
-    assign pdp_top_px = 90
-    assign pdp_top_offset = '90px'
-  else
-    assign pdp_top_px = 16
-    assign pdp_top_offset = '1rem'
-  endif
--%}
+%}
 
-<section class="z-10 relative
-  {{ section.settings.color_scheme }}
-  {{ section.settings.layout_horizontal }}"
+<section
+  class="
+    z-10 relative max-w-full overflow-x-clip md:overflow-x-visible
+    {{ section.settings.color_scheme }}
+    md:window--wide
+  "
   data-pdp-main="{{ section.id }}"
-  style="--pdp-gallery-top-offset: {{ pdp_top_offset }};--pdp-gallery-top-px: {{ pdp_top_px }};--pdp-gallery-rail-gap: {{ pdp_rail_gap }}px;"
-  x-data="{ 
-    fullscreen: false,
-  }"
+  x-data="
+    {
+      fullscreen: false,
+    }
+  "
   x-init="checkLineItems('{{ product.handle }}')"
   x-intersect:enter="scroll_up_force = true;"
-  x-intersect:leave="scroll_up_force = false;">
-
+  x-intersect:leave="scroll_up_force = false;"
+>
   {%- capture script_product -%}
     {% render 'script__product', 
       gallery_style : section.settings.media_gallery_style,
       enable_variant_section_rendering: true %}
   {%- endcapture -%}
-  {% case section.settings.layout_gallery_size %}
-    {% when 'w-full md:w-1/3' %}
-      {% assign layout_detail_size = 'w-full md:w-2/3' %}
-      {% assign pdp_gallery_width_ratio = '0.3333333333' %}
-    {% when 'w-full md:w-1/2' %}
-      {% assign layout_detail_size = 'w-full md:w-1/2' %}
-      {% assign pdp_gallery_width_ratio = '0.5' %}
-    {% when 'w-full md:w-2/3' %}
-      {% assign layout_detail_size = 'w-full md:w-1/3' %}
-      {% assign pdp_gallery_width_ratio = '0.6666666667' %}
-    {% when 'w-full md:w-3/4' %}
-      {% assign layout_detail_size = 'w-full md:w-1/4' %}
-      {% assign pdp_gallery_width_ratio = '0.75' %}
-  {% endcase %}
-
-  {%- comment -%}Desktop: fixed gallery rail (offsets hardcoded in Liquid at top of file).{%- endcomment -%}
-  <div class="flex flex-row flex-wrap md:items-start md:pt-[var(--pdp-gallery-rail-gap)]"
+  {%- comment -%}The desktop gallery uses native sticky positioning within the product layout.{%- endcomment -%}
+  <div
+    class="flex w-full flex-col md:flex-row md:items-start md:gap-[2em] md:py-6"
 
     x-data="{{ script_product }}"
-    x-init="
-      initProductForm();
-    "
-    x-ref="formContainer">
-
-    <div class="w-full min-w-0 {{ section.settings.layout_gallery_size }} flex flex-col">
-      <div class="hidden md:block pdp-gallery-spacer-{{ section.id }}" data-pdp-gallery-spacer="{{ section.id }}"></div>
-      <div
-        class="pdp-gallery-fixed-{{ section.id }} top-4 z-30 w-full md:fixed"
-        data-pdp-gallery-fixed="{{ section.id }}"
-      >
-        <div data-product-media-container="{{ section.id }}" style="display: contents;">
+    x-init="      initProductForm();"
+    x-ref="formContainer"
+  >
+    <div
+      class="z-30 flex w-full min-w-0 flex-col md:sticky md:w-[70%] md:flex-none md:self-start md:overflow-hidden {{ gallery_sticky_top_class }}"
+    >
+      <div class="w-full">
+        <div class="contents" data-product-media-container="{{ section.id }}">
           {% if section.settings.media_gallery_style == 'grid' %}
             {% render 'product__gallery-grid', nested_gallery_column: true %}
           {% elsif section.settings.media_gallery_style == 'slider' %}
@@ -95,25 +64,25 @@
       </div>
     </div>
 
-    <div class="border--t-width md:border-t-0 w-full min-w-0
-      {{ section.settings.color_border }}
-      {{ layout_detail_size }}">
+    <div
+      class="
+        border--t-width md:border-t-0 w-full min-w-0 md:flex-1
+        {{ section.settings.color_border }}
+      "
+    >
       <div
-        x-data="{ 
-          button_loading: false 
-        }">
-
-        {% form "product", product %}
-
-          {% if section.blocks.size == 0 %}
-            {% render 'product__default-buy-column' %}
-          {% else %}
-
+        class="w-full"
+        x-data="
+          {
+            button_loading: false
+          }
+        "
+      >
+        {% form 'product', product %}
           {% comment %} Desktop only blocks {% endcomment %}
           <div class="hidden w-full md:block">
             {% for block in section.blocks %}
               {%- case block.type -%}
-                
                 {%- when 'breadcrumb' -%}
                   {% render 'product__breadcrumb', blocksettings: block.settings %}
 
@@ -121,41 +90,62 @@
                   {% render 'product__title', blocksettings: block.settings %}
 
                 {%- when 'price' -%}
-                  <div class="px-4
+                  <div
+                    class="
+                      px-4 md:!pt-3 md:!pb-[22px]
                       {{ section.settings.color_border }}
-                      {{ block.settings.color_scheme }} 
-                      {{ block.settings.style_border }}"
+                      {{ block.settings.color_scheme }}
+                      {{ block.settings.style_border }}
+                    "
                     style="
                       padding-top:{{ block.settings.spacing_top }}px;
-                      padding-bottom:{{ block.settings.spacing_bottom }}px;">
+                      padding-bottom:{{ block.settings.spacing_bottom }}px;
+                    "
+                  >
                     <div class="relative flex items-end justify-between">
                       {% render 'product__price', blocksettings: block.settings %}
                     </div>
                   </div>
-
               {%- endcase -%}
             {% endfor %}
           </div>
 
+          {% assign skip_paired_icon = false %}
           {% for block in section.blocks %}
+            {% if skip_paired_icon %}
+              {% assign skip_paired_icon = false %}
+              {% continue %}
+            {% endif %}
             {%- case block.type -%}
               {%- when 'icon' -%}
-                {% render 'product__icon', blocksettings: block.settings %} 
+                {% assign next_block = section.blocks[forloop.index] %}
+                <div class="flex w-full flex-wrap items-center justify-center gap-3">
+                  {% render 'product__icon', blocksettings: block.settings %}
+                  {% if next_block.type == 'icon' %}
+                    {% render 'product__icon', blocksettings: next_block.settings %}
+                    {% assign skip_paired_icon = true %}
+                  {% endif %}
+                </div>
 
               {%- when 'custom' -%}
-                <div class='px-4 
-                  {{ section.settings.color_border }}
-                  {{ block.settings.color_scheme }} 
-                  {{ block.settings.style_border }}'
+                <div
+                  class="
+                    px-4
+                    {{ section.settings.color_border }}
+                    {{ block.settings.color_scheme }}
+                    {{ block.settings.style_border }}
+                  "
                   style="
                     padding-top:{{ block.settings.spacing_top }}px;
-                    padding-bottom:{{ block.settings.spacing_bottom }}px;">
+                    padding-bottom:{{ block.settings.spacing_bottom }}px;
+                  "
+                >
                   {% render 'product__custom-field', blocksettings: block.settings %}
                 </div>
 
               {%- when 'text' -%}
                 {% if product.tags contains block.settings.text_block_tag %}
-                    {% render 'product__text', blocksettings: block.settings %}
+                  {% render 'product__text', blocksettings: block.settings %}
                 {% endif %}
 
               {%- when 'description' -%}
@@ -171,34 +161,42 @@
                 {% render 'product__inventory', blocksettings: block.settings %}
 
               {%- when 'pickup' -%}
-                {% render 'product__pickup', blocksettings: block.settings %}  
+                {% render 'product__pickup', blocksettings: block.settings %}
 
               {%- when 'options' -%}
-                <div class="options flex flex-col gap-2
-                  {{ section.settings.color_border }}
-                  {{ block.settings.color_scheme }}
-                  {{ block.settings.style_border }}"
+                <div
+                  class="
+                    options flex flex-col gap-2 md:!pt-0
+                    {{ section.settings.color_border }}
+                    {{ block.settings.color_scheme }}
+                    {{ block.settings.style_border }}
+                  "
                   style="
                     padding-top:{% if product.selected_or_first_available_selling_plan_allocation or product.has_only_default_variant == false %}{{ block.settings.spacing_top }}px;{% else %}0;{% endif %}
-                    padding-bottom:{% if product.selected_or_first_available_selling_plan_allocation or product.has_only_default_variant == false %}{{ block.settings.spacing_bottom }}px;{% else %}0;{% endif %}">
-                  {% render 'product__options', 
-                    blocksettings: block.settings %}
+                    padding-bottom:{% if product.selected_or_first_available_selling_plan_allocation or product.has_only_default_variant == false %}{{ block.settings.spacing_bottom }}px;{% else %}0;{% endif %}
+                  "
+                >
+                  {% render 'product__options', blocksettings: block.settings %}
                 </div>
 
               {%- when 'add' -%}
-                <div class="
-                  {{ section.settings.color_border }}
-                  {{ block.settings.color_scheme }}
-                  {{ block.settings.style_border }}"
+                <div
+                  class="
+                    {{ section.settings.color_border }}
+                    {{ block.settings.color_scheme }}
+                    {{ block.settings.style_border }}
+                  "
                   style="
                     padding-top:{{ block.settings.spacing_top }}px;
-                    padding-bottom:{{ block.settings.spacing_bottom }}px;">
+                    padding-bottom:{{ block.settings.spacing_bottom }}px;
+                  "
+                >
                   <div
-                    data-pdp-primary-atc
+                    class="md:[&_.btn]:rounded-lg"
                     x-intersect:enter="stickyadd = false"
-                    x-intersect:leave="stickyadd = true">
-                    {% render 'product__add',
-                      blocksettings: block.settings %}
+                    x-intersect:leave="stickyadd = true"
+                  >
+                    {% render 'product__add', blocksettings: block.settings %}
                   </div>
                   {% if block.settings.enable_dynamic_checkout %}
                     <div class="px-4 mt-4">
@@ -221,8 +219,8 @@
                 {% render 'product__rating', blocksettings: block.settings %}
 
               {%- when 'countdown' -%}
-                {% if product.tags contains block.settings.countdown_tag or block.settings.countdown_tag == "" %}
-                    {% render 'product__countdown', blocksettings: block.settings %}
+                {% if product.tags contains block.settings.countdown_tag or block.settings.countdown_tag == '' %}
+                  {% render 'product__countdown', blocksettings: block.settings %}
                 {% endif %}
 
               {% when 'liquid' %}
@@ -230,10 +228,8 @@
 
               {% when '@app' %}
                 {% render block %}
-
-              {%- endcase -%}
+            {%- endcase -%}
           {% endfor %}
-          {% endif %}
         {% endform %}
 
         {% for block in section.blocks %}
@@ -242,7 +238,6 @@
               {% render 'product__upsell', blocksettings: block.settings %}
           {%- endcase -%}
         {% endfor %}
-
       </div>
     </div>
   </div>
@@ -252,7 +247,6 @@
       {% render 'product__gallery-fullscreen' %}
     {% endif %}
   </div>
-
 </section>
 
 {% render 'script__recent-view' %}
@@ -260,141 +254,10 @@
 
 {% comment %} Backup collegiate swatch container - ensure it exists {% endcomment %}
 {% if product.tags contains 'collegiate' %}
-  <div style="display: none;">
+  <div class="hidden">
     <div class="js:pdp-collegiate-swatches-backup"></div>
   </div>
 {% endif %}
-
-<style>
-  @media (min-width: 768px) {
-    .pdp-gallery-fixed-{{ section.id }} {
-      top: calc(var(--pdp-gallery-top-offset) + var(--pdp-gallery-rail-gap));
-      left: max(1rem, calc((100vw - 1536px) / 2 + 1rem));
-      width: calc((min(100vw, 1536px) - 2rem) * {{ pdp_gallery_width_ratio }});
-      overflow: visible;
-    }
-  }
-</style>
-
-<script>
-  (() => {
-    const section = document.querySelector('[data-pdp-main="{{ section.id }}"]');
-    const spacer = document.querySelector('[data-pdp-gallery-spacer="{{ section.id }}"]');
-    const gallery = document.querySelector('[data-pdp-gallery-fixed="{{ section.id }}"]');
-
-    if (!section || !spacer || !gallery) return;
-
-    const resetGallery = () => {
-      gallery.style.position = '';
-      gallery.style.top = '';
-      gallery.style.left = '';
-      gallery.style.bottom = '';
-      gallery.style.width = '';
-      gallery.style.height = '';
-      gallery.style.maxHeight = '';
-      gallery.style.overflow = '';
-      gallery.style.transform = '';
-      spacer.style.height = '';
-    };
-
-    const readOffsetPx = () => {
-      const fromPx = getComputedStyle(section).getPropertyValue('--pdp-gallery-top-px').trim();
-      const n = parseFloat(fromPx);
-      if (Number.isFinite(n) && n > 0) return n;
-      const raw = getComputedStyle(section).getPropertyValue('--pdp-gallery-top-offset').trim() || '90px';
-      if (raw.includes('rem')) {
-        const rem = parseFloat(raw);
-        const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-        if (Number.isFinite(rem) && rem > 0) return rem * rootPx;
-      }
-      return parseFloat(raw) || 90;
-    };
-
-    const readRailGapPx = () => {
-      const raw = getComputedStyle(section).getPropertyValue('--pdp-gallery-rail-gap').trim();
-      if (!raw) return 0;
-      if (raw.includes('rem')) {
-        const rem = parseFloat(raw);
-        const rootPx = parseFloat(getComputedStyle(document.documentElement).fontSize) || 16;
-        if (Number.isFinite(rem) && rem > 0) return rem * rootPx;
-      }
-      const n = parseFloat(raw);
-      return Number.isFinite(n) && n >= 0 ? n : 0;
-    };
-
-    const syncGallery = () => {
-      if (window.innerWidth < 768) {
-        resetGallery();
-        return;
-      }
-
-      const offsetPx = readOffsetPx();
-      const railTopPx = offsetPx + readRailGapPx();
-      const spacerRect = spacer.getBoundingClientRect();
-      const sectionRect = section.getBoundingClientRect();
-      const spacerLeftInSection = spacer.offsetLeft;
-      // scrollHeight can be briefly inflated on first paint; cap for rail math so we
-      // don't spuriously hit the "pin to section bottom" branch before layout settles.
-      const rawH = gallery.scrollHeight;
-      const vh = window.innerHeight;
-      const heightCap = Math.max(vh * 6, 2400);
-      const galleryHeight = Math.min(rawH, heightCap);
-      gallery.style.width = `${spacerRect.width}px`;
-      gallery.style.height = 'auto';
-      gallery.style.maxHeight = 'none';
-      gallery.style.overflow = 'visible';
-      spacer.style.height = `${rawH}px`;
-
-      // Pin gallery bottom when section ends before the fixed rail would overflow.
-      const canPinToSectionBottom = sectionRect.top < railTopPx - 0.5;
-      if (canPinToSectionBottom && sectionRect.bottom <= railTopPx + galleryHeight) {
-        gallery.style.position = 'absolute';
-        gallery.style.top = 'auto';
-        gallery.style.left = `${spacerLeftInSection}px`;
-        gallery.style.bottom = '0px';
-        gallery.style.transform = '';
-        return;
-      }
-
-      gallery.style.position = 'fixed';
-      gallery.style.top = `${railTopPx}px`;
-      gallery.style.left = `${spacerRect.left}px`;
-      gallery.style.bottom = '';
-      gallery.style.transform = '';
-    };
-
-    const scheduleSync = () => {
-      requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          syncGallery();
-        });
-      });
-    };
-
-    const onResize = () => {
-      syncGallery();
-    };
-
-    const onSectionLoad = () => {
-      scheduleSync();
-    };
-
-    syncGallery();
-    scheduleSync();
-    window.addEventListener('load', scheduleSync, { once: true });
-    window.addEventListener('scroll', syncGallery, { passive: true });
-    window.addEventListener('resize', onResize);
-    document.addEventListener('shopify:section:load', onSectionLoad);
-    window.addEventListener('tw:pdp-layout-changed', scheduleSync);
-    if ('ResizeObserver' in window) {
-      const ro = new ResizeObserver(() => {
-        requestAnimationFrame(syncGallery);
-      });
-      ro.observe(gallery);
-      ro.observe(section);
-    }
-  })();
-</script>
 
 {% schema %}
 {
@@ -624,59 +487,6 @@
         }
       ],
       "default": "color__border-divider-1"
-    },
-    {
-      "type": "header",
-      "content": "t:sections.all.headers.header__3.content"
-    },
-    {
-      "type": "select",
-      "id": "layout_gallery_size",
-      "label": "t:sections.product_main.settings.layout_gallery_size.label",
-      "info": "t:sections.product_main.settings.layout_gallery_size.info",
-      "options": [
-        {
-          "value": "w-full md:w-1/3",
-          "label": "t:sections.product_main.settings.layout_gallery_size.options__1.label"
-        },
-        {
-          "value": "w-full md:w-1/2",
-          "label": "t:sections.product_main.settings.layout_gallery_size.options__2.label"
-        },
-        {
-          "value": "w-full md:w-2/3",
-          "label": "t:sections.product_main.settings.layout_gallery_size.options__3.label"
-        },
-        {
-          "value": "w-full md:w-3/4",
-          "label": "t:sections.product_main.settings.layout_gallery_size.options__4.label"
-        }
-      ],
-      "default": "w-full md:w-2/3"
-    },
-    {
-      "type": "select",
-      "id": "layout_horizontal",
-      "label": "t:settings_schema.layout.settings.layout_horizontal.label",
-      "options": [
-        {
-          "value": "md:window--narrow",
-          "label": "t:settings_schema.layout.settings.layout_horizontal.options__1.label"
-        },
-        {
-          "value": "md:window",
-          "label": "t:settings_schema.layout.settings.layout_horizontal.options__2.label"
-        },
-        {
-          "value": "md:window--wide",
-          "label": "t:settings_schema.layout.settings.layout_horizontal.options__3.label"
-        },
-        {
-          "value": "md:window--full",
-          "label": "t:settings_schema.layout.settings.layout_horizontal.options__4.label"
-        }
-      ],
-      "default": "md:window"
     }
   ],
   "blocks": [
@@ -1132,7 +942,13 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.all.content.settings.content.label",
-          "default": "<p>Highlight key selling features of your product</p>"
+          "default": {
+            "en": "<p>Highlight key selling features of your product</p>",
+            "es": "<p>Resalte las características clave de venta de su producto</p>",
+            "it": "<p>Evidenzia le principali caratteristiche di vendita del tuo prodotto</p>",
+            "de": "<p>Heben Sie die wichtigsten Verkaufsmerkmale Ihres Produkts hervor</p>",
+            "fr": "<p>Mettez en évidence les principales caractéristiques de vente de votre produit</p>"
+          }
         },
         {
           "type": "header",
@@ -1685,6 +1501,22 @@
             }
           ],
           "default": ""
+        },
+        {
+          "type": "select",
+          "id": "layout_width",
+          "label": "Width",
+          "options": [
+            {
+              "value": "full",
+              "label": "Full width"
+            },
+            {
+              "value": "half",
+              "label": "Half width"
+            }
+          ],
+          "default": "full"
         }
       ]
     },
@@ -1785,13 +1617,25 @@
           "type": "text",
           "id": "title",
           "label": "t:sections.product_main.blocks.accordion.settings.title.label",
-          "default": "Details"
+          "default": {
+            "en": "Details",
+            "es": "Detalles",
+            "it": "Dettagli",
+            "de": "Details",
+            "fr": "Détails"
+          }
         },
         {
           "type": "richtext",
           "id": "content",
           "label": "t:sections.product_main.blocks.accordion.settings.content.label",
-          "default": "<p>Include more information about your product details.</p>"
+          "default": {
+            "en": "<p>Include more information about your product details.</p>",
+            "es": "<p>Incluye más información sobre los detalles de tu producto.</p>",
+            "it": "<p>Includi ulteriori informazioni sui dettagli del tuo prodotto.</p>",
+            "de": "<p>Fügen Sie weitere Informationen zu Ihren Produktdetails hinzu.</p>",
+            "fr": "<p>Incluez plus d’informations sur les détails de votre produit.</p>"
+          }
         },
         {
           "type": "header",
@@ -1891,7 +1735,13 @@
           "type": "text",
           "id": "title",
           "label": "t:sections.product_main.blocks.popup.settings.title.label",
-          "default": "See more"
+          "default": {
+            "en": "See more",
+            "es": "Ver más",
+            "it": "Scopri di più",
+            "de": "Mehr anzeigen",
+            "fr": "Voir plus"
+          }
         },
         {
           "type": "page",
@@ -2308,7 +2158,13 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.product_main.blocks.add.settings.content.label",
-          "default": "<p>Remind customers of offers like free shipping and lifetime warranty</p>"
+          "default": {
+            "en": "<p>Remind customers of offers like free shipping and lifetime warranty</p>",
+            "es": "<p>Recuerde a los clientes ofertas como envío gratuito y garantía de por vida</p>",
+            "it": "<p>Ricorda ai clienti offerte come la spedizione gratuita e la garanzia a vita</p>",
+            "de": "<p>Erinnern Sie Kunden an Angebote wie kostenlosen Versand und lebenslange Garantie</p>",
+            "fr": "<p>Rappelez aux clients des offres telles que la livraison gratuite et la garantie à vie</p>"
+          }
         },
         {
           "type": "header",
@@ -2429,7 +2285,13 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.product_main.blocks.stickyadd.settings.content.label",
-          "default": "<p>Remind customers of offers like free shipping and lifetime warranty</p>"
+          "default": {
+            "en": "<p>Remind customers of offers like free shipping and lifetime warranty</p>",
+            "es": "<p>Recuerde a los clientes ofertas como envío gratuito y garantía de por vida</p>",
+            "it": "<p>Ricorda ai clienti offerte come la spedizione gratuita e la garanzia a vita</p>",
+            "de": "<p>Erinnern Sie Kunden an Angebote wie kostenlosen Versand und lebenslange Garantie</p>",
+            "fr": "<p>Rappelez aux clients des offres telles que la livraison gratuite et la garantie à vie</p>"
+          }
         },
         {
           "type": "header",
@@ -2515,7 +2377,13 @@
           "type": "text",
           "id": "title",
           "label": "t:sections.product_main.blocks.accordion.settings.title.label",
-          "default": "You may also like"
+          "default": {
+            "en": "You may also like",
+            "es": "También te puede interesar",
+            "it": "Potrebbe interessarti anche",
+            "de": "Das könnte Sie auch interessieren",
+            "fr": "Vous aimerez peut-être aussi"
+          }
         },
         {
           "type": "range",
@@ -2840,7 +2708,13 @@
           "type": "richtext",
           "id": "content",
           "label": "t:sections.all.content.settings.content.label",
-          "default": "<p>Highlight key selling features of your product</p>"
+          "default": {
+            "en": "<p>Highlight key selling features of your product</p>",
+            "es": "<p>Resalte las características clave de venta de su producto</p>",
+            "it": "<p>Evidenzia le principali caratteristiche di vendita del tuo prodotto</p>",
+            "de": "<p>Heben Sie die wichtigsten Verkaufsmerkmale Ihres Produkts hervor</p>",
+            "fr": "<p>Mettez en évidence les principales caractéristiques de vente de votre produit</p>"
+          }
         },
         {
           "type": "header",
@@ -2881,6 +2755,7 @@
           ],
           "default": "text-2xl"
         },
+
         {
           "type": "header",
           "content": "t:sections.all.headers.header__22.content"
@@ -2977,168 +2852,7 @@
     }
   ],
   "disabled_on": {
-    "groups": [
-      "custom.overlay"
-    ]
-  },
-  "presets": [
-    {
-      "name": "Product page",
-      "settings": {
-        "enable_default_variant": true,
-        "media_gallery_style": "grid",
-        "image_border": "!color__border-transparent",
-        "enable_zoom": false,
-        "enable_alt": false,
-        "enable_variant_images": true,
-        "media_color_scheme": "color__bg-overlay-1 color__text",
-        "media_ratio": "aspect-[1/1] aspect-w-1 aspect-h-1",
-        "media_object-sizing": "contain",
-        "enable_ratio": true,
-        "show_product_badges": true,
-        "color_scheme": "color__bg-body",
-        "color_border": "color__border-divider-1",
-        "layout_gallery_size": "w-full md:w-2/3",
-        "layout_horizontal": "md:window--wide"
-      },
-      "blocks": [
-        {
-          "type": "breadcrumb",
-          "settings": {
-            "spacing_top": 10,
-            "spacing_bottom": 10,
-            "color_scheme": "color__bg-body color__text",
-            "style_border": ""
-          }
-        },
-        {
-          "type": "title",
-          "settings": {
-            "content": "",
-            "spacing_top": 0,
-            "spacing_bottom": 0,
-            "color_scheme": "color__bg-body color__text",
-            "style_border": "",
-            "enable_thumbnails_product_type": false,
-            "enable_thumbnails_vendor": false,
-            "enable_sku": false
-          }
-        },
-        {
-          "type": "price",
-          "settings": {
-            "spacing_top": 0,
-            "spacing_bottom": 10,
-            "color_scheme": "color__bg-body color__text",
-            "style_border": ""
-          }
-        },
-        {
-          "type": "countdown",
-          "settings": {
-            "countdown_tag": "promocallout",
-            "countdown_date": "2/14/2024",
-            "content": "",
-            "counter_suffix_bold": true,
-            "counter_suffix_size": "text-2xl",
-            "spacing_top": 20,
-            "spacing_bottom": 20,
-            "color_scheme": "color__bg-secondary color__secondary",
-            "style_border": "border--b-width"
-          }
-        },
-        {
-          "type": "options",
-          "settings": {
-            "spacing_top": 20,
-            "spacing_bottom": 0,
-            "color_scheme": "color__bg-body color__text",
-            "style_border": ""
-          }
-        },
-        {
-          "type": "inventory",
-          "settings": {
-            "spacing_top": 10,
-            "spacing_bottom": 10,
-            "color_scheme": "color__bg-body color__text",
-            "style_border": "border--width",
-            "threshold": 40
-          }
-        },
-        {
-          "type": "add",
-          "settings": {
-            "content": "",
-            "spacing_top": 20,
-            "spacing_bottom": 20,
-            "color_scheme": "color__bg-body color__text",
-            "style_border": "border--b-width",
-            "enable_quantity": true,
-            "enable_dynamic_checkout": false
-          }
-        },
-        {
-          "type": "text",
-          "settings": {
-            "text_block_tag": "promocallout",
-            "content": "<p>BUY ONE GET ONE 50% OFF</p>",
-            "spacing_top": 10,
-            "spacing_bottom": 10,
-            "color_scheme": "color__bg-secondary color__secondary",
-            "style_border": "",
-            "layout_x_alignment": "text-center"
-          }
-        },
-        {
-          "type": "accordion",
-          "settings": {
-            "title": "Details",
-            "content": "<p>{{ product.metafields.tabs.details | metafield_tag }}</p>",
-            "color_scheme": "color__bg-body color__text",
-            "style_border": "border--b-width",
-            "enable_open": true
-          }
-        },
-        {
-          "type": "description",
-          "settings": {
-            "color_scheme": "color__bg-body color__text",
-            "style_border": "border--b-width",
-            "enable_open": false
-          }
-        },
-        {
-          "type": "accordion",
-          "settings": {
-            "title": "Warranty",
-            "content": "<p>We stand by our products. Each one is made using durable materials and checked for quality before shipping. Our products hold some of your most valuable items, therefore you should buy one that you can rely on. For that reason, we have put a limited lifetime warranty on all orders (details below).  We have had customers who have been using their Thread Wallet products for many years without issue but we understand that accidents happen! </p><p><strong>Details: </strong></p><p>Thread Wallet products are made to last! However, if your item becomes defective, you qualify for a replacement.  Please keep in mind that <strong>products that have been stretched out due to over-stuffing, water damage, normal day to day wear and tear, etc. will not qualify for a replacement. </strong>For more information on our Warranty Policy, <a href=\"https://www.threadwallets.com/pages/warranty\" title=\"One Year Warranty\">click here</a>.</p>",
-            "color_scheme": "color__bg-body color__text",
-            "style_border": "border--b-width",
-            "enable_open": false
-          }
-        },
-        {
-          "type": "upsell",
-          "settings": {
-            "title": "Mix & Match",
-            "products_count": 3,
-            "intent": "related",
-            "color_scheme": "color__bg-body color__text",
-            "style_border": ""
-          }
-        },
-        {
-          "type": "stickyadd",
-          "settings": {
-            "content": "",
-            "color_scheme": "color__bg-body color__text",
-            "on_scroll": true,
-            "visibility": "md:hidden"
-          }
-        }
-      ]
-    }
-  ]
+    "groups": ["custom.overlay"]
+  }
 }
 {% endschema %}

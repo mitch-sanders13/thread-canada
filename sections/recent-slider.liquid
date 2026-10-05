@@ -88,7 +88,7 @@
           }, 100);
         ">
         <template x-for="(item, index) in recent_products">
-          <div class="snap-center md:w-[26%] flex justify-center flex-none w-8/12"
+          <div class="snap-center md:w-[26%] flex justify-center flex-none w-8/12 whitespace-normal"
             x-intersect:enter.full="index_slide = index;"
             x-bind:data-slide="index_slide">
             {% render 'template__product-item' %}
@@ -287,6 +287,10 @@
         {
           "value": "window--full",
           "label": "t:settings_schema.layout.settings.layout_horizontal.options__4.label"
+        },
+        {
+          "value": "",
+          "label": "t:settings_schema.layout.settings.layout_horizontal.options__5.label"
         }
       ],
       "default": "window"

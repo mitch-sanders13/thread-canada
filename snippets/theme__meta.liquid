@@ -39,9 +39,13 @@
   elsif template contains 'article' 
     assign meta_type = 'article' 
   endif 
+    assign canonical = canonical_url
+  if template contains 'collection' and current_tags.size > 0 and collection.url != blank
+    assign canonical = request.origin | append: collection.url
+  endif
 -%}
 
-<link href='{{ canonical_url }}' rel='canonical'>
+<link href='{{ canonical }}' rel='canonical'>
 {% if settings.favicon %}
   <link href="{{ settings.favicon | image_url: width: 180, height: 180 }}" rel="apple-touch-icon" sizes="180x180">
   <link href="{{ settings.favicon | image_url: width: 32, height: 32 }}" rel="icon" type="image/png" sizes="32x32">
@@ -54,7 +58,7 @@
   <meta name="robots" content="noindex, follow">
 {%- endif -%}
 
-<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:url" content="{{ canonical }}">
 <meta property="og:site_name" content="{{ shop.name }}">
 <meta property="og:type" content="{{ meta_type | default: 'website' }}">
 <meta property="og:title" content="{{ meta_title | default: shop.name }}">

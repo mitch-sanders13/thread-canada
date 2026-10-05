@@ -5,39 +5,54 @@
     - sort_by: current sort option
     - collection: current collection
     - dropdown: boolean for dropdown state (Alpine.js)
+    - button_class: optional classes for the dropdown trigger
 {% endcomment %}
+
+{% assign button_class = button_class | default: 'type--smaller type__nav' %}
+{% assign selected_sort_name = '' %}
+{% for option in collection.sort_options %}
+  {% if sort_by == option.value %}
+    {% assign selected_sort_name = option.name %}
+  {% endif %}
+{% endfor %}
 
 {% capture dropdown_content %}
   {% for option in collection.sort_options %}
-    <label class="flex items-center w-full px-4 py-2 color__text hover:color__bg-overlay-1"
+    <label
+      class="flex items-center w-full px-4 py-2 whitespace-nowrap color__text hover:color__bg-overlay-1"
       @click="
         dropdown = false;
         let currentUrl = new URL(window.location.href);
         let params = new URLSearchParams(currentUrl.search);
         params.set('sort_by', '{{ option.value }}');
         window.location.href = currentUrl.pathname + '?' + params.toString();
-      ">
-      <input type="radio" 
-        class="form-radio" 
-        value="{{ option.value }}" 
-        name="sort_by" 
-        autocomplete="off" 
+      "
+    >
+      <input
+        type="radio"
+        class="form-radio"
+        value="{{ option.value }}"
+        name="sort_by"
+        autocomplete="off"
         x-model="sort_by"
-        {% if collection.sort_by == option.value %}checked{% endif %}>
+        {% if sort_by == option.value %}checked{% endif %}
+      >
       <span class="ml-2 type--base">{{ option.name }}</span>
     </label>
   {% endfor %}
 {% endcapture %}
 
 {% capture dropdown_label %}
-  {{ 'collections.sorting.sort' | t }}: {% if collection.sort_by == blank or collection.sort_by == 'manual' %}Featured{% else %}{% for option in collection.sort_options %}{% if collection.sort_by == option.value %}{{ option.name }}{% endif %}{% endfor %}{% endif %}
+  {{ 'collections.sorting.sort' | t }}: {{ selected_sort_name }}
+  {% render 'component__icon', icon: 'chevron-down', size: '16', class: 'ml-1' %}
 {% endcapture %}
 
 {% render 'component__dropdown',
   container_class: 'h-full flex',
-  button_class: 'type--smaller type__nav',
+  button_class: button_class,
+  panel_class: 'z-40 !w-72',
   button_label: dropdown_label,
   content: dropdown_content,
-  position: 'left',
+  position: 'right',
   direction: 'down'
 %}

@@ -1,5 +1,11 @@
 /*
- * Revalidate the bundle product template alongside the default product template.
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
  */
 {
   "sections": {
@@ -7,7 +13,7 @@
       "type": "text",
       "settings": {
         "heading": "Build your own bundle",
-        "content": "<h4>{{ product.title }} - Bundle & Save 10%<\/h4>",
+        "content": "<h4>{{ product.title }} - Bundle & Save 10%</h4>",
         "button_label": "",
         "button_url": "",
         "spacing_top": 40,
@@ -60,9 +66,10 @@
         },
         "847e5214-b6a4-43c6-9f41-f87a2f6cc9f1": {
           "type": "countdown",
+          "disabled": true,
           "settings": {
             "countdown_tag": "promocallout",
-            "countdown_date": "2\/14\/2024",
+            "countdown_date": "2/14/2024",
             "content": "",
             "counter_suffix_bold": true,
             "counter_suffix_size": "text-2xl",
@@ -83,12 +90,13 @@
         },
         "inventory_limited_callout": {
           "type": "inventory",
+          "disabled": true,
           "settings": {
             "spacing_top": 10,
             "spacing_bottom": 10,
             "color_scheme": "color__bg-body color__text",
             "style_border": "border--width",
-            "threshold": 40
+            "threshold": 10
           }
         },
         "b78b560b-e1c2-428d-ad73-fb5f8aac6d53": {
@@ -99,8 +107,32 @@
             "spacing_bottom": 20,
             "color_scheme": "color__bg-body color__text",
             "style_border": "border--b-width",
-            "enable_quantity": true,
+            "enable_quantity": false,
             "enable_dynamic_checkout": false
+          }
+        },
+        "product-benefit-shipping": {
+          "type": "icon",
+          "settings": {
+            "icon": "truck",
+            "content": "Free Shipping Over $40",
+            "spacing_top": 10,
+            "spacing_bottom": 10,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "",
+            "layout_width": "half"
+          }
+        },
+        "product-benefit-exchanges": {
+          "type": "icon",
+          "settings": {
+            "icon": "box",
+            "content": "Free Exchanges",
+            "spacing_top": 10,
+            "spacing_bottom": 10,
+            "color_scheme": "color__bg-body color__text",
+            "style_border": "",
+            "layout_width": "half"
           }
         },
         "848f5aea-f7ad-4974-a5fb-020776e3e523": {
@@ -121,24 +153,24 @@
         "b78b560b-e1c2-428d-ad73-fb5f8aac6d58",
         "inventory_limited_callout",
         "b78b560b-e1c2-428d-ad73-fb5f8aac6d53",
+        "product-benefit-shipping",
+        "product-benefit-exchanges",
         "848f5aea-f7ad-4974-a5fb-020776e3e523"
       ],
       "settings": {
         "enable_default_variant": true,
-        "media_gallery_style": "grid",
+        "media_gallery_style": "thumbnail-slider",
         "image_border": "!color__border-transparent",
         "enable_zoom": false,
         "enable_alt": false,
         "enable_variant_images": true,
         "media_color_scheme": "color__bg-overlay-1 color__text",
-        "media_ratio": "aspect-[1\/1] aspect-w-1 aspect-h-1",
+        "media_ratio": "aspect-[1/1] aspect-w-1 aspect-h-1",
         "media_object-sizing": "contain",
         "enable_ratio": true,
-        "show_product_badges": true,
+        "show_product_badges": false,
         "color_scheme": "color__bg-body",
-        "color_border": "!color__border-transparent",
-        "layout_gallery_size": "w-full md:w-1\/2",
-        "layout_horizontal": "md:window"
+        "color_border": "!color__border-transparent"
       }
     },
     "recent_grid_WP9kH7": {
@@ -196,7 +228,7 @@
       "type": "apps",
       "blocks": {
         "0d334c6b-b0b0-492f-9660-43c1220d7477": {
-          "type": "shopify:\/\/apps\/okendo\/blocks\/reviews-widget\/bb689e69-ea70-4661-8fb7-ad24a2e23c29",
+          "type": "shopify://apps/okendo/blocks/reviews-widget/bb689e69-ea70-4661-8fb7-ad24a2e23c29",
           "settings": {
             "product": "{{product}}",
             "widget_type": "reviews_widget"

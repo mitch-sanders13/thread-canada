@@ -1,0 +1,54 @@
+{% doc %}
+  The header cart link, including the live item count and optional drawer action.
+
+  @param {string} display_type - Cart presentation: text or icon
+  @param {boolean} [is_mobile] - Use mobile touch-target spacing
+  @param {string} [click_audio] - Optional click audio handler
+
+  @example
+  {% render 'header__cart', display_type: 'icon', is_mobile: true %}
+{% enddoc %}
+
+{% liquid
+  assign is_mobile = is_mobile | default: false
+  assign click_audio = click_audio | default: ''
+  assign display_type = display_type | default: 'icon'
+%}
+
+<a
+  class="type__nav relative inline-flex items-center !no-underline {{ settings.type_header_capitilization }} {% if is_mobile %}min-h-[44px] min-w-[44px] justify-center px-3.5 py-2.5{% else %}ml-2 pl-4{% endif %}"
+  href="{{ routes.cart_url }}"
+  rel="nofollow"
+  {% if display_type != 'text' %}
+    aria-label="{{ 'cart.general.title' | t }}"
+  {% endif %}
+  {% if settings.cart_icon_behavior == 'open_cart_drawer' %}
+    @click.prevent="cart_drawer = true; {{ click_audio }}"
+  {% endif %}
+>
+  {% if display_type == 'text' %}
+    {{ 'cart.general.title' | t }}
+    <span
+      class="ml-1"
+      x-show="cart.item_count > 0"
+      {% if cart.item_count == 0 %}
+        style="display: none;"
+      {% endif %}
+      >(<span x-text="cart.item_count">{{ cart.item_count }}</span>)</span
+    >
+  {% else %}
+    <span class="inline-flex {% unless is_mobile %}relative{% endunless %}">
+      {% render 'component__icon', icon: 'shopping-bag', size: '24', class: '' %}
+      <span
+        class="type__body type--smaller absolute top-1 {% if is_mobile %}right-2{% else %}-right-2{% endif %} flex items-center justify-center rounded-full px-1.5 py-0.5 color__bg-primary color__primary"
+        x-show="cart.item_count > 0"
+        x-text="cart.item_count > 99 ? '99+' : cart.item_count"
+        {% if cart.item_count == 0 %}
+          style="display: none;"
+        {% endif %}
+      >
+        {%- if cart.item_count > 99 -%}99+{%- else -%}{{ cart.item_count }}{%- endif -%}
+      </span>
+    </span>
+  {% endif %}
+</a>

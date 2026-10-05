@@ -43,7 +43,7 @@
         "content_P9kBgX": {
           "type": "content",
           "settings": {
-            "video": "shopify://files/videos/spring24_warm_motion_feed_03.mp4",
+            "video": "shopify:\/\/files\/videos\/spring24_warm_motion_feed_03.mp4",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
@@ -64,7 +64,7 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
-            "image_background": "shopify://shop_images/trio.png",
+            "image_background": "shopify:\/\/shop_images\/trio.png",
             "url": "",
             "heading": "",
             "content": "",
@@ -81,7 +81,7 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": false,
-            "image_background": "shopify://shop_images/COLEFERGUSON_DIGI_THREAD_2024--23.jpg",
+            "image_background": "shopify:\/\/shop_images\/COLEFERGUSON_DIGI_THREAD_2024--23.jpg",
             "url": "",
             "heading": "",
             "content": "",
@@ -95,7 +95,7 @@
         "content_MPrLDX": {
           "type": "content",
           "settings": {
-            "video": "shopify://files/videos/spring24_cold_ugc_feed_02.mp4",
+            "video": "shopify:\/\/files\/videos\/spring24_cold_ugc_feed_02.mp4",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
@@ -115,13 +115,13 @@
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
-            "image_background": "shopify://shop_images/COLEFERGUSON_DIGI_THREAD_2024--3.jpg",
+            "image_background": "shopify:\/\/shop_images\/COLEFERGUSON_DIGI_THREAD_2024--3.jpg",
             "url": "",
             "heading": "",
             "content": "",
             "button_label": "",
-            "index": 24,
-            "paginate_index": 2,
+            "index": 48,
+            "paginate_index": 1,
             "background_color_scheme": "color__bg-body color__text",
             "column_size": "lg:col-span-1"
           }
@@ -129,7 +129,7 @@
         "content_HntXri": {
           "type": "content",
           "settings": {
-            "video": "shopify://files/videos/spring24_warm_motion_feed_02.mp4",
+            "video": "shopify:\/\/files\/videos\/spring24_warm_motion_feed_02.mp4",
             "enable_autoplay": true,
             "enable_mute_toggle": true,
             "enable_loop": true,
@@ -137,7 +137,7 @@
             "heading": "",
             "content": "",
             "button_label": "",
-            "index": 28,
+            "index": 4,
             "paginate_index": 2,
             "background_color_scheme": "color__bg-body color__text",
             "column_size": "lg:col-span-1"
@@ -155,12 +155,12 @@
       "settings": {
         "color_scheme": "color__bg-body color__text",
         "color_border": "color__border-divider-1",
-        "row_size_desktop": "md:grid-cols-3",
+        "row_size_desktop": "md:grid-cols-4",
         "row_size_mobile": "grid-cols-2",
         "enable_sort": true,
         "enable_filter": true,
         "collection_enable_description": false,
-        "products_per_page": 24
+        "products_per_page": 48
       }
     },
     "recent": {

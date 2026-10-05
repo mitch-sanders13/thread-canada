@@ -1,7 +1,78 @@
 {
+  "general": {
+    "navigation": {
+      "shop_all": "Comprar todo {{ title }}"
+    },
+    "media": {
+      "pause_gallery": "Pausar galería",
+      "resume_gallery": "Reproducir galería"
+    }
+  },
+  "products": {
+    "general": {
+      "select_style": "Elige tu estilo",
+      "styles_count": "{{ count }} estilos"
+    },
+    "bundle": {
+      "include_product": "Incluir {{ product }} en el paquete",
+      "add_bundle": "Añadir Everyday Carry Set",
+      "add_selected_items": "Añadir artículos seleccionados",
+      "add_selected_one": "Añadir {{ count }} artículo seleccionado",
+      "add_selected_other": "Añadir {{ count }} artículos seleccionados",
+      "total": "Total del paquete:",
+      "save_amount": "Ahorra {{ amount }}",
+      "added_to_cart": "Los artículos seleccionados se añadieron al carrito.",
+      "add_error": "No se pudieron añadir los artículos seleccionados."
+    }
+  },
   "sections": {
     "collection_faq": {
       "editor_empty_state": "Aún no hay preguntas frecuentes para esta colección. Añádalas en la ficha de la colección en Metacampos (FAQ items) o use el campo JSON custom.collection_faq."
+    }
+  },
+  "pagefly": {
+    "products": {
+      "product": {
+        "regular_price": "Regular price",
+        "sold_out": "Sold out",
+        "unavailable": "Unavailable",
+        "on_sale": "Sale",
+        "quantity": "Quantity",
+        "add_to_cart": "Add to cart",
+        "back_to_collection": "Back to {{ title }}",
+        "view_details": "View details"
+      }
+    },
+    "article": {
+      "tags": "Tags:",
+      "all_topics": "All topics",
+      "by_author": "by {{ author }}",
+      "posted_in": "Posted in",
+      "read_more": "Read more",
+      "back_to_blog": "Back to {{ title }}"
+    },
+    "comments": {
+      "title": "Leave a comment",
+      "name": "Name",
+      "email": "Email",
+      "message": "Message",
+      "post": "Post comment",
+      "moderated": "Please note, comments must be approved before they are published",
+      "success_moderated": "Your comment was posted successfully. We will publish it in a little while, as our blog is moderated.",
+      "success": "Your comment was posted successfully! Thank you!",
+      "comments_with_count": {
+        "one": "{{ count }} comment",
+        "other": "{{ count }} comments"
+      }
+    },
+    "password_page": {
+      "login_form_message": "Enter store using password:",
+      "login_form_password_label": "Password",
+      "login_form_password_placeholder": "Your password",
+      "login_form_submit": "Enter",
+      "signup_form_email_label": "Email",
+      "signup_form_success": "We will send you an email right before we open!",
+      "password_link": "Enter using password"
     }
   }
 }

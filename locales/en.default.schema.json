@@ -253,10 +253,10 @@
           },
           "options__4": {
             "label": "Full"
+          },
+          "options__5": {
+            "label": "None"
           }
-        },
-        "layout_horizontal_description": {
-          "label": "Description width"
         },
         "layout_gap_size": {
           "label": "Grid margin",
@@ -781,6 +781,9 @@
             },
             "options__7": {
               "label": "Minimal dark"
+            },
+            "options__8": {
+              "label": "Minimal primary"
             }
           }
         }
@@ -938,6 +941,10 @@
           "layout_col_span": {
             "label": "Column span",
             "info": "Extend the width of a block by forcing it to take up multiple columns."
+          },
+          "grid_gap": {
+            "label": "Grid gap",
+            "info": "Sets the horizontal spacing between cards. Vertical spacing is proportionally larger."
           }
         }
       },
@@ -1512,6 +1519,10 @@
         "enable_filter": {
           "label": "Enable filter"
         },
+        "horizontal_filter_menu": {
+          "label": "Horizontal filter menu",
+          "info": "Select a menu to replace the automatic product type filters. Leave blank to use product types."
+        },
         "products_per_page": {
           "label": "Products per page"
         }
@@ -1658,6 +1669,9 @@
     "content_grid": {
       "name": "Collage",
       "settings": {
+        "minimum_height": {
+          "label": "Minimum height"
+        },
         "row_size_desktop": {
           "label": "Desktop row size"
         },
@@ -2304,6 +2318,16 @@
     "product_grid": {
       "name": "Featured collection grid",
       "settings": {
+        "enable_featured_layout": {
+          "label": "Use featured grid spacing",
+          "info": "Use compact product gaps and responsive section padding instead of the theme spacing."
+        },
+        "use_large_heading": {
+          "label": "Use large centered heading"
+        },
+        "show_collection_buttons": {
+          "label": "Show collection buttons"
+        },
         "row_size_desktop": {
           "label": "Desktop row size"
         },
@@ -2677,6 +2701,9 @@
     "theme_header": {
       "name": "Header",
       "settings": {
+        "ignored_settings": {
+          "content": "These settings are currently ignored: Top bar — Background, Desktop layout, and Login button."
+        },
         "dropdown_links": {
           "label": "Menu",
           "default": "main-menu"
@@ -2780,6 +2807,18 @@
     "theme_menu": {
       "name": "Mobile menu",
       "settings": {
+        "ignored_settings": {
+          "content": "These settings are currently ignored: Top bar — Button and Cart button; Main section — Button; Bottom bar — Button color."
+        },
+        "featured_image": {
+          "label": "Featured image"
+        },
+        "featured_url": {
+          "label": "Featured URL"
+        },
+        "featured_label": {
+          "label": "Featured label"
+        },
         "top_button_cart_type": {
           "label": "Cart button",
           "options__1": {

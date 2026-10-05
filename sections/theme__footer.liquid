@@ -43,58 +43,54 @@
       {%- when 'menu' -%}
         {% capture menu_content %}
           <!-- mobile menu -->
-          <nav class="color__bg-secondary color__light">
+          <nav class="color__bg-secondary color__light pb-4">
+            <div class="flex flex-col gap-2">
               {%- for link in block.settings.menu.links -%}
                 {% if link.levels >= 1 %}
                     {% capture accordion_content %}
-                    {% for child_link in link.links %}
-                        <a href="{{ child_link.url }}" 
-                        class="type__body border--t-width flex items-center justify-between w-full px-4 py-4 pl-8 no-underline
-                            {{ section.settings.main_color_border }}">
-                        {{ child_link.title }}
-                        </a>
-                        {% for grandchild_link in child_link.links %}
-                        <a href="{{ grandchild_link.url }}" 
-                            class="type__body border--t-width flex items-center justify-between w-full px-4 py-4 pl-12 no-underline
-                            {{ section.settings.main_color_border }}">
-                            {{ grandchild_link.title }}
-                        </a>
+                      <div class="flex flex-col gap-2">
+                        {% for child_link in link.links %}
+                          <a href="{{ child_link.url }}" class="uppercase type--base flex items-center gap-2 w-full px-4 pl-8 no-underline">
+                            {{ child_link.title }}
+                          </a>
+                          {% for grandchild_link in child_link.links %}
+                            <a href="{{ grandchild_link.url }}" class="uppercase type--base flex items-center gap-2 w-full px-4 pl-12 no-underline">
+                              {{ grandchild_link.title }}
+                            </a>
+                          {% endfor %}
                         {% endfor %}
-                    {% endfor %}
+                      </div>
                     {% endcapture %}
-                    {% capture accordion_container_class %}
-                        border--t-width {{ section.settings.main_color_border }} no-js--hide
-                    {% endcapture %}
+                    {% capture accordion_container_class %}no-js--hide{% endcapture %}
                     {% capture accordion_inner_class %}{% endcapture %}
 
                     {% render 'component__accordion', 
                     button_label: link.title, 
                     button_class: "px-4",
+                    button_label_class: "type__label",
                     container_class: accordion_container_class,
                     inner_class: accordion_inner_class
                     content: accordion_content %}
 
                     <noscript>
-                        <a class="border--t-width {{ section.settings.main_color_border }} block w-full p-4 no-underline" href="{{ link.url }}">{{ link.title }}</a>
+                        <a class="uppercase type--base flex items-center gap-2 w-full px-4 no-underline" href="{{ link.url }}">{{ link.title }}</a>
                         {% for child_link in link.links %}
-                            <a class="border--t-width {{ section.settings.main_color_border }} block w-full p-4 !pl-8 no-underline" href="{{ child_link.url }}">{{ child_link.title }}</a>
+                            <a class="uppercase type--base flex items-center gap-2 w-full px-4 pl-8 no-underline" href="{{ child_link.url }}">{{ child_link.title }}</a>
                             {% for grandchild_link in child_link.links %}
-                            <a class="border--t-width {{ section.settings.main_color_border }} block w-full p-4 !pl-12 no-underline" href="{{ grandchild_link.url }}">{{ grandchild_link.title }}</a>
+                            <a class="uppercase type--base flex items-center gap-2 w-full px-4 pl-12 no-underline" href="{{ grandchild_link.url }}">{{ grandchild_link.title }}</a>
                             {% endfor %}
                         {% endfor %}
                     </noscript>
                 {% else %}
-                    
+
                   {%- if link.url contains 'https://' -%}
                     <a href="{{ link.url }}" target="_blank" 
-                    class="border--t-width block p-4 no-underline
-                    {{ section.settings.main_color_border }}">
+                    class="uppercase type--base flex items-center gap-2 w-full px-4 no-underline">
                         {{ link.title }}
                     </a>
                   {%- else -%}
                       <a href="{{ link.url }}" 
-                      class="border--t-width block p-4 no-underline
-                      {{ section.settings.main_color_border }}">
+                      class="uppercase type--base flex items-center gap-2 w-full px-4 no-underline">
                           {{ link.title }}
                       </a>
                   {%- endif -%}
@@ -102,6 +98,7 @@
                 {% endif %}
                 
               {%- endfor -%}
+            </div>
           </nav>
           {% capture menu_title %}{{ block.settings.block_title }}{% endcapture %} 
         {% endcapture %}
@@ -114,6 +111,7 @@
           inner_class: "color__bg-overlay-1",
           button_class: "px-4 color__bg-secondary color__light focus:outline-0",
           button_label: menu_title,
+          button_label_class: 'type__body type--big uppercase',
           content: menu_content 
         %}
 
@@ -131,6 +129,7 @@
           open: false,
           index:forloop.index,
           button_label: location_title, 
+          button_label_class: 'type__body type--big',
           button_class: "px-4 color__bg-secondary color__light focus:outline-0",
           container_class: "md:hidden border--b-width",
           icon_class: "color__light",
@@ -146,7 +145,7 @@
             {{ section.settings.main_color_border }}">
             <div class="{{ settings.layout_horizontal }}">
 
-                <h3 class="type__heading type__heading--bold-5 mb-2">
+                <h3 class="mb-2 text-center">
                 {{ block.settings.heading }}
                 </h3>
 
@@ -164,16 +163,18 @@
                 <div class="m-0--clear mb-2">
                     {{ block.settings.content }}
                 </div>
-                <label for="customerEmail_footer" class="sr-only">{{ 'contact.form.email' | t }}</label>
-                <input id="customerEmail_footer" class="form-input flex-grow mb-2"
-                    name="contact[email]"
-                    type="email"
-                    placeholder="{{ 'contact.form.email_placeholder' | t }}"
-                    autocorrect="off"
-                    autocapitalize="off"/>
-                <button type="submit" class="!w-full whitespace-nowrap btn--small {{ section.settings.main_color_button }}">
-                    <span class="btn__content">{{ block.settings.button }}</span>
-                </button>
+                <div class="flex w-full items-stretch gap-2">
+                  <label for="customerEmail_footer" class="sr-only">{{ 'contact.form.email' | t }}</label>
+                  <input id="customerEmail_footer" class="form-input min-w-0 flex-1 rounded-lg"
+                      name="contact[email]"
+                      type="email"
+                      placeholder="{{ 'contact.form.email_placeholder' | t }}"
+                      autocorrect="off"
+                      autocapitalize="off"/>
+                  <button type="submit" class="btn btn--small btn--primary shrink-0 whitespace-nowrap">
+                      <span class="btn__content">{{ block.settings.button }}</span>
+                  </button>
+                </div>
                 <div class="m-0--clear type--smaller mt-2 opacity-75">
                     {{ block.settings.disclaimer }}
                 </div>
@@ -209,7 +210,7 @@
   {% endfor %}
 
   {% comment %} mobile social icons {% endcomment %}
-  <div class="md:hidden flex justify-center color__bg-secondary w-full gap-2 color__light py-8">
+  <div class="md:hidden {{ settings.layout_horizontal }} flex w-full justify-center gap-2 color__bg-secondary color__light py-8">
     {% unless settings.social_tiktok_link == blank %}
         <a href="{{ settings.social_tiktok_link }}" target="_blank" title="TikTok" class="hover:no-underline inline-flex no-underline opacity-75 px-4 md:pr-2">
         {% render 'component__icon', icon: 'tiktok', size: '20', class: '' %}
@@ -277,27 +278,27 @@
   <nav aria-label="Footer Navigation" class="hidden md:block
     {{ section.settings.main_color_scheme }}">
     <div class="window--wide">
-      <div class="flex justify-between gap-20 py-12 overflow-hidden relative">
+      <div class="flex justify-between gap-12 py-12 overflow-hidden relative">
 
         {% comment %} menu and locations {% endcomment %}
-        <div class="grow flex justify-between gap-12
+        <div class="grow grid grid-cols-3 gap-12
           {% if has_content %}w-3/4 {% else %}w-full {% endif %}">
           {% for block in section.blocks %}
           {%- case block.type -%}
 
             {%- when 'menu' -%}
-              <div class="w-1/4">
-                <strong class="type__nav">{{ block.settings.block_title }}</strong>
+              <div>
+                <strong class="type__label">{{ block.settings.block_title }}</strong>
                 {%- for link in block.settings.menu.links -%}
 
                         {%- if link.url contains 'https://' -%}
-                            <a href="{{ link.url }}" target='_blank' class="block mb-4 no-underline type__body type--small opacity-75 uppercase
-                                {% if forloop.index > 1 %}mt-4{% else %}mt-6{% endif %}">
+                            <a href="{{ link.url }}" target='_blank' class="block mb-2 no-underline type__body type--small opacity-75
+                                {% if forloop.first %}mt-6{% endif %}">
                                 {{ link.title }}
                             </a>
                         {%- else -%}
-                            <a href="{{ link.url }}" class="block mb-4 no-underline type__body type--small opacity-75 uppercase
-                                {% if forloop.index > 1 %}mt-4{% else %}mt-6{% endif %}">
+                            <a href="{{ link.url }}" class="block mb-2 no-underline type__body type--small opacity-75
+                                {% if forloop.first %}mt-6{% endif %}">
                                 {{ link.title }}
                             </a>
                         {%- endif -%}
@@ -317,7 +318,7 @@
 
             {%- when 'location' -%}
               <div class="w-1/4">
-                <strong class="type__nav">{{ block.settings.block_title }}</strong>
+                <strong class="type__label">{{ block.settings.block_title }}</strong>
                 <p href="{{ link.url }}" class="block mb-4 no-underline type__body type--small mt-6 opacity-75 uppercase">
                     {{ block.settings.block_text }}
                 </p>
@@ -329,10 +330,73 @@
 
         {% comment %} extra stuff {% endcomment %}
         {% if has_content %}
-          <div class="flex flex-col items-end w-1/4 gap-12">
+          <div class="flex flex-col w-1/4 gap-12">
+
+            {% comment %} newsletter, content {% endcomment %}
+            {% for block in section.blocks %}
+            {%- case block.type -%}
+
+              {%- when 'newsletter' -%}
+                <div class="w-full">
+                  {% form 'customer' %}
+                    <h3 class="type__heading--bold-3 mb-4">
+                    {{ block.settings.heading }}
+                    </h3>
+
+                    {% if form.errors %}
+                    <div class="color__bg-overlay-1 type--small border--radius p-2 mt-2 mb-4">
+                        {{ form.errors | default_errors }}
+                    </div>
+                    {% endif %}
+
+                    {% if form.posted_successfully? %}
+                    <div class="m-0--clear type--small mb-2">
+                        {{ block.settings.success }}
+                    </div>
+                    {% else %}
+                    <div class="m-0--clear mb-2">
+                        {{ block.settings.content }}
+                    </div>
+                    <div class="flex w-full items-stretch gap-2">
+                      <label for="newsletter_input_footer" class="sr-only">{{ 'contact.form.email' | t }}</label>
+                      <input id="newsletter_input_footer" class="form-input min-w-0 flex-1 rounded-lg"
+                          name="contact[email]"
+                          type="email"
+                          placeholder="{{ 'contact.form.email_placeholder' | t }}"
+                          autocorrect="off"
+                          autocapitalize="off"/>
+                      <button type="submit" class="btn btn--small btn--primary shrink-0 whitespace-nowrap">
+                          <span class="btn__content">{{ block.settings.button }}</span>
+                      </button>
+                    </div>
+                    <div class="m-0--clear type--smaller mt-2 opacity-75">
+                        {{ block.settings.disclaimer }}
+                    </div>
+                    {% endif %}
+                  {% endform %}
+                </div>
+
+              {%- when 'content' -%}
+                <div>
+                  <h3 class="type__heading type--base mb-2">
+                      {{ block.settings.heading }}
+                  </h3>
+                  <div class="m-0--clear">
+                      {{ block.settings.content }}
+                  </div>
+                  {%- unless block.settings.button_url == blank -%}
+                      <a href="{{ block.settings.button_url }}" class="btn btn--small mt-2
+                      {{ section.settings.main_color_button }}">
+                      {{ block.settings.button_label }}
+                      </a>
+                  {%- endunless -%}
+                </div>
+
+            {%- endcase -%}
+            {% endfor %}
 
             <!-- social icons -->
-            <div class="md:w-auto flex w-full gap-2">
+            <div class="md:w-auto flex w-full justify-start gap-2">
               {% unless settings.social_tiktok_link == blank %}
                 <a href="{{ settings.social_tiktok_link }}" target="_blank" title="TikTok" class="hover:no-underline inline-flex no-underline opacity-75 pr-2">
                   {% render 'component__icon', icon: 'tiktok', size: '20', class: '' %}
@@ -395,67 +459,6 @@
               {% endunless %}
             </div>
 
-            {% comment %} newsletter, content {% endcomment %}
-            {% for block in section.blocks %}
-            {%- case block.type -%}
-
-              {%- when 'newsletter' -%}
-                <div>
-                  {% form 'customer' %}
-                    <h3 class="type__heading type--base mb-2">
-                    {{ block.settings.heading }}
-                    </h3>
-
-                    {% if form.errors %}
-                    <div class="color__bg-overlay-1 type--small border--radius p-2 mt-2 mb-4">
-                        {{ form.errors | default_errors }}
-                    </div>
-                    {% endif %}
-                    
-                    {% if form.posted_successfully? %}
-                    <div class="m-0--clear type--small mb-2">
-                        {{ block.settings.success }}
-                    </div>
-                    {% else %}
-                    <div class="m-0--clear mb-2">
-                        {{ block.settings.content }}
-                    </div>
-                    <label for="newsletter_input_footer" class="sr-only">{{ 'contact.form.email' | t }}</label>
-                    <input id="newsletter_input_footer" class="form-input flex-grow mb-2"
-                        name="contact[email]"
-                        type="email"
-                        placeholder="{{ 'contact.form.email_placeholder' | t }}"
-                        autocorrect="off"
-                        autocapitalize="off"/>
-                    <button type="submit" class="whitespace-nowrap btn--small {{ section.settings.main_color_button }}">
-                        <span class="btn__content">{{ block.settings.button }}</span>
-                    </button>
-                    <div class="m-0--clear type--smaller mt-2 opacity-75">
-                        {{ block.settings.disclaimer }}
-                    </div>
-                    {% endif %}
-                  {% endform %}
-                </div>
-                  
-              {%- when 'content' -%}
-                <div>
-                  <h3 class="type__heading type--base mb-2">
-                      {{ block.settings.heading }}
-                  </h3>
-                  <div class="m-0--clear">
-                      {{ block.settings.content }}
-                  </div>
-                  {%- unless block.settings.button_url == blank -%}
-                      <a href="{{ block.settings.button_url }}" class="btn btn--small mt-2
-                      {{ section.settings.main_color_button }}">
-                      {{ block.settings.button_label }}
-                      </a>
-                  {%- endunless -%}
-                </div>
-
-            {%- endcase -%}
-            {% endfor %}
-            
           </div>
         {% endif %}
         
@@ -465,7 +468,7 @@
   </nav>
 
   {%- comment -%} sub footer {%- endcomment -%}
-  <section class="py-4 border--t-width flex flex-wrap gap-4 md:bg-transparent color__bg-secondary color__light">
+  <section class="py-4 flex flex-wrap gap-4 {{ section.settings.main_color_scheme }}">
     <div class="flex flex-wrap w-full items-center justify-between gap-4 window--wide">
 
     {% if settings.enable_region or settings.enable_language or settings.enable_audio %}
@@ -500,7 +503,7 @@
           {%- endfor -%}
         </ul>
       {% endif %}
-      <div class="m-0--clear type--smaller w-full opacity-75 md:text-black">
+      <div class="m-0--clear type--smaller w-full opacity-75">
         {{ shop.name }}
         {% capture current_year %}{{ "now" | date: "%Y" }}{% endcapture %}
         {{ 'general.footer.copyright' | t: y: current_year }}
@@ -514,341 +517,388 @@
 
 {% schema %}
 {
-  "name": "t:sections.theme_footer.name",
-  "settings": [
+  "name":"t:sections.theme_footer.name",
+  "settings":[
     {
-      "type": "header",
-      "content": "t:sections.all.headers.header__13.content"
+      "type":"header",
+      "content":"t:sections.all.headers.header__13.content"
     },
     {
-      "type": "select",
-      "id": "main_color_scheme",
-      "label": "t:sections.all.colors.settings.color_scheme.label",
-      "options": [
+      "type":"select",
+      "id":"main_color_scheme",
+      "label":"t:sections.all.colors.settings.color_scheme.label",
+      "options":[
         {
-          "value": "color__bg-body color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__1.label"
+          "value":"color__bg-body color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__1.label"
         },
         {
-          "value": "color__bg-neutral color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__2.label"
+          "value":"color__bg-neutral color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__2.label"
         },
         {
-          "value": "color__bg-overlay-1 color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__3.label"
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__3.label"
         },
         {
-          "value": "color__bg-overlay-2 color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__4.label"
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__4.label"
         },
         {
-          "value": "color__bg-overlay-3 color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__5.label"
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__5.label"
         },
         {
-          "value": "color__bg-primary color__primary",
-          "label": "t:sections.all.colors.settings.color_scheme.options__6.label"
+          "value":"color__bg-primary color__primary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__6.label"
         },
         {
-          "value": "color__bg-secondary color__secondary",
-          "label": "t:sections.all.colors.settings.color_scheme.options__7.label"
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__7.label"
         },
         {
-          "value": "color__bg-tertiary color__tertiary",
-          "label": "t:sections.all.colors.settings.color_scheme.options__8.label"
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
         }
       ],
-      "default": "color__bg-body color__text"
+      "default":"color__bg-body color__text"
     },
     {
-      "type": "select",
-      "id": "main_color_border",
-      "label": "t:sections.all.colors.settings.color_border.label",
-      "options": [
+      "type":"select",
+      "id":"main_color_border",
+      "label":"t:sections.all.colors.settings.color_border.label",
+      "options":[
         {
-          "value": "color__border-divider-1",
-          "label": "t:sections.all.colors.settings.color_border.options__1.label"
+          "value":"color__border-divider-1",
+          "label":"t:sections.all.colors.settings.color_border.options__1.label"
         },
         {
-          "value": "color__border-selected-1",
-          "label": "t:sections.all.colors.settings.color_border.options__2.label"
+          "value":"color__border-selected-1",
+          "label":"t:sections.all.colors.settings.color_border.options__2.label"
         },
         {
-          "value": "!color__border-transparent",
-          "label": "t:sections.all.colors.settings.color_border.options__3.label"
+          "value":"!color__border-transparent",
+          "label":"t:sections.all.colors.settings.color_border.options__3.label"
         }
       ],
-      "default": "color__border-divider-1"
+      "default":"color__border-divider-1"
     },
     {
-      "type": "select",
-      "id": "main_color_button",
-      "label": "t:sections.all.colors.settings.color_button.label",
-      "options": [
+      "type":"select",
+      "id":"main_color_button",
+      "label":"t:sections.all.colors.settings.color_button.label",
+      "options":[
         {
-          "value": "btn",
-          "label": "t:sections.all.colors.settings.color_button.options__1.label"
+          "value":"btn",
+          "label":"t:sections.all.colors.settings.color_button.options__1.label"
         },
         {
-          "value": "btn btn--secondary",
-          "label": "t:sections.all.colors.settings.color_button.options__2.label"
+          "value":"btn btn--secondary",
+          "label":"t:sections.all.colors.settings.color_button.options__2.label"
         },
         {
-          "value": "btn btn--tertiary",
-          "label": "t:sections.all.colors.settings.color_button.options__5.label"
+          "value":"btn btn--tertiary",
+          "label":"t:sections.all.colors.settings.color_button.options__5.label"
         },
         {
-          "value": "btn btn--neutral",
-          "label": "t:sections.all.colors.settings.color_button.options__3.label"
+          "value":"btn btn--neutral",
+          "label":"t:sections.all.colors.settings.color_button.options__3.label"
         },
         {
-          "value": "btn btn--plain",
-          "label": "t:sections.all.colors.settings.color_button.options__4.label"
+          "value":"btn btn--plain",
+          "label":"t:sections.all.colors.settings.color_button.options__4.label"
         },
         {
-          "value": "btn--minimal-light",
-          "label": "t:sections.all.colors.settings.color_button.options__6.label"
+          "value":"btn--minimal-light",
+          "label":"t:sections.all.colors.settings.color_button.options__6.label"
         },
         {
-          "value": "btn--minimal-dark",
-          "label": "t:sections.all.colors.settings.color_button.options__7.label"
+          "value":"btn--minimal-dark",
+          "label":"t:sections.all.colors.settings.color_button.options__7.label"
+        },
+        {
+          "value": "btn--minimal-primary",
+          "label": "t:sections.all.colors.settings.color_button.options__8.label"
         }
       ],
-      "default": "btn btn--secondary"
+      "default":"btn btn--secondary"
     },
     {
-      "type": "header",
-      "content": "t:sections.all.headers.header__14.content"
+      "type":"header",
+      "content":"t:sections.all.headers.header__14.content"
     },
     {
-      "type": "select",
-      "id": "sub_color_scheme",
-      "label": "t:sections.all.colors.settings.color_scheme.label",
-      "options": [
+      "type":"select",
+      "id":"sub_color_scheme",
+      "label":"t:sections.all.colors.settings.color_scheme.label",
+      "options":[
         {
-          "value": "color__bg-body color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__1.label"
+          "value":"color__bg-body color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__1.label"
         },
         {
-          "value": "color__bg-neutral color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__2.label"
+          "value":"color__bg-neutral color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__2.label"
         },
         {
-          "value": "color__bg-overlay-1 color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__3.label"
+          "value":"color__bg-overlay-1 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__3.label"
         },
         {
-          "value": "color__bg-overlay-2 color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__4.label"
+          "value":"color__bg-overlay-2 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__4.label"
         },
         {
-          "value": "color__bg-overlay-3 color__text",
-          "label": "t:sections.all.colors.settings.color_scheme.options__5.label"
+          "value":"color__bg-overlay-3 color__text",
+          "label":"t:sections.all.colors.settings.color_scheme.options__5.label"
         },
         {
-          "value": "color__bg-primary color__primary",
-          "label": "t:sections.all.colors.settings.color_scheme.options__6.label"
+          "value":"color__bg-primary color__primary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__6.label"
         },
         {
-          "value": "color__bg-secondary color__secondary",
-          "label": "t:sections.all.colors.settings.color_scheme.options__7.label"
+          "value":"color__bg-secondary color__secondary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__7.label"
         },
         {
-          "value": "color__bg-tertiary color__tertiary",
-          "label": "t:sections.all.colors.settings.color_scheme.options__8.label"
+          "value":"color__bg-tertiary color__tertiary",
+          "label":"t:sections.all.colors.settings.color_scheme.options__8.label"
         }
       ],
-      "default": "color__bg-overlay-1 color__text"
+      "default":"color__bg-overlay-1 color__text"
     },
     {
-      "type": "select",
-      "id": "sub_color_border",
-      "label": "t:sections.all.colors.settings.color_border.label",
-      "options": [
+      "type":"select",
+      "id":"sub_color_border",
+      "label":"t:sections.all.colors.settings.color_border.label",
+      "options":[
         {
-          "value": "color__border-divider-1",
-          "label": "t:sections.all.colors.settings.color_border.options__1.label"
+          "value":"color__border-divider-1",
+          "label":"t:sections.all.colors.settings.color_border.options__1.label"
         },
         {
-          "value": "color__border-selected-1",
-          "label": "t:sections.all.colors.settings.color_border.options__2.label"
+          "value":"color__border-selected-1",
+          "label":"t:sections.all.colors.settings.color_border.options__2.label"
         },
         {
-          "value": "!color__border-transparent",
-          "label": "t:sections.all.colors.settings.color_border.options__3.label"
+          "value":"!color__border-transparent",
+          "label":"t:sections.all.colors.settings.color_border.options__3.label"
         }
       ],
-      "default": "color__border-divider-1"
+      "default":"color__border-divider-1"
     },
     {
-      "type": "select",
-      "id": "sub_color_button",
-      "label": "t:sections.all.colors.settings.color_button.label",
-      "options": [
+      "type":"select",
+      "id":"sub_color_button",
+      "label":"t:sections.all.colors.settings.color_button.label",
+      "options":[
         {
-          "value": "btn",
-          "label": "t:sections.all.colors.settings.color_button.options__1.label"
+          "value":"btn",
+          "label":"t:sections.all.colors.settings.color_button.options__1.label"
         },
         {
-          "value": "btn btn--secondary",
-          "label": "t:sections.all.colors.settings.color_button.options__2.label"
+          "value":"btn btn--secondary",
+          "label":"t:sections.all.colors.settings.color_button.options__2.label"
         },
         {
-          "value": "btn btn--tertiary",
-          "label": "t:sections.all.colors.settings.color_button.options__5.label"
+          "value":"btn btn--tertiary",
+          "label":"t:sections.all.colors.settings.color_button.options__5.label"
         },
         {
-          "value": "btn btn--neutral",
-          "label": "t:sections.all.colors.settings.color_button.options__3.label"
+          "value":"btn btn--neutral",
+          "label":"t:sections.all.colors.settings.color_button.options__3.label"
         },
         {
-          "value": "btn btn--plain",
-          "label": "t:sections.all.colors.settings.color_button.options__4.label"
+          "value":"btn btn--plain",
+          "label":"t:sections.all.colors.settings.color_button.options__4.label"
+        },
+        {
+          "value": "btn--minimal-primary",
+          "label": "t:sections.all.colors.settings.color_button.options__8.label"
         }
       ],
-      "default": "btn btn--secondary"
+      "default":"btn btn--secondary"
     },
     {
-      "type": "checkbox",
-      "id": "sub_enable_payment_icons",
-      "label": "t:sections.theme_footer.settings.sub_enable_payment_icons.label",
-      "default": false
+      "type":"checkbox",
+      "id":"sub_enable_payment_icons",
+      "label":"t:sections.theme_footer.settings.sub_enable_payment_icons.label",
+      "default":false
     },
     {
-      "type": "header",
-      "content": "t:sections.all.headers.header__8.content"
+      "type":"header",
+      "content":"t:sections.all.headers.header__8.content"
     },
     {
-      "type": "select",
-      "id": "visibility",
-      "label": "t:sections.all.visibility.label",
-      "options": [
+      "type":"select",
+      "id":"visibility",
+      "label":"t:sections.all.visibility.label",
+      "options":[
         {
-          "value": "",
-          "label": "t:sections.all.visibility.options__1.label"
+          "value":"",
+          "label":"t:sections.all.visibility.options__1.label"
         },
         {
-          "value": "md:hidden",
-          "label": "t:sections.all.visibility.options__2.label"
+          "value":"md:hidden",
+          "label":"t:sections.all.visibility.options__2.label"
         },
         {
-          "value": "hidden md:block",
-          "label": "t:sections.all.visibility.options__3.label"
+          "value":"hidden md:block",
+          "label":"t:sections.all.visibility.options__3.label"
         }
       ],
-      "default": ""
+      "default":""
     }
   ],
-  "blocks": [
+  "blocks":[
     {
-      "type": "menu",
-      "name": "t:sections.theme_footer.blocks.menu.name",
-      "limit": 8,
-      "settings": [
+      "type":"menu",
+      "name":"t:sections.theme_footer.blocks.menu.name",
+      "limit":8,
+      "settings":[
         {
-          "type": "link_list",
-          "id": "menu",
-          "label": "t:sections.theme_footer.blocks.menu.settings.menu.label"
+          "type":"link_list",
+          "id":"menu",
+          "label":"t:sections.theme_footer.blocks.menu.settings.menu.label"
         },
         {
-          "type": "text",
-          "id": "block_title",
-          "label": "Block Title",
-          "default": "TITLE"
+            "type": "text",
+            "id": "block_title",
+            "label": "Block Title",
+            "default": "TITLE"
+        }
+      ]
+    },    {
+        "type":"location",
+        "name":"LOCATION",
+        "limit":8,
+        "settings":[
+          {
+              "type": "text",
+              "id": "block_title",
+              "label": "Block Title",
+              "default": "LOCATION"
+          },
+          {
+              "type": "html",
+              "id": "block_text",
+              "label": "Location Text",
+              "default": "Location goes here"
+          }
+        ]
+      },
+    {
+      "type":"content",
+      "name":"t:sections.theme_footer.blocks.content.name",
+      "limit":3,
+      "settings":[
+        {
+          "type":"text",
+          "id":"heading",
+          "label":"t:sections.theme_footer.blocks.content.settings.heading.label",
+          "default":{
+            "en":"Block heading",
+            "es": "Encabezado de bloque",
+            "it": "Intestazione del blocco",
+            "de": "Blocküberschrift",
+            "fr": "En-tête de bloc"
+          }
+        },
+        {
+          "type":"richtext",
+          "id":"content",
+          "label":"t:sections.theme_footer.blocks.content.settings.content.label",
+          "default": {
+            "en": "<p>Remind customers of offers like free shipping and lifetime warranty</p>",
+            "es": "<p>Recuerde a los clientes ofertas como envío gratuito y garantía de por vida</p>",
+            "it": "<p>Ricorda ai clienti offerte come la spedizione gratuita e la garanzia a vita</p>",
+            "de": "<p>Erinnern Sie Kunden an Angebote wie kostenlosen Versand und lebenslange Garantie</p>",
+            "fr": "<p>Rappelez aux clients des offres telles que la livraison gratuite et la garantie à vie</p>"
+          }
+        },
+        {
+          "type":"text",
+          "id":"button_label",
+          "label":"t:sections.theme_footer.blocks.content.settings.button_label.label",
+          "default":{
+            "en":"Button",
+            "es": "Botón",
+            "it": "Bottone",
+            "de": "Knopf",
+            "fr": "Bouton"
+          }
+        },
+        {
+          "type":"url",
+          "id":"button_url",
+          "label":"t:sections.all.content.settings.button_url.label",
+          "default":"/collections/all"
         }
       ]
     },
     {
-      "type": "location",
-      "name": "LOCATION",
-      "limit": 8,
-      "settings": [
+      "type":"newsletter",
+      "name":"t:sections.theme_footer.blocks.newsletter.name",
+      "limit":1,
+      "settings":[
         {
-          "type": "text",
-          "id": "block_title",
-          "label": "Block Title",
-          "default": "LOCATION"
+          "type":"text",
+          "id":"heading",
+          "label":"t:sections.theme_footer.blocks.newsletter.settings.heading.label",
+          "default":{
+            "en":"Newsletter",
+            "es":"Boletín",
+            "it":"Newsletter",
+            "de":"Newsletter",
+            "fr":"Bulletin"
+          }
         },
         {
-          "type": "html",
-          "id": "block_text",
-          "label": "Location Text",
-          "default": "Location goes here"
-        }
-      ]
-    },
-    {
-      "type": "content",
-      "name": "t:sections.theme_footer.blocks.content.name",
-      "limit": 3,
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "t:sections.theme_footer.blocks.content.settings.heading.label",
-          "default": "Block heading"
+          "type":"richtext",
+          "id":"content",
+          "label":"t:sections.theme_footer.blocks.newsletter.settings.content.label",
+          "default":{
+            "en":"<p>Tell customers why they should subscribe to your newsletter.</p>",
+            "es": "<p>Dígales a los clientes por qué deberían suscribirse a su boletín informativo.</p>",
+            "it": "<p>Dì ai clienti perché dovrebbero iscriversi alla tua newsletter.</p>",
+            "de": "<p>Teilen Sie Ihren Kunden mit, warum sie Ihren Newsletter abonnieren sollten.</p>",
+            "fr": "<p>Expliquez aux clients pourquoi ils devraient s’abonner à votre newsletter.</p>"
+          }
         },
         {
-          "type": "richtext",
-          "id": "content",
-          "label": "t:sections.theme_footer.blocks.content.settings.content.label",
-          "default": "<p>Remind customers of offers like free shipping and lifetime warranty</p>"
+          "type":"text",
+          "id":"button",
+          "label":"t:sections.theme_footer.blocks.newsletter.settings.button.label",
+          "default":{
+            "en":"Subscribe",
+            "es": "Subscribir",
+            "it": "Abbonarsi",
+            "de": "Abonnieren",
+            "fr": "S’inscrire"
+          }
         },
         {
-          "type": "text",
-          "id": "button_label",
-          "label": "t:sections.theme_footer.blocks.content.settings.button_label.label",
-          "default": "Button"
+          "type":"richtext",
+          "id":"disclaimer",
+          "label":"t:sections.theme_footer.blocks.newsletter.settings.disclaimer.label"
         },
         {
-          "type": "url",
-          "id": "button_url",
-          "label": "t:sections.all.content.settings.button_url.label",
-          "default": "/collections/all"
-        }
-      ]
-    },
-    {
-      "type": "newsletter",
-      "name": "t:sections.theme_footer.blocks.newsletter.name",
-      "limit": 1,
-      "settings": [
-        {
-          "type": "text",
-          "id": "heading",
-          "label": "t:sections.theme_footer.blocks.newsletter.settings.heading.label",
-          "default": "Newsletter"
-        },
-        {
-          "type": "richtext",
-          "id": "content",
-          "label": "t:sections.theme_footer.blocks.newsletter.settings.content.label",
-          "default": "<p>Tell customers why they should subscribe to your newsletter.</p>"
-        },
-        {
-          "type": "text",
-          "id": "button",
-          "label": "t:sections.theme_footer.blocks.newsletter.settings.button.label",
-          "default": "Subscribe"
-        },
-        {
-          "type": "richtext",
-          "id": "disclaimer",
-          "label": "t:sections.theme_footer.blocks.newsletter.settings.disclaimer.label"
-        },
-        {
-          "type": "richtext",
-          "id": "success",
-          "label": "t:sections.theme_footer.blocks.newsletter.settings.success.label",
-          "default": "<p>Success! You’ve been subscribed.</p>"
+          "type":"richtext",
+          "id":"success",
+          "label":"t:sections.theme_footer.blocks.newsletter.settings.success.label",
+          "default":{
+            "en":"<p>Success! You’ve been subscribed.</p>",
+            "es": "<p>Gracias por suscribirte</p>",
+            "it": "<p>Grazie per esserti iscritto</p>",
+            "de": "<p>Vielen Dank für Ihre Anmeldung</p>",
+            "fr": "<p>Merci de vous être abonné</p>"
+          }
         }
       ]
     }
   ],
   "disabled_on": {
-    "groups": [
-      "custom.overlay"
-    ]
+    "groups": ["custom.overlay"]
   }
 }
 {% endschema %}

@@ -1,0 +1,72 @@
+<!-- snippets/component__quantity-input.liquid: shared cart and product quantity picker -->
+{% comment %}
+  Shared quantity picker.
+
+  Accepts:
+    - id: input id or Alpine-bound id expression
+    - model: Alpine model expression
+    - decrease_action: Alpine click expression
+    - increase_action: Alpine click expression
+    - change_action: Alpine change expression
+    - input_name: optional form input name
+    - wrapper_class: optional wrapper classes
+{% endcomment %}
+
+<div
+  class="relative flex h-12 w-36 overflow-hidden rounded-md border--width color__border-selected-1 focus-within:border--focus-outline {{ wrapper_class }}"
+  x-data="{ button_loading: false }"
+>
+  <button
+    type="button"
+    class="btn--smaller w-12 shrink-0 !rounded-none border-0 !bg-transparent"
+    :disabled="button_loading"
+    title="{{ 'cart.general.decrease' | t }}"
+    @click.prevent="{{ decrease_action }}"
+  >
+    {% render 'component__icon', icon: 'minus', size: '14', class: '' %}
+  </button>
+  <label
+    {% if id contains "'" %}
+      :for="{{ id }}"
+    {% else %}
+      for="{{ id }}"
+    {% endif %}
+    class="sr-only"
+  >
+    {{- 'products.general.quantity' | t -}}
+  </label>
+  <div class="h-full w-12 shrink-0 border--l-width border--r-width color__border-selected-1">
+    <input
+      {% if id contains "'" %}
+        :id="{{ id }}"
+      {% else %}
+        id="{{ id }}"
+      {% endif %}
+      class="type__body type--small h-full w-full !rounded-none !border-0 !bg-transparent p-0 text-center focus:outline-none focus:ring-0"
+      type="text"
+      {% if input_name %}
+        name="{{ input_name }}"
+      {% endif %}
+      value="1"
+      placeholder="1"
+      min="1"
+      x-model="{{ model }}"
+      @change.debounce="{{ change_action }}"
+    >
+  </div>
+  <div
+    class="btn__spinner btn--smaller !w-auto !color__bg-body"
+    :class="{ '!visible color__bg-overlay-1 z-10' : button_loading }"
+  >
+    {% render 'component__icon', icon: 'spinner', size: '16', class: '' %}
+  </div>
+  <button
+    type="button"
+    class="btn--smaller w-12 shrink-0 !rounded-none border-0 !bg-transparent"
+    :disabled="button_loading"
+    title="{{ 'cart.general.increase' | t }}"
+    @click.prevent="{{ increase_action }}"
+  >
+    {% render 'component__icon', icon: 'plus', size: '14', class: '' %}
+  </button>
+</div>

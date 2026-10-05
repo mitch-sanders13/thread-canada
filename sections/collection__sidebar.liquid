@@ -2,9 +2,6 @@
 {% comment %}
   Main contents of the collection template (with vertical filters)
 
-  Globals:
-    - settings.layout_horizontal: horizontaly margin
-
   Possible enhancements:
     - Add support for global setting to control grid gap.
     - Add setting so blocks can be set to width of two blocks.
@@ -14,23 +11,102 @@
 {% endcomment %}
 
 {% assign sort_by = collection.sort_by | default: collection.default_sort_by | split: '?' | first %}
-{% assign default_sort_by = '' %}
+{% assign selected_sort_name = '' %}
 {% for option in collection.sort_options %}
-  {% if sort_by contains option.value %}
-    {% assign default_sort_by = option.name | split: '?' | first %}
+  {% if sort_by == option.value %}
+    {% assign selected_sort_name = option.name | split: '?' | first %}
   {% endif %}
 {% endfor %}
 
-<section id="js:top" class="{{ section.settings.color_scheme }}">
+<section id="js:top" class="{{ section.settings.color_scheme }}"
+  style="--collection-edge-mobile: {{ section.settings.grid_edge_padding }}px; --collection-edge-desktop: {{ section.settings.grid_edge_padding_desktop }}px; --collection-column-mobile: {{ section.settings.grid_col_gap }}px; --collection-column-desktop: {{ section.settings.grid_col_gap_desktop }}px; --collection-row-mobile: {{ section.settings.grid_row_gap }}px; --collection-row-desktop: {{ section.settings.grid_row_gap_desktop }}px;">
+  <div class="py-4 text-center" role="alert" x-show="pagination_error" x-cloak>
+    <p>{{ 'general.pagination.error' | t }}</p>
+    <button type="button" class="btn btn--small btn--primary" @click="retryCollection()" :disabled="pagination_loading">{{ 'general.pagination.retry' | t }}</button>
+  </div>
   {% render 'collection__sublinks' %}
   {% render 'collection__subtags' %}
   {% render 'collection__quickfilter' %}
+
+  <div class="border--b-width color__border-divider-1">
+    <div
+      class="w-full px-[var(--collection-edge-mobile,12px)] md:px-[var(--collection-edge-desktop,120px)] gap-4 py-0 md:py-3 flex items-center justify-between"
+      x-data="{ sort_by: '{{ sort_by }}', filter_popup: false }"
+    >
+      <span class="inline-flex h-11 items-center type__label type--small">
+        {{- collection.products_count }}
+        {{ 'collections.general.products' | t -}}
+      </span>
+      {% if section.settings.enable_sort %}
+        <div class="hidden md:block">
+          {% render 'component__sort-options',
+            sort_by: sort_by,
+            collection: collection,
+            button_class: 'inline-flex h-11 items-center type__label type--small'
+          %}
+        </div>
+
+        <div class="md:hidden">
+          {% assign mobile_sort_heading_id = 'SortDialogTitle-' | append: section.id %}
+          <button
+            type="button"
+            class="inline-flex h-11 items-center type__label type--small"
+            @click="filter_popup = true"
+          >
+            {{ 'collections.sorting.sort' | t }}:
+            {{ selected_sort_name }}
+            {% render 'component__icon', icon: 'chevron-down', size: '16', class: 'ml-1' %}
+          </button>
+
+          {% capture mobile_sort_content %}
+            <div class="p-4">
+              <h2 id="{{ mobile_sort_heading_id }}" class="sr-only">
+                {{ 'collections.sorting.sort' | t }}
+              </h2>
+              {% for option in collection.sort_options %}
+                <label class="flex items-center w-full mb-4">
+                  <input
+                    type="radio"
+                    class="form-radio mr-3"
+                    value="{{ option.value }}"
+                    name="sort_by_mobile"
+                    autocomplete="off"
+                    x-model="sort_by"
+                    {% if sort_by == option.value %}checked{% endif %}
+                  >
+                  <span class="type--base">{{ option.name }}</span>
+                </label>
+              {% endfor %}
+              <button
+                type="button"
+                class="btn btn--small btn--secondary !w-full"
+                @click="
+                  filter_popup = false;
+                  let currentUrl = new URL(window.location.href);
+                  currentUrl.searchParams.set('sort_by', sort_by);
+                  window.location.href = currentUrl.pathname + '?' + currentUrl.searchParams.toString();
+                "
+              >
+                {{ 'collections.sorting.apply_sort' | t }}
+              </button>
+            </div>
+          {% endcapture %}
+          {% render 'component__popup',
+            popup_id: 'filter_popup',
+            content: mobile_sort_content,
+            aria_labelledby: mobile_sort_heading_id,
+            hide_close_button: true
+          %}
+        </div>
+      {% endif %}
+    </div>
+  </div>
 
   {% comment %}Back to school selection button for collegiate collection (mobile){% endcomment %}
   {% if collection.handle == 'collegiate' %}
     <div class="md:hidden border--b-width color__border-divider-1">
       <div class="px-4 py-4">
-        <a 
+        <a
           href="/pages/shop-your-school"
           class="type__nav type--small no-underline transition-opacity hover:opacity-75"
         >
@@ -41,26 +117,28 @@
   {% endif %}
 
   <div class="flex flex-wrap max-w-full md:flex-nowrap">
-    <div
-      class="sticky top-0 z-20 w-full md:hidden color__bg-body md:border-r color__border-divider-1"
-      x-ref="destop_filter"
-      x-data="
-        {
-          sort_by : ['{{ sort_by }}'],
-          height: 0
-        }
-      "
-      {% if settings.header_position == 'sticky' %}
-        x-init="
-          height = $refs.header.offsetHeight;
-          $refs.destop_filter.style.top = height + 'px';
+    {% if collection.handle == 'collegiate' %}
+      <div
+        class="sticky top-0 z-20 w-full md:hidden color__bg-body md:border-r color__border-divider-1"
+        x-ref="destop_filter"
+        x-data="
+          {
+            sort_by : ['{{ sort_by }}'],
+            height: 0
+          }
         "
-      {% endif %}
-    >
-      {% render 'component__collection-vertical-filter' %}
-    </div>
+        {% if settings.header_position == 'sticky' %}
+          x-init="
+            height = $refs.header.offsetHeight;
+            $refs.destop_filter.style.top = height + 'px';
+          "
+        {% endif %}
+      >
+        {% render 'component__collection-vertical-filter' %}
+      </div>
+    {% endif %}
 
-    <div class="px-4 grow">
+    <div class="w-full px-[var(--collection-edge-mobile,12px)] md:px-[var(--collection-edge-desktop,120px)] grow min-w-0">
       {% comment %}
         {%- unless collection.title == blank -%}
           <h1 class="mt-12 mb-0 text-center type--big">{{ collection.title }}</h1>
@@ -96,7 +174,7 @@
         <section
           id="js:results"
           class="
-            grid animation-500 py-4
+            grid animation-500 gap-x-[var(--collection-column-mobile,8px)] gap-y-[var(--collection-row-mobile,32px)] pt-0 pb-9 md:gap-x-[var(--collection-column-desktop,16px)] md:gap-y-[var(--collection-row-desktop,40px)]
             {{ section.settings.row_size_desktop }}
             {{ section.settings.row_size_mobile }}
           "
@@ -104,20 +182,20 @@
             {
             'opacity-25' : pagination_loading }
           "
-          style="
-            column-gap: {{ settings.layout_gap_size }}px;
-            row-gap: {{ settings.layout_gap_size | times: 1.5 }}px;
-          "
+          data-collection-pagination
+          data-current-page="{{ paginate.current_page }}"
+          data-total-pages="{{ paginate.pages }}"
+          :aria-busy="pagination_loading"
         >
           {% for product in collection.products %}
             {% assign gridIndex = forloop.index %}
+            {% assign absolute_index = paginate.current_offset | plus: gridIndex %}
 
             {% for block in section.blocks %}
               {%- case block.type -%}
                 {%- when 'newsletter' -%}
-                  {% assign paginateIndex = block.settings.paginate_index %}
-                  {% if block.settings.index == gridIndex %}
-                    {% if paginate.current_page == paginateIndex %}
+                  {% assign block_index = block.settings.paginate_index | minus: 1 | times: paginate.page_size | plus: block.settings.index %}
+                  {% if block_index == absolute_index %}
                       {% render 'component__newsletter-item',
                         title: block.settings.heading,
                         content: block.settings.content,
@@ -127,15 +205,14 @@
                         size_desktop: block.settings.column_size,
                         background_image: block.settings.image_background,
                         background_color: block.settings.background_color_scheme,
+                        block_attributes: block.shopify_attributes,
                         index: gridIndex
                       %}
-                    {% endif %}
                   {% endif %}
 
                 {%- when 'content' -%}
-                  {% assign paginateIndex = block.settings.paginate_index %}
-                  {% if block.settings.index == gridIndex %}
-                    {% if paginate.current_page == paginateIndex %}
+                  {% assign block_index = block.settings.paginate_index | minus: 1 | times: paginate.page_size | plus: block.settings.index %}
+                  {% if block_index == absolute_index %}
                       {% render 'component__content-item',
                         url: block.settings.url,
                         title: block.settings.heading,
@@ -150,26 +227,29 @@
                         autoplay: block.settings.enable_autoplay,
                         mute: block.settings.enable_mute_toggle,
                         loop: block.settings.enable_loop,
+                        block_attributes: block.shopify_attributes,
                         index: gridIndex
                       %}
-                    {% endif %}
                   {% endif %}
               {%- endcase -%}
             {% endfor %}
 
-            {% render 'component__product-item', product: product, source: 'col_main', forloop: forloop.index %}
+            {% assign prioritize_image = false %}
+            {% if paginate.current_page == 1 and gridIndex <= 4 %}{% assign prioritize_image = true %}{% endif %}
+            {% render 'component__product-item', product: product, source: 'col_main', prioritize_image: prioritize_image %}
           {% endfor %}
         </section>
 
-        {% if collection.all_products_count == 0 %}
+        {% if collection.products_count == 0 %}
           <section class="py-4 text-center">
-            <span>{{ 'collections.general.no_matches' | t }}</span>
+            <p>{{ 'collections.general.no_matches' | t }}</p>
+            <a class="btn btn--small btn--plain" href="{{ collection.url }}" @click.prevent="handleFilterDeleteAll()">{{ 'collections.general.clear_filters' | t }}</a>
           </section>
         {% else %}
-          {% render 'component__pagination', paginate: paginate %}
-          {% render 'component__collection-schema', collection: collection %}
+          {% render 'theme__structured-data', collection: collection, paginate: paginate %}
         {% endif %}
 
+        {% render 'component__pagination', paginate: paginate %}
         {% render 'script__swatches' %}
       {% endpaginate %}
     </div>
@@ -178,8 +258,14 @@
 
 {% schema %}
 {
-  "name": "Collection grid (sidebar)",
+  "name": "Collection grid",
   "settings": [
+    {
+      "type": "link_list",
+      "id": "horizontal_filter_menu",
+      "label": "t:sections.collection_main.settings.horizontal_filter_menu.label",
+      "info": "t:sections.collection_main.settings.horizontal_filter_menu.info"
+    },
     {
       "type": "header",
       "content": "t:sections.all.headers.header__1.content"
@@ -251,6 +337,66 @@
     {
       "type": "paragraph",
       "content": "t:sections.all.layout.paragraph__1.content"
+    },
+    {
+      "type": "range",
+      "id": "grid_edge_padding",
+      "label": "Mobile edge padding",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 12
+    },
+    {
+      "type": "range",
+      "id": "grid_edge_padding_desktop",
+      "label": "Desktop edge padding",
+      "min": 0,
+      "max": 200,
+      "step": 2,
+      "unit": "px",
+      "default": 120
+    },
+    {
+      "type": "range",
+      "id": "grid_col_gap",
+      "label": "Mobile column gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 8
+    },
+    {
+      "type": "range",
+      "id": "grid_col_gap_desktop",
+      "label": "Desktop column gap",
+      "min": 0,
+      "max": 40,
+      "step": 2,
+      "unit": "px",
+      "default": 16
+    },
+    {
+      "type": "range",
+      "id": "grid_row_gap",
+      "label": "Mobile row gap",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 32
+    },
+    {
+      "type": "range",
+      "id": "grid_row_gap_desktop",
+      "label": "Desktop row gap",
+      "min": 0,
+      "max": 60,
+      "step": 2,
+      "unit": "px",
+      "default": 40
     },
     {
       "type": "select",
@@ -330,7 +476,7 @@
       "type": "number",
       "id": "products_per_page",
       "label": "t:sections.collection_main.settings.products_per_page.label",
-      "default": 12
+      "default": 48
     }
   ],
   "blocks": [
@@ -352,19 +498,37 @@
           "type": "text",
           "id": "heading",
           "label": "t:sections.collection_main.blocks.newsletter.settings.heading.label",
-          "default": "Block heading"
+          "default": {
+            "en": "Block heading",
+            "es": "Encabezado de bloque",
+            "it": "Intestazione del blocco",
+            "de": "Blocküberschrift",
+            "fr": "En-tête de bloc"
+          }
         },
         {
           "type": "richtext",
           "id": "content",
           "label": "t:sections.collection_main.blocks.newsletter.settings.content.label",
-          "default": "<p>Tell customers why they should subscribe to your newsletter.</p>"
+          "default": {
+            "en": "<p>Tell customers why they should subscribe to your newsletter.</p>",
+            "es": "<p>Dígales a los clientes por qué deberían suscribirse a su boletín informativo.</p>",
+            "it": "<p>Dì ai clienti perché dovrebbero iscriversi alla tua newsletter.</p>",
+            "de": "<p>Teilen Sie Ihren Kunden mit, warum sie Ihren Newsletter abonnieren sollten.</p>",
+            "fr": "<p>Expliquez aux clients pourquoi ils devraient s'abonner à votre newsletter.</p>"
+          }
         },
         {
           "type": "text",
           "id": "button_label",
           "label": "t:sections.collection_main.blocks.newsletter.settings.button_label.label",
-          "default": "Subscribe"
+          "default": {
+            "en": "Subscribe",
+            "es": "Subscribir",
+            "it": "Abbonarsi",
+            "de": "Abonnieren",
+            "fr": "S'inscrire"
+          }
         },
         {
           "type": "richtext",
@@ -375,7 +539,13 @@
           "type": "richtext",
           "id": "success",
           "label": "t:sections.collection_main.blocks.newsletter.settings.success.label",
-          "default": "<p>Success! You've been subscribed.</p>"
+          "default": {
+            "en": "<p>Success! You've been subscribed.</p>",
+            "es": "<p>Gracias por suscribirte</p>",
+            "it": "<p>Grazie per esserti iscritto</p>",
+            "de": "<p>Vielen Dank für Ihre Anmeldung</p>",
+            "fr": "<p>Merci de vous être abonné</p>"
+          }
         },
         {
           "type": "paragraph",
@@ -525,19 +695,37 @@
           "type": "text",
           "id": "heading",
           "label": "t:sections.collection_main.blocks.content.settings.heading.label",
-          "default": "Block heading"
+          "default": {
+            "en": "Block heading",
+            "es": "Encabezado de bloque",
+            "it": "Intestazione del blocco",
+            "de": "Blocküberschrift",
+            "fr": "En-tête de bloc"
+          }
         },
         {
           "type": "richtext",
           "id": "content",
           "label": "t:sections.collection_main.blocks.content.settings.content.label",
-          "default": "<p>Describe a product, make announcements, or inform customers about a promotion.</p>"
+          "default": {
+            "en": "<p>Describe a product, make announcements, or inform customers about a promotion.</p>",
+            "es": "<p>Describa un producto, haga anuncios o informe a los clientes sobre una promoción.</p>",
+            "it": "<p>Descrivi un prodotto, fai annunci o informa i clienti su una promozione.</p>",
+            "de": "<p>Beschreiben Sie ein Produkt, machen Sie Ankündigungen oder informieren Sie Kunden über eine Werbeaktion.</p>",
+            "fr": "<p>Décrivez un produit, faites des annonces ou informez les clients d'une promotion.</p>"
+          }
         },
         {
           "type": "text",
           "id": "button_label",
           "label": "t:sections.collection_main.blocks.content.settings.button_label.label",
-          "default": "Button"
+          "default": {
+            "en": "Button",
+            "es": "Botón",
+            "it": "Bottone",
+            "de": "Knopf",
+            "fr": "Bouton"
+          }
         },
         {
           "type": "number",
@@ -625,7 +813,7 @@
   ],
   "presets": [
     {
-      "name": "Collection grid (sidebar)"
+      "name": "Collection grid"
     }
   ],
   "templates": [

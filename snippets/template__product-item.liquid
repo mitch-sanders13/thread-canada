@@ -1,154 +1,189 @@
-<div
-  class="flex justify-center flex-none"
+{% doc %}
+Renders a client-side product card for recently viewed and recommendation data.
+
+The surrounding Alpine template must expose the product as `item`.
+{% enddoc %}
+
+<article
+  class="group relative w-full text-left [&:has([data-product-card-primary-link]:focus-visible)]:border--focus-outline"
   x-show="!item.tags.includes('hiderecommendation') && item.available && item.url"
+  x-bind:aria-labelledby="`RecentProductCardTitle-${item.id}`"
+  x-data="
+    {
+      active_image: 0,
+      card_hovered: false,
+      original_second_image: item.images?.[1] || item.featured_image,
+      second_image: item.images?.[1] || item.featured_image,
+      cardTitle(title) {
+        return title.includes(' - ') ? title.split(' - ')[0] : title;
+      },
+      cardType(title, type) {
+        return title.includes(' - ') ? title.split(' - ').slice(-1)[0] : type;
+      },
+      handleize(value) {
+        return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+      },
+      swatchClass() {
+        const collegiate = item.tags.some(tag => tag.toLowerCase().trim() === 'collegiate');
+        const schoolTag = item.tags.find(tag => tag.toLowerCase().trim().startsWith('school_'));
+        let value = collegiate ? `collegiate-${this.handleize(item.type)}` : this.handleize(item.type);
+        if (collegiate && schoolTag) value += `-${this.handleize(schoolTag.replace(/^school_/i, ''))}`;
+        return `js:swatchList-${value}`;
+      },
+      showActiveSwatch(card, activeSwatch) {
+        for (const swatch of card.querySelectorAll('a[data-swatch-preview-image]')) {
+          swatch.classList.toggle('border--focus-outline', swatch === activeSwatch);
+        }
+      },
+      previewSwatch(card, target) {
+        const swatch = target.closest?.('a[data-swatch-preview-image]');
+        if (!swatch) return;
+        this.showActiveSwatch(card, swatch);
+        this.second_image = swatch.getAttribute('data-swatch-preview-image') || this.original_second_image;
+        this.showImage(1, 'auto');
+      },
+      resetActiveSwatch(card) {
+        const defaultSwatch = card.querySelector('a[data-default-product-swatch=true]');
+        if (defaultSwatch) this.showActiveSwatch(card, defaultSwatch);
+      },
+      showImage(index, behavior = 'smooth') {
+        const imageCount = Math.min(item.images?.length || 0, 5);
+        if (imageCount <= 1) {
+          this.active_image = index > 0 ? 1 : 0;
+          return;
+        }
+        const track = this.$refs.imageTrack;
+        if (!track || index < 0 || index >= imageCount) return;
+        track.scrollTo({ left: track.clientWidth * index, behavior });
+        this.active_image = index;
+      },
+      syncImage() {
+        const track = this.$refs.imageTrack;
+        if (!track || !track.clientWidth) return;
+        this.active_image = Math.round(track.scrollLeft / track.clientWidth);
+      }
+    }
+  "
+  @mouseover="previewSwatch($el, $event.target)"
+  @mouseenter="card_hovered = true"
+  @mouseleave="
+    card_hovered = false;
+    resetActiveSwatch($el);
+    second_image = original_second_image;
+    showImage(0, 'auto');
+  "
 >
   <div
-    class="
-      group relative w-full border--width border--radius border-gray-300 border-opacity-0 hover:border-opacity-100
-      {% if settings.thumbnails_border_style == 'thumbnail' %}
-        border--radius overflow-hidden
-      {% endif %}
-    "
-    x-data="
-      {
-        option_popup: true,
-        button_loading: false
-      }
-    "
+    class="relative overflow-hidden color__bg-overlay-1 {% if settings.thumbnails_border_style == 'image' %}border--radius{% endif %}"
+    @mouseenter="if (window.matchMedia('(hover: hover)').matches && item.images.length > 1) showImage(1, 'auto')"
   >
-    {%- comment -%} Image {%- endcomment -%}
-    <a
-      class="relative block hover:opacity-100"
-      :href="item && item.url ? `${item.url}` : '#'"
+    <div
+      x-ref="imageTrack"
+      class="hidescrollbar flex w-full snap-x snap-mandatory overscroll-x-contain"
+      x-bind:class="item.images.length > 1 ? 'overflow-x-auto' : 'overflow-x-hidden'"
+      @scroll.debounce.50ms="syncImage()"
     >
-      <div
-        class="
-          animation-500 w-full overflow-hidden color__bg-overlay-1
-          {% if settings.thumbnails_border_style == 'image' %}
-            border--radius
-          {% endif %}
-        "
-      >
-        <div class="{{ settings.thumbnails_ratio }} object-cover overflow-hidden">
-          {% if settings['thumbnails_object-sizing'] == 'cover' %}
-            {% capture image_class %}w-full h-full object-cover {{ settings.thumbmails_color_scheme }}{% endcapture %}
-          {% else %}
-            {% capture image_class %}w-full h-full object-contain {{ settings.thumbmails_color_scheme }}{% endcapture %}
-          {% endif %}
+      <template x-for="(image, imageIndex) in item.images.slice(0, 5)" x-bind:key="image">
+        <a
+          x-bind:href="item.url"
+          tabindex="-1"
+          class="{{ settings.thumbnails_ratio }} block w-full flex-none snap-start overflow-hidden hover:opacity-100"
+          x-bind:aria-label="`${item.title} – image ${imageIndex + 1} of ${Math.min(item.images.length, 5)}`"
+        >
           <img
-            :src="`${ item.featured_image }`"
-            :alt="`${ item.title }`"
+            class="w-full h-full {% if settings['thumbnails_object-sizing'] == 'cover' %}object-cover{% else %}object-contain{% endif %}"
+            x-bind:src="item.images.length === 1 ? second_image : (imageIndex === 1 ? second_image : image)"
+            x-bind:alt="item.title"
             width="904"
-            class="{{ image_class }}"
+            height="904"
             loading="lazy"
           >
-        </div>
-      </div>
-    </a>
-
-    {%- comment -%} Desktop Content {%- endcomment -%}
-    <div
-      class="
-        hidden md:block hover:no-underline no-underline whitespace-normal relative flex flex-col justify-end py-2 {{ settings.thumbnails_alignment }}
-        {% if settings.thumbnails_border_style == "thumbnail" %}
-          px-4 pb-4
-        {% endif %}
-      "
-    >
-      <div class="px-2 flex flex-wrap items-center justify-between gap-1 mb-0 {{ settings.thumbnails_alignment }}">
-        <div class="flex items-center gap-1 pr-2">
-          <h3 class="type--base !leading-tight mb-0 type__heading" aria-level="2" x-text="item.title"></h3>
-          <ul class="flex items-center p-0 mb-0 opacity-75 gap-x-1 gap-y-0 type__body">
-            {% if settings.enable_thumbnails_vendor %}
-              <li
-                class="
-                  type--small inline-block last:after:hidden
-                  {% if settings.type_seperator == 'dot' %} after:content-['\00B7'] {% else %} after:content-['\007C'] {% endif %}
-                "
-                x-text="item.vendor"
-              ></li>
-            {% endif %}
-            {% if settings.enable_thumbnails_variant_count %}
-              <li
-                class="
-                  type--small inline-block last:after:hidden
-                  {% if settings.type_seperator == 'dot' %} after:content-['\00B7'] {% else %} after:content-['\007C'] {% endif %}
-                "
-                x-text="item.variants.length + ' {{ 'products.general.options' | t }}'"
-              ></li>
-            {% endif %}
-          </ul>
-        </div>
-
-        {% comment %} Desktop Prices {% endcomment %}
-        <div class="w-full text-center md:text-right md:w-auto">
-          <div class="flex items-center justify-between gap-2 mb-1">
-            <span
-              class="text-xs font-bold"
-              x-html="Shopify.formatMoney((item.variants &amp;&amp; item.variants[0] &amp;&amp; item.variants[0].price != null) ? item.variants[0].price : item.price)"
-            ></span>
-            <span
-              class="text-xs line-through opacity-75"
-              x-show="((item.variants &amp;&amp; item.variants[0]) ? (item.variants[0].compare_at_price || 0) : (item.compare_at_price_max || 0)) > ((item.variants &amp;&amp; item.variants[0] &amp;&amp; item.variants[0].price != null) ? item.variants[0].price : item.price)"
-              x-html="Shopify.formatMoney((item.variants &amp;&amp; item.variants[0]) ? (item.variants[0].compare_at_price || 0) : item.compare_at_price_max)"
-            >
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {% comment %} Desktop Swatches {% endcomment %}
-      <div
-        :class="(item.tags && item.tags.some(tag => tag.toLowerCase().trim() === 'collegiate') ? 'js:swatchList-collegiate-' : 'js:swatchList-') + item.type.toLowerCase().replace(/\s+/g, '-')"
-        class="mt-2 relative z-[15] hidden md:block"
-      >
-        <div class="flex flex-wrap gap-2 px-2">
-          {% for i in (1..4) %}
-            <span
-              class="animate-pulse btn btn--plain btn--small bg-center !w-6 !h-6 !min-h-[1.5rem] !min-w-[1.5rem] bg-contain !rounded-full !p-0"
-            >
-            </span>
-          {% endfor %}
-        </div>
-      </div>
+        </a>
+      </template>
     </div>
 
-    {%- comment -%} Mobile Content {%- endcomment -%}
-    <div class="md:hidden hover:no-underline no-underline whitespace-normal relative flex flex-col justify-end py-1">
-      <div class="px-2">
-        {% comment %} Product Type & Price on first line {% endcomment %}
-        <div class="flex items-start justify-between gap-1 mb-0">
-          <h3
-            class="mb-0"
-            aria-level="2"
-            style="font-size: 14px; line-height: 1.1; font-weight: 500; max-width: 65%; word-break: break-word;"
-            x-text="item.title"
-          ></h3>
-          <div class="flex whitespace-nowrap pl-1" style="margin-top: -1px;">
-            <span
-              class="text-xs font-bold"
-              x-bind:data-product-id="item.id"
-              x-html="Shopify.formatMoney((item.variants &amp;&amp; item.variants[0] &amp;&amp; item.variants[0].price != null) ? item.variants[0].price : item.price)"
-            >
-            </span>
-            <span
-              class="text-xs ml-1"
-              style="text-decoration: line-through; opacity: 0.75;"
-              x-bind:data-product-id="item.id"
-              x-show="((item.variants &amp;&amp; item.variants[0]) ? (item.variants[0].compare_at_price || 0) : (item.compare_at_price_max || 0)) > ((item.variants &amp;&amp; item.variants[0] &amp;&amp; item.variants[0].price != null) ? item.variants[0].price : item.price)"
-              x-html="Shopify.formatMoney((item.variants &amp;&amp; item.variants[0]) ? (item.variants[0].compare_at_price || 0) : item.compare_at_price_max)"
-            >
-            </span>
-          </div>
-        </div>
-
-        {% comment %} Title and Colors on second line {% endcomment %}
-        {% comment %}
-          <div class="flex items-center justify-between gap-2 mt-0">
-            <span class="opacity-75 whitespace-nowrap shrink-0 text-xs" x-text="item.variants.length + ' Colors'"></span>
-          </div>
-        {% endcomment %}
-      </div>
+    <div
+      class="absolute bottom-2 left-1/2 z-[5] flex -translate-x-1/2 items-center gap-2"
+      x-show="card_hovered && item.images.length > 1"
+      x-cloak
+    >
+      <button
+        type="button"
+        tabindex="-1"
+        class="btn btn--plain btn--circle"
+        @click.prevent.stop="showImage(active_image === 0 ? Math.min(item.images.length, 5) - 1 : active_image - 1)"
+        aria-label="Previous product image"
+      >
+        {% render 'component__icon', icon: 'chevron-left', size: '20', class: '' %}
+      </button>
+      <button
+        type="button"
+        tabindex="-1"
+        class="btn btn--plain btn--circle"
+        @click.prevent.stop="showImage(active_image === Math.min(item.images.length, 5) - 1 ? 0 : active_image + 1)"
+        aria-label="Next product image"
+      >
+        {% render 'component__icon', icon: 'chevron-right', size: '20', class: '' %}
+      </button>
     </div>
   </div>
-</div>
+
+  <div
+    x-bind:class="swatchClass()"
+    x-bind:data-current-handle="item.handle"
+    class="relative z-[15] hidden py-3 lg:block"
+  >
+    <div class="flex flex-wrap items-center justify-start gap-3 px-2">
+      {% for i in (1..4) %}
+        <span
+          title="Loading swatches..."
+          class="animate-pulse btn btn--plain btn--small !h-8 !min-h-[2rem] !w-8 !min-w-[2rem] !rounded-full bg-center bg-contain !p-0"
+        ></span>
+      {% endfor %}
+    </div>
+  </div>
+
+  <div class="whitespace-normal px-2 pb-2 text-left">
+    <p
+      x-bind:id="`RecentProductCardTitle-${item.id}`"
+      class="type__body type--small m-0 p-0 text-left normal-case"
+    >
+      <a
+        x-bind:href="item.url"
+        data-product-card-primary-link
+        class="type__body type--small normal-case no-underline outline-none hover:no-underline hover:opacity-75"
+        x-text="cardTitle(item.title)"
+      ></a>
+    </p>
+
+    <h3
+      class="type__body type--small m-0 p-0 text-left normal-case opacity-60"
+      x-show="cardType(item.title, item.type)"
+      x-text="cardType(item.title, item.type)"
+    ></h3>
+
+    <div class="type__body type--small m-0 flex flex-wrap items-center justify-start gap-2 p-0 text-left">
+      <span
+        x-bind:data-product-id="item.id"
+        x-bind:data-variant-id="item.variants?.[0]?.id"
+        x-html="Shopify.formatMoney(item.variants?.[0]?.price ?? item.price)"
+      ></span>
+      <span
+        class="line-through opacity-60"
+        x-show="(item.variants?.[0] != null ? (item.variants[0].compare_at_price || 0) : (item.compare_at_price_max || 0)) > (item.variants?.[0]?.price ?? item.price)"
+        x-html="Shopify.formatMoney(item.variants?.[0] != null ? (item.variants[0].compare_at_price || 0) : (item.compare_at_price_max || 0))"
+      ></span>
+    </div>
+
+    <p
+      class="type__body type--small m-0 p-0 text-left opacity-60"
+      x-show="{{ settings.enable_thumbnails_vendor | json }}"
+      x-text="item.vendor"
+    ></p>
+    <p
+      class="type__body type--small m-0 p-0 text-left opacity-60"
+      x-show="{{ settings.enable_thumbnails_variant_count | json }}"
+      x-text="`${item.variants.length} {{ 'products.general.options' | t }}`"
+    ></p>
+  </div>
+</article>

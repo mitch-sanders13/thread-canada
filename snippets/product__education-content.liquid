@@ -1,0 +1,26 @@
+{% comment %}
+  Typography treatment shared by the product education sections.
+
+  Accepts:
+    - eyebrow: short supporting label
+    - heading: section heading
+    - content: section body metafield
+{% endcomment %}
+
+{%- unless eyebrow == blank -%}
+  <p class="color__primary-background type__label mb-2">
+    {{ eyebrow }}
+  </p>
+{%- endunless -%}
+
+{%- unless heading == blank -%}
+  <h2 class="type__heading type__heading--bold-2 mb-4">
+    {{ heading }}
+  </h2>
+{%- endunless -%}
+
+{%- unless content == blank -%}
+  <div class="m-0--clear md:pr-8">
+    {{ content | metafield_tag }}
+  </div>
+{%- endunless -%}

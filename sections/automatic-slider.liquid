@@ -1,0 +1,298 @@
+<!-- sections/automatic-slider.liquid -->
+{% liquid
+  assign slide_width_mobile = section.settings.width_mobile
+  assign slide_width_desktop = section.settings.width_desktop
+  assign slide_gap = section.settings.gap
+  assign loop_duration = section.settings.loop_duration
+  assign accessibility_label = section.settings.accessibility_label
+
+%}
+
+<section class="{{ section.settings.visibility }} {{ section.settings.color_scheme }} {{ section.settings.color_border }} {{ section.settings.style_border }}">
+  <div
+    class="{{ section.settings.layout_horizontal }} {% if section.settings.enable_community_spacing %}py-8 md:py-[3.75rem]{% endif %}"
+    {% unless section.settings.enable_community_spacing %}style="padding-top:{{ section.settings.spacing_top }}px; padding-bottom:{{ section.settings.spacing_bottom }}px;"{% endunless %}
+  >
+    {% if section.settings.heading != blank %}
+      <header class="px-4 text-center">
+        <h2 class="type__heading--section m-0">{{ section.settings.heading | escape }}</h2>
+        {% if section.settings.lede != blank %}<p class="type--base mt-4 mb-0 leading-snug">{{ section.settings.lede | escape }}</p>{% endif %}
+        {% if section.settings.button_url != blank and section.settings.button_label != blank %}
+          <a class="type__label inline-flex min-h-[44px] items-center gap-2 mt-2 mb-4 text-[var(--thread-blue)]" href="{{ section.settings.button_url }}">{{ section.settings.button_label | escape }} <span aria-hidden="true">→</span></a>
+        {% endif %}
+      </header>
+    {% endif %}
+    {% if section.blocks.size > 0 %}
+      <automatic-gallery class="block" style="--gallery-width-mobile: {{ slide_width_mobile }}px; --gallery-width-desktop: {{ slide_width_desktop }}px; --gallery-gap: {{ slide_gap }}px;" data-autoplay="{{ section.settings.autoplay }}" data-duration="{{ loop_duration }}" data-hover="{{ section.settings.pause_on_hover }}">
+      <div class="community-gallery__controls px-4 pb-2 text-right" hidden>
+        <button class="min-h-[44px] px-4 py-2 underline" type="button" data-gallery-toggle data-pause-label="{{ 'general.media.pause_gallery' | t | escape }}" data-resume-label="{{ 'general.media.resume_gallery' | t | escape }}">{{ 'general.media.pause_gallery' | t }}</button>
+      </div>
+      <div
+        class="community-gallery__viewport overflow-x-auto overscroll-x-contain [scrollbar-width:thin] focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-[3px] focus-visible:outline-[var(--thread-blue)]" tabindex="0"
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="{{ accessibility_label | escape }}"
+        data-gallery-viewport
+      >
+        <div class="community-gallery__track flex w-max gap-[var(--gallery-gap)]">
+          {% for track_index in (1..2) %}
+            {% for block in section.blocks %}
+              {% liquid
+                assign aspect_class = 'aspect-[3/4]'
+                if block.settings.aspect == 'square'
+                  assign aspect_class = 'aspect-[1/1]'
+                endif
+              %}
+              <div
+                class="relative {{ aspect_class }} flex-none basis-[var(--gallery-width-mobile)] md:basis-[var(--gallery-width-desktop)] overflow-hidden {{ settings.thumbnails_color_scheme }}"
+                data-automatic-slider-slide
+                {% if track_index > 1 %}
+                  aria-hidden="true" data-gallery-clone
+                {% endif %}
+                {% if track_index == 1 %}
+                  {{ block.shopify_attributes }}
+                {% endif %}
+              >
+                {% capture slide_content %}
+                  {% assign render_video = false %}
+                  {% if block.settings.video != blank and block.settings.media_type == 'video' %}
+                    {% assign render_video = true %}
+                  {% elsif block.settings.video != blank and block.settings.image == blank %}
+                    {% assign render_video = true %}
+                  {% endif %}
+                  {% if render_video %}
+                    {% assign video_poster = block.settings.video.preview_image | image_url: width: 640 %}
+                    {{
+                      block.settings.video
+                      | video_tag:
+                        autoplay: false,
+                        loop: true,
+                        muted: true,
+                        controls: false,
+                        playsinline: true,
+                        preload: 'none',
+                        poster: video_poster,
+                        class: 'block w-full h-full object-cover pointer-events-none'
+                    }}
+                  {% elsif block.settings.image != blank %}
+                    {% render 'component__image', image: block.settings.image, aspect_ratio: aspect_class, background: settings.thumbnails_color_scheme, crop: 'object-cover', container_class: 'h-full', image_class: 'h-full', max_width: 900, enable_lazy_load: true, include_2x: true, enable_animation: false %}
+                  {% else %}
+                    {{ 'image' | placeholder_svg_tag: 'w-full h-full object-cover' }}
+                  {% endif %}
+                  {% unless block.settings.caption == blank %}
+                    <span class="absolute bottom-3 left-3 right-3 z-10 color__light type--small">{{ block.settings.caption | escape }}</span>
+                  {% endunless %}
+                {% endcapture %}
+                {% if block.settings.link == blank %}
+                  <div class="block w-full h-full">{{ slide_content }}</div>
+                {% else %}
+                  <a
+                    class="block w-full h-full"
+                    href="{{ block.settings.link }}"
+                    {% if block.settings.open_new_tab %}
+                      target="_blank" rel="noopener noreferrer"
+                    {% endif %}
+                    {% if track_index > 1 %}
+                      tabindex="-1"
+                    {% endif %}
+                  >
+                    {{- slide_content -}}
+                  </a>
+                {% endif %}
+              </div>
+            {% endfor %}
+          {% endfor %}
+        </div>
+      </div>
+
+      </automatic-gallery>
+    {% endif %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Automatic slider",
+  "max_blocks": 20,
+  "settings": [
+    { "type": "text", "id": "heading", "label": "Heading" },
+    { "type": "text", "id": "lede", "label": "Supporting text" },
+    { "type": "text", "id": "button_label", "label": "Link label" },
+    { "type": "url", "id": "button_url", "label": "Link" },
+    { "type": "header", "content": "Gallery behavior" },
+    { "type": "text", "id": "accessibility_label", "label": "Accessibility label", "default": "Image gallery" },
+    { "type": "checkbox", "id": "autoplay", "label": "Auto-scroll", "default": true },
+    {
+      "type": "range",
+      "id": "loop_duration",
+      "min": 10,
+      "max": 90,
+      "step": 5,
+      "unit": "s",
+      "label": "Loop duration",
+      "default": 55
+    },
+    { "type": "checkbox", "id": "pause_on_hover", "label": "Pause on hover", "default": true },
+    { "type": "range", "id": "gap", "min": 0, "max": 40, "step": 2, "unit": "px", "label": "Gap", "default": 16 },
+    {
+      "type": "range",
+      "id": "width_desktop",
+      "min": 180,
+      "max": 500,
+      "step": 10,
+      "unit": "px",
+      "label": "Desktop image width",
+      "default": 320
+    },
+    {
+      "type": "range",
+      "id": "width_mobile",
+      "min": 140,
+      "max": 320,
+      "step": 10,
+      "unit": "px",
+      "label": "Mobile image width",
+      "default": 220
+    },
+    { "type": "header", "content": "Spacing" },
+    {
+      "type": "checkbox",
+      "id": "enable_community_spacing",
+      "label": "Use community gallery spacing",
+      "info": "Use 32px vertical padding on mobile and 60px on desktop instead of the custom padding below.",
+      "default": false
+    },
+    {
+      "type": "range",
+      "id": "spacing_top",
+      "min": 0,
+      "max": 300,
+      "step": 20,
+      "unit": "px",
+      "label": "Top padding",
+      "default": 60
+    },
+    {
+      "type": "range",
+      "id": "spacing_bottom",
+      "min": 0,
+      "max": 300,
+      "step": 20,
+      "unit": "px",
+      "label": "Bottom padding",
+      "default": 60
+    },
+    {
+      "type": "select",
+      "id": "layout_horizontal",
+      "label": "Horizontal width",
+      "options": [
+        { "value": "", "label": "Full width" },
+        { "value": "max-w-screen-2xl mx-auto", "label": "Contained" }
+      ],
+      "default": ""
+    },
+    { "type": "header", "content": "Colors" },
+    {
+      "type": "select",
+      "id": "color_scheme",
+      "label": "Color scheme",
+      "options": [
+        { "value": "color__bg-body color__text", "label": "Body" },
+        { "value": "color__bg-neutral color__text", "label": "Neutral" },
+        { "value": "bg-[var(--thread-bone)] color__text", "label": "Bone" },
+        { "value": "color__bg-overlay-1 color__text", "label": "Overlay 1" },
+        { "value": "color__bg-overlay-2 color__text", "label": "Overlay 2" },
+        { "value": "color__bg-overlay-3 color__text", "label": "Overlay 3" },
+        { "value": "color__bg-primary color__primary", "label": "Primary" },
+        { "value": "color__bg-secondary color__secondary", "label": "Secondary" },
+        { "value": "color__bg-tertiary color__tertiary", "label": "Tertiary" }
+      ],
+      "default": "color__bg-body color__text"
+    },
+    {
+      "type": "select",
+      "id": "color_border",
+      "label": "Border color",
+      "options": [
+        { "value": "color__border-divider-1", "label": "Divider" },
+        { "value": "color__border-selected-1", "label": "Selected" }
+      ],
+      "default": "color__border-divider-1"
+    },
+    {
+      "type": "select",
+      "id": "style_border",
+      "label": "Section border",
+      "options": [
+        { "value": "", "label": "None" },
+        { "value": "border--t-width", "label": "Top" },
+        { "value": "border--b-width", "label": "Bottom" },
+        { "value": "border--b-width border--t-width", "label": "Top and bottom" }
+      ],
+      "default": ""
+    },
+    {
+      "type": "select",
+      "id": "visibility",
+      "label": "Visibility",
+      "options": [
+        { "value": "", "label": "All devices" },
+        { "value": "md:hidden", "label": "Mobile only" },
+        { "value": "hidden md:block", "label": "Desktop only" }
+      ],
+      "default": ""
+    }
+  ],
+  "blocks": [
+    {
+      "type": "image",
+      "name": "Tile",
+      "settings": [
+        {
+          "type": "select",
+          "id": "media_type",
+          "label": "Media type",
+          "options": [
+            { "value": "image", "label": "Image" },
+            { "value": "video", "label": "Video" }
+          ],
+          "default": "image"
+        },
+        { "type": "image_picker", "id": "image", "label": "Image" },
+        {
+          "type": "video",
+          "id": "video",
+          "label": "Video",
+          "info": "Used when Media type is Video, or automatically when no image is selected."
+        },
+        {
+          "type": "select",
+          "id": "aspect",
+          "label": "Aspect",
+          "options": [
+            { "value": "portrait", "label": "Portrait (3:4)" },
+            { "value": "square", "label": "Square (1:1)" }
+          ],
+          "default": "portrait"
+        },
+        { "type": "text", "id": "caption", "label": "Caption" },
+        { "type": "url", "id": "link", "label": "Link" },
+        { "type": "checkbox", "id": "open_new_tab", "label": "Open in a new tab", "default": false }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Automatic slider",
+      "blocks": [
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" },
+        { "type": "image" }
+      ]
+    }
+  ]
+}
+{% endschema %}

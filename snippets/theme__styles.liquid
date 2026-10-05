@@ -1,14 +1,11 @@
 <!-- snippets/theme__styles.liquid -->
 {% comment %} 
-  All CSS for theme comes in through here.
+  Theme-wide CSS variables. Brand fonts load through theme__fonts; styles live in src/css.
 
   Usage:
     {% render 'theme__styles' %}
 
   Globals: 
-    - settings.type_font_body: set font family for body text
-    - settings.type_font_heading: set font family for heading text
-    - settings.type_font_nav: set font family for navigation text
     - settings.background_body_light: set the body background color for light mode
     - settings.background_body_dark: set the body background color for dark mode
     - settings.foreground_body_light: set the body foreground for light mode (used for text color)
@@ -47,96 +44,78 @@
   }
 </style></noscript>
 
-{%- liquid
-  assign type_font_body = settings.type_font_body
-  assign type_font_body_bold = settings.type_font_body | font_modify: 'weight', 'bold'
-  assign type_font_body_italic = settings.type_font_body | font_modify: 'style', 'italic'
-  assign type_font_body_bold_italic = type_font_body_bold | font_modify: 'style', 'italic'
-  assign type_font_heading = settings.type_font_heading
-  assign type_font_nav = settings.type_font_nav
-%}
-
 {% style %}
-
-  @font-face {
-    font-family: "PP Right Grotesk Tight Bold";
-    src: 
-      url("https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.woff2?v=1712089722") format("woff2"),
-      url("https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.woff?v=1712089722") format("woff"),
-      url("https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.otf?v=1712089722") format("opentype");
-  }
-
-  {% comment %}
-    Forma DJR lived in US Content > Files. file_url points at THIS shop's Files,
-    so Canada 404s that woff2 on every page (including the product 404). Use the
-    theme's Shopify font picker until the file is uploaded on this store.
-  {% endcomment %}
-
-  {{ type_font_body | font_face: font_display: 'swap' }}
-  {{ type_font_body_bold | font_face: font_display: 'swap' }}
-  {{ type_font_body_italic | font_face: font_display: 'swap' }}
-  {{ type_font_body_bold_italic | font_face: font_display: 'swap' }}
-  {{ type_font_heading | font_face: font_display: 'swap' }}
-  {{ type_font_nav | font_face: font_display: 'swap' }}
-
   :root {
-    --oke-button-backgroundColor: {{ settings.background_primary_light }} !important;
-    --oke-button-backgroundColorHover: {{ settings.background_primary_light }} !important;
-    --oke-button-backgroundColorActive: {{ settings.background_primary_light }} !important;
-    --oke-button-borderColor: {{ settings.background_primary_light }} !important;
-    --oke-button-borderColorHover: {{ settings.background_primary_light }} !important;
-    --oke-button-borderColorActive: {{ settings.background_primary_light }} !important;
-    --oke-avatar-backgroundColor: {{ settings.background_primary_light }} !important;
-    --oke-highlightColor: {{ settings.background_primary_light }} !important;
-    --oke-attributeBar-markerColor: {{ settings.background_primary_light }} !important;
-    --oke-filter-backgroundColorActive: {{ settings.background_primary_light }} !important;
-    --oke-filter-borderColor: {{ settings.background_primary_light }} !important;
-    --oke-filter-borderColorActive: {{ settings.background_primary_light }} !important;
-    --oke-filter-textColor: {{ settings.background_primary_light }} !important;
-    --oke-stars-foregroundColor: {{ settings.background_primary_light }} !important;
+    --type-font-handwritten-family: "Thread Handwritten", cursive;
+    --thread-ink: #1c1c1c;
+    --thread-blue: #1e7db3;
+    --thread-gold: #eebc2c;
+    --thread-bronze: #c08951;
+    --thread-bone: #f4f1ea;
+    --thread-putty: #e0ddd8;
+    --thread-hairline: #e3ded2;
+    --thread-grey: #888888;
+
+    --oke-button-backgroundColor: var(--color-primary-button-background-light) !important;
+    --oke-button-backgroundColorHover: var(--color-primary-button-background-light) !important;
+    --oke-button-backgroundColorActive: var(--color-primary-button-background-light) !important;
+    --oke-button-borderColor: var(--color-primary-button-background-light) !important;
+    --oke-button-borderColorHover: var(--color-primary-button-background-light) !important;
+    --oke-button-borderColorActive: var(--color-primary-button-background-light) !important;
+    --oke-avatar-backgroundColor: var(--color-primary-button-background-light) !important;
+    --oke-highlightColor: var(--color-primary-button-background-light) !important;
+    --oke-attributeBar-markerColor: var(--color-primary-button-background-light) !important;
+    --oke-filter-backgroundColorActive: var(--color-primary-button-background-light) !important;
+    --oke-filter-borderColor: var(--color-primary-button-background-light) !important;
+    --oke-filter-borderColorActive: var(--color-primary-button-background-light) !important;
+    --oke-filter-textColor: var(--color-primary-button-background-light) !important;
+    --oke-stars-foregroundColor: var(--color-primary-button-background-light) !important;
     
     --color__bg-body-light: {{ settings.background_body_light }};
     --color__bg-overlay-light-1: #f5f5f5;
     --color__bg-overlay-light-2: {{ settings.background_body_light | color_darken: 12 }};
     --color__bg-overlay-light-3: {{ settings.background_body_light | color_darken: 24 }};
 
-    --color__text-light: {{ settings.foreground_body_light }};
-    --color__link-light: {{ settings.background_primary_light }};
+    --color__text-light: {{ settings.foreground_body_light | default: 'var(--thread-ink)' }};
+    --color__link-light: var(--color-primary-button-background-light);
 
     --color__text-dark: {{ settings.foreground_body_dark }};
 
-    --color__border-divider-light-1: {{ settings.border_light }};
+    --color__border-divider-light-1: {{ settings.border_light | default: 'var(--thread-hairline)' }};
     --color__border-divider-light-2: {{ settings.border_light | color_darken: 15 }};
     --color__border-divider-light-3: {{ settings.border_light | color_darken: 30 }};
     --color__border-selected-light-1: {{ settings.border_light | color_darken: 45 }};
     --color__border-selected-light-2: {{ settings.border_light | color_darken: 60 }};
 
-    --color-primary-button-background-light: {{ settings.background_primary_light }};
-    --color-primary-button-border-light: {{ settings.background_primary_light }};
+    --color-primary-button-background-light: {{ settings.background_primary_light | default: 'var(--thread-blue)' }};
+    --color-primary-button-border-light: var(--color-primary-button-background-light);
     --color-primary-button-text-light: {{ settings.foreground_primary_light }};
 
-    --color-secondary-button-background-light: {{ settings.background_secondary_light }};
-    --color-secondary-button-border-light: {{ settings.background_secondary_light }};
+    --color-secondary-button-background-light: {{ settings.background_secondary_light | default: 'var(--thread-ink)' }};
+    --color-secondary-button-border-light: var(--color-secondary-button-background-light);
     --color-secondary-button-text-light: {{ settings.foreground_secondary_light }};
 
-    --color-tertiary-button-background-light: {{ settings.background_tertiary_light }};
-    --color-tertiary-button-border-light: {{ settings.background_tertiary_light }};
+    --color-tertiary-button-background-light: {{ settings.background_tertiary_light | default: 'var(--thread-bronze)' }};
+    --color-tertiary-button-border-light: var(--color-tertiary-button-background-light);
     --color-tertiary-button-text-light: {{ settings.foreground_tertiary_light }};
 
     --color-neutral-button-background-light: {{ settings.background_body_light | color_darken: 5 | color_mix: settings.background_primary_light, 94 }};
     --color-neutral-button-border-light: {{ settings.background_body_light | color_darken: 5 | color_mix: settings.background_primary_light, 94 }};
-    --color-neutral-button-text-light: {{ settings.foreground_body_light }};
+    --color-neutral-button-text-light: var(--color__text-light);
 
     --color-plain-button-background-light: {{ settings.background_body_light | color_darken: 6 }};
     --color-plain-button-border-light: {{ settings.background_body_light | color_darken: 6 }};
-    --color-plain-button-text-light: {{ settings.foreground_body_light }};
+    --color-plain-button-text-light: var(--color__text-light);
 
     --color-minimal-button-background-transparent: rgb(0,0,0,0);
     --color-minimal-button-border-light: {{ settings.foreground_minimal_light }};
     --color-minimal-button-text-light: {{ settings.foreground_minimal_light }};
     
-    --color-minimal-button-border-dark: {{ settings.foreground_minimal_dark }};
-    --color-minimal-button-text-dark: {{ settings.foreground_minimal_dark }};
+    --color-minimal-button-border-dark: var(--color-minimal-button-text-dark);
+    --color-minimal-button-text-dark: {{ settings.foreground_minimal_dark | default: 'var(--thread-ink)' }};
+
+    --color-minimal-button-border-primary: var(--color-primary-button-background-light);
+    --color-minimal-button-text-primary: var(--color-primary-button-background-light);
 
     --sizes-border-button-radius: {{ settings.border_button_radius }}px;
     --sizes-border-input-radius: {{ settings.border_input_radius }}px;
@@ -144,16 +123,23 @@
     --sizes-border-width: {{ settings.border_width }}px;
     --sizes-gap-width: {{ settings.layout_gap_size }}px;
 
-    --type-font-body-family: {{ settings.type_font_body.family }}, {{ settings.type_font_body.fallback_families }};
-    --type-font-body-style: {{ settings.type_font_body.style }};
-    --type-font-body-weight: {{ settings.type_font_body.weight }};
-    --type-font-body-letter-spacing: 0.08em;
-    --type-font-header-family: "PP Right Grotesk Tight Bold", {{ settings.type_font_heading.fallback_families }};
-    --type-font-header-style: {{ settings.type_font_heading.style }};
-    --type-font-header-weight: {{ settings.type_font_heading.weight }};
-    --type-font-nav-family: {{ settings.type_font_nav.family }}, {{ settings.type_font_nav.fallback_families }};
-    --type-font-nav-style: {{ settings.type_font_nav.style }};
-    --type-font-nav-weight: {{ settings.type_font_nav.weight }};
+    --type-font-forma-family: "FormaDJR", sans-serif;
+    --type-font-forma-letter-spacing: 1.275px;
+    --type-font-body-family: var(--type-font-forma-family);
+    --type-font-body-style: normal;
+    --type-font-body-weight: 300;
+    --type-font-body-letter-spacing: 0.07em;
+    --type-font-header-family: "PP Right Grotesk", sans-serif;
+    --type-font-header-style: normal;
+    --type-font-header-weight: 700;
+    --type-font-nav-family: var(--type-font-header-family);
+    --type-font-nav-style: normal;
+    --type-font-nav-weight: 500;
+    --type-font-button-family: var(--type-font-forma-family);
+    --type-font-button-style: normal;
+    --type-font-button-weight: 700;
+    --type-font-button-letter-spacing: var(--type-font-forma-letter-spacing);
     --type-font-base-size: {{ settings.type_base_size }}px;
   }
+
 {% endstyle %}

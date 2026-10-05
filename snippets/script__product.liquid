@@ -122,53 +122,115 @@
   gallery_index: 0,
   gallery_index_scroll: 0,
   gallery_index_size: {{ product.media.size | minus: 1 }},
+  gallery_navigation_locked: false,
+  gallery_ready: false,
   show_arrows: false,
   isOverflown(element) {
     return element.scrollWidth > element.clientWidth;
   },
 
-  scrollNext() {
-    this.gallery_index_scroll = this.gallery_index + 1;
-    if(this.gallery_index_scroll > this.gallery_index_size){
-      this.gallery_index_scroll = 0;
+  getVisibleGalleryIndexes() {
+    const slider = this.$refs.slider;
+    if (!slider) return [];
+
+    return Array.from(slider.querySelectorAll('[data-slide]'))
+      .filter((slide) => window.getComputedStyle(slide).display !== 'none')
+      .map((slide) => Number(slide.dataset.slide));
+  },
+
+  initializeGallery(slider) {
+    if (!slider) return;
+
+    const visibleSlides = Array.from(slider.querySelectorAll('[data-slide]'))
+      .filter((slide) => window.getComputedStyle(slide).display !== 'none');
+    const firstSlide = visibleSlides.find((slide) => slide.hasAttribute('data-initial-slide'))
+      || visibleSlides.find((slide) => slide.dataset.mediaType === 'image')
+      || visibleSlides[0];
+    const firstIndex = firstSlide ? Number(firstSlide.dataset.slide) : 0;
+    let revealed = false;
+
+    const revealGallery = () => {
+      if (revealed || !slider.isConnected) return;
+      revealed = true;
+
+      slider.scrollLeft = firstSlide ? firstSlide.offsetLeft : 0;
+      this.gallery_index = firstIndex;
+      this.gallery_index_scroll = firstIndex;
+      this.show_arrows = this.isOverflown(slider);
+      this.gallery_ready = true;
+    };
+
+    slider.scrollLeft = firstSlide ? firstSlide.offsetLeft : 0;
+    window.setTimeout(revealGallery, 2000);
+
+    const firstImage = firstSlide ? firstSlide.querySelector('img') : null;
+    if (!firstImage || firstImage.complete) {
+      if (firstImage && firstImage.decode) {
+        firstImage.decode().then(revealGallery).catch(revealGallery);
+      } else {
+        requestAnimationFrame(revealGallery);
+      }
+      return;
     }
-    this.scrollToIndex(this.gallery_index_scroll);
+
+    firstImage.addEventListener('load', revealGallery, { once: true });
+    firstImage.addEventListener('error', revealGallery, { once: true });
+  },
+
+  scrollNext() {
+    if (this.gallery_navigation_locked) return;
+    this.gallery_navigation_locked = true;
+
+    const visibleIndexes = this.getVisibleGalleryIndexes();
+    if (!visibleIndexes.length) {
+      this.gallery_navigation_locked = false;
+      return;
+    }
+
+    const currentPosition = visibleIndexes.indexOf(Number(this.gallery_index_scroll));
+    const nextPosition = currentPosition === -1 || currentPosition === visibleIndexes.length - 1
+      ? 0
+      : currentPosition + 1;
+    this.scrollToIndex(visibleIndexes[nextPosition]);
+    window.setTimeout(() => { this.gallery_navigation_locked = false; }, 250);
   },
 
   scrollBack() {
-    this.gallery_index_scroll = this.gallery_index - 1;
-    if(this.gallery_index_scroll < 0){
-      this.gallery_index_scroll = this.gallery_index_size;
+    if (this.gallery_navigation_locked) return;
+    this.gallery_navigation_locked = true;
+
+    const visibleIndexes = this.getVisibleGalleryIndexes();
+    if (!visibleIndexes.length) {
+      this.gallery_navigation_locked = false;
+      return;
     }
-    this.scrollToIndex(this.gallery_index_scroll);
+
+    const currentPosition = visibleIndexes.indexOf(Number(this.gallery_index_scroll));
+    const previousPosition = currentPosition === -1 || currentPosition === 0
+      ? visibleIndexes.length - 1
+      : currentPosition - 1;
+    this.scrollToIndex(visibleIndexes[previousPosition]);
+    window.setTimeout(() => { this.gallery_navigation_locked = false; }, 250);
   },
 
   scrollToIndex(gallery_index_scroll) {
-    this.gallery_index = gallery_index_scroll;
+    gallery_index_scroll = Number(gallery_index_scroll);
     let slider = this.$refs.slider;
     let currentSlide = slider.querySelector('[data-slide=&quot;' + gallery_index_scroll + '&quot;]');
 
+    if (!currentSlide || window.getComputedStyle(currentSlide).display === 'none') return;
 
+    this.gallery_index = gallery_index_scroll;
+    this.gallery_index_scroll = gallery_index_scroll;
 
-    {% comment %} Check for enable variant images {% endcomment %}
-    const checkIfHidden = (el, index) => {
-      if(el && el.style.display == 'none') {
-        this.gallery_index_scroll++
-        currentSlide = slider.querySelector('[data-slide=&quot;' + this.gallery_index_scroll++ + '&quot;]');
-
-        console.log(this.gallery_index_scroll)
-        console.log(currentSlide)
-        {% comment %} checkIfHidden(currentSlide, this.gallery_index_scroll) {% endcomment %}
-
-      }
-    }
-   checkIfHidden(currentSlide, this.gallery_index_scroll);
-   if (currentSlide) {
-    let currentSlidePosition = currentSlide.offsetLeft;
+    if (currentSlide) {
+      const sliderRect = slider.getBoundingClientRect();
+      const slideRect = currentSlide.getBoundingClientRect();
+      const currentSlidePosition = slider.scrollLeft + slideRect.left - sliderRect.left;
       slider.scrollTo({
         top: 0,
         left: currentSlidePosition,
-        behavior: 'smooth'
+        behavior: 'auto'
       });
     }
     let thumbnailSlider = this.$refs.thumbnail_slider;
@@ -179,7 +241,7 @@
         thumbnailSlider.scrollTo({
           top: currentThumbPosition-200,
           left: 0,
-          behavior: 'smooth'
+          behavior: 'auto'
         });
       }
     }
@@ -212,11 +274,17 @@
       url.searchParams.set('variant', this.defaultVariantId);
       url.searchParams.set('section_id', this.productSectionId);
       this.mediaSectionLoading = true;
+      this.gallery_ready = false;
 
       fetch(url.toString())
       .then(async (response) => {
+        if (requestKey !== this.variantSectionRequestKey) return;
+        if (!response.ok) {
+          throw new Error(`Unable to render product media: ${response.status}`);
+        }
+
         let data = await response.text();
-        if (response.status !== 200 || requestKey !== this.variantSectionRequestKey) return;
+        if (requestKey !== this.variantSectionRequestKey) return;
 
         let html = document.createElement('div');
         html.innerHTML = data;
@@ -234,6 +302,10 @@
           }
         }
 
+        if (!incomingMedia) {
+          this.gallery_ready = true;
+        }
+
         if (incomingFullscreen && fullscreenContainer) {
           fullscreenContainer.innerHTML = incomingFullscreen.innerHTML;
           if (window.Alpine && window.Alpine.initTree) {
@@ -244,7 +316,9 @@
         this.updateGalleryIndexSize();
       })
       .catch((error) => {
+        if (requestKey !== this.variantSectionRequestKey) return;
         console.error('Error:', error);
+        this.gallery_ready = true;
       })
       .finally(() => {
         if (requestKey === this.variantSectionRequestKey) {
@@ -341,6 +415,7 @@
   handleForm(quickAdd = false, defaultVariantId) {
     let formContainer = this.$refs.formContainer;
     let hasMultipleOptions = false;
+    const previousVariantId = this.defaultVariantId;
 
     // Apply explicit variant first so option fields match before we join handles
     if (defaultVariantId) {
@@ -531,7 +606,9 @@
     urlParams.set('variant', this.defaultVariantId);
     history.replaceState(null, null, window.location.pathname + '?' + urlParams.toString());
 
-    this.renderVariantMedia();
+    if (previousVariantId !== this.defaultVariantId) {
+      this.renderVariantMedia();
+    }
 
     // update local pickup block
     let pickupContainer = formContainer.querySelector('.js\\:pickup');

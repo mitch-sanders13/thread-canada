@@ -1,4 +1,3 @@
-{% comment %} shopify-canada-resync {% endcomment %}
 <!-- sections/banner-video.liquid -->
 {% comment %} 
   Video that can autoplay or play on click.
@@ -13,6 +12,7 @@
 
 <section class="
 	banner-video
+	{% if section.settings.enable_header_overlap %}pt-[var(--header-height,0px)]{% unless request.page_type == 'index' %} -mt-[var(--header-height,0px)]{% endunless %}{% endif %}
 	{{ section.settings.visibility }}
 	{%- unless request.design_mode -%}
 		{%- if settings.enable_animations -%}
@@ -25,7 +25,7 @@
 		data-replace="{'opacity-50' : 'opacity-100'}"
 	{%- endif -%}
 	x-data="{ play: false }" 
-	x-init="$watch('play', (value) => {
+	x-init="{% if section.settings.enable_header_overlap %}has_banner_overlap = true; header_color = 'color__dark';{% endif %} $watch('play', (value) => {
 		if (value) {
 			$refs.video.play()
 		} else {
@@ -99,6 +99,7 @@
 {
 "name":"Video banner",
 "settings":[
+	{"type":"checkbox","id":"enable_header_overlap","label":"Enable header overlap","info":"Places the banner media behind the header and offsets the banner content below it.","default":false},
 	{
 	"type":"select",
 	"id":"visibility",
@@ -218,6 +219,10 @@
 		{
 		"value":"btn btn--plain",
 		"label":"Plain"
+		},
+		{
+		"value":"btn--minimal-primary",
+		"label":"t:sections.all.colors.settings.color_button.options__8.label"
 		}
 	],
 	"default":"btn btn--secondary"

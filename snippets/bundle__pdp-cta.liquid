@@ -1,0 +1,71 @@
+{% doc %}
+Renders a link to the configured Everyday Carry Set product.
+
+@param {product} product - Current product.
+
+@example
+{% render 'bundle__pdp-cta', product: product %}
+{% enddoc %}
+
+{%- liquid
+  assign wallet_types = 'Elastic Wallet|Vertical Leather Wallet|Leather Zip Wallet' | split: '|'
+  assign lanyard_types = 'Wristlet Keychain' | split: '|'
+  assign accessory_types = 'Chapstick Holder Keychain' | split: '|'
+
+  assign bundle_slot = blank
+  assign bundle_product_handle = blank
+  if wallet_types contains product.type
+    assign bundle_slot = 'wallet'
+    case product.type
+      when 'Elastic Wallet'
+        assign bundle_product_handle = 'everyday-carry-set-elastic-wallet'
+      when 'Vertical Leather Wallet'
+        assign bundle_product_handle = 'everyday-carry-set-vertical-leather-wallet'
+      when 'Leather Zip Wallet'
+        assign bundle_product_handle = 'every-day-carry-set-leather-zip-wallet'
+    endcase
+  elsif lanyard_types contains product.type
+    assign bundle_slot = 'lanyard'
+  elsif accessory_types contains product.type
+    assign bundle_slot = 'chapstick'
+  endif
+
+  assign builder_url = blank
+  assign has_bundle = false
+  assign product_type_handle = product.type | handleize
+  assign product_type_suffix = '-' | append: product_type_handle
+  assign current_colorway_handle = product.handle | remove: product_type_suffix
+  if current_colorway_handle == product.handle
+    assign current_colorway_title = product.title | split: ' - ' | first
+    assign current_colorway_handle = current_colorway_title | handleize
+  endif
+
+  if bundle_product_handle != blank
+    assign bundle_product_handles = bundle_product_handle | split: '|'
+  else
+    assign bundle_product_handles = 'everyday-carry-set-elastic-wallet|everyday-carry-set-vertical-leather-wallet|every-day-carry-set-leather-zip-wallet' | split: '|'
+  endif
+
+  for candidate_handle in bundle_product_handles
+    assign bundle_product = all_products[candidate_handle]
+    for bundle_variant in bundle_product.variants
+      assign bundle_variant_title = bundle_variant.title | handleize
+      if bundle_variant.available and bundle_variant_title == current_colorway_handle
+        assign builder_url = bundle_variant.url
+        assign has_bundle = true
+        break
+      endif
+    endfor
+    if has_bundle
+      break
+    endif
+  endfor
+-%}
+
+{%- if settings.bundle_fbt_enable and bundle_slot != blank and has_bundle -%}
+  <div class="bundle-pdp-cta px-4 pt-4">
+    <a class="btn btn--secondary !w-full" href="{{ builder_url }}">
+      {{ settings.bundle_fbt_cta_text | default: 'Build an Everyday Carry Set — Save 20%' | escape }}
+    </a>
+  </div>
+{%- endif -%}

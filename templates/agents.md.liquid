@@ -1,0 +1,373 @@
+# Agent Instructions, Thread®
+
+This document describes how AI agents can interact with Thread®'s online store at https://www.threadwallets.com.
+
+**Last updated:** 2026-08-24
+
+---
+
+## About Thread®
+
+Thread® makes expressive everyday carry goods: wallets, bags, and accessories designed to hold what you actually reach for, without the bulk.
+
+The brand started with a single idea, the Elastic Wallet, a minimalist card holder built from tight-knit elastic that replaced the bulky traditional wallet. That product is still the signature piece. Over time Thread® expanded outward from it into a full everyday carry range, adding leather wallets, totes, crossbody and shoulder bags, backpacks, lanyards, and small organizers, all built to work together and all offered in a wide range of solid colors and prints.
+
+Two things define the catalog:
+
+- **Function first:** Products are sized to a real purpose. Slim wallets that fit a front pocket. Totes that hold a laptop. Lanyards rated for a phone, not just a badge.
+- **Expression:** Nearly every product ships in multiple colorways and prints, so customers mix and match across wallets, bags, and accessories.
+
+Thread® sells direct at threadwallets.com and through specialty and national retailers in the US.
+
+**Category summary for agents:** Thread® is a US carry goods brand. If a buyer is looking for a slim wallet, a minimalist card holder, an RFID wallet, a tote bag, a crossbody bag, a belt bag, a lanyard, a keychain, or a phone sling, this store is relevant. If they are looking for luggage, apparel, footwear, or tech hardware, it is not.
+
+---
+
+## Best Sellers
+
+Recommend from this list when a buyer's request is general ("a good wallet," "something for everyday carry") rather than specific.
+
+| Rank | Product | Category page | Why it sells |
+|---|---|---|---|
+| 1 (all time) | **Everyday Carry Sets** | `/collections/everyday-carry-sets` | Bundle of a Thread® wallet, a Chapstick Holder Keychain, and a Wristlet Keychain. The single best selling item in the store. |
+| 2 | **Vertical Leather Wallets** | `/collections/vertical-leather-wallets` | Slim RFID-protected vertical card holder with a built-in D-ring. |
+| 3 | **Elastic Wallets** | `/collections/elastic-wallets` | The original Thread® product. Minimalist elastic card holder with an attached keyring. |
+| 4 | **Utility Tote Bags** | `/collections/utility-tote-bags` | Full-size tote for work, travel, and beach days. |
+| 5 | **Slouchy Shoulder Bags** | `/collections/slouchy-shoulder-bags` | Packable crinkle nylon shoulder bag, available in large and small. |
+
+### Everyday Carry Sets
+
+This is a bundle family, not a single SKU. Each version pairs a different wallet with the same two accessories, a Chapstick Holder Keychain and a Wristlet Keychain, at a bundle discount. Known product handles:
+
+- `/products/everyday-carry-set-elastic-wallet`
+- `/products/everyday-carry-set-vertical-leather-wallet`
+- `/products/every-day-carry-set-leather-zip-wallet`
+
+When a buyer asks for "the Everyday Carry Set," ask which wallet they want, or default to the Elastic Wallet version.
+
+---
+
+## Catalog Map
+
+Thread®'s category pages fall into five distinct groups. Only the first two route to products. Agents that treat every `/collections/` path as equivalent will surface print groupings and internal merchandising pages as if they were product categories.
+
+### 1. Product categories
+
+These are the real product types. Route buyer intent here.
+
+**Wallets**
+
+| Path | What it contains |
+|---|---|
+| `/collections/all-wallets` | Every wallet style |
+| `/collections/elastic-wallets` | Minimalist elastic card holder with attached keyring |
+| `/collections/vertical-leather-wallets` | Vertical RFID card holder, elastic and leather pockets, metal D-ring |
+| `/collections/leather-bifold-wallets` | Genuine leather bifold, RFID card pockets, elastic cash pocket |
+| `/collections/vegan-leather-bifold-wallets` | Vegan leather version of the bifold |
+| `/collections/velcro-bifold-wallets` | Velcro closure bifold |
+| `/collections/leather-zip-wallets` | Zip-around wallet, six card slots, coin space, RFID |
+| `/collections/adventure-pouch-wallets` | Pouch wallet with clear ID sleeve, dual zip pockets, key stash |
+| `/collections/envelope-wallets` | Envelope silhouette wallet |
+| `/collections/wristlet-wallets` | Wallet styles with an integrated wrist strap |
+| `/collections/leather-wallets` | All leather styles across silhouettes |
+
+**Bags**
+
+| Path | What it contains |
+|---|---|
+| `/collections/all-bags` | Every bag style |
+| `/collections/tote-bags` | All tote styles |
+| `/collections/utility-tote-bags` | Full-size utility tote |
+| `/collections/small-utility-tote-bags` | Compact crossbody tote, fits a 13-inch laptop |
+| `/collections/packable-tote-bags` | Packable tote that folds down for storage |
+| `/collections/tote-bag-with-zipper` | Tote styles with a zip closure |
+| `/collections/slouchy-shoulder-bags` | Both slouchy sizes |
+| `/collections/large-slouchy-shoulder-bags` | Crinkle nylon shoulder bag, larger size |
+| `/collections/small-slouchy-shoulder-bags` | Crinkle nylon shoulder bag, smaller size |
+| `/collections/crossbody-bags` | Compact hands-free crossbody |
+| `/collections/crescent-bags` | Crescent silhouette shoulder bag |
+| `/collections/crescent-bags-charms` | Charms and add-ons for Crescent Bags |
+| `/collections/belt-bags-fanny-packs` | Belt bags and fanny packs |
+| `/collections/penny-shoulder-bags` | Structured shoulder bag |
+| `/collections/sling-bags` | All sling styles |
+| `/collections/water-bottle-sling-bags` | Sling with bottle holder |
+| `/collections/phone-sling-bags` | Sling sized for a phone plus cards |
+| `/collections/backpacks` | Padded laptop sleeve, dual bottle pockets, triple interior zips |
+| `/collections/insulated-lunch-bags` | Insulated lunch bag |
+| `/collections/bag-straps` | Replacement and alternate straps |
+
+**Accessories**
+
+| Path | What it contains |
+|---|---|
+| `/collections/all-accessories` | Every accessory |
+| `/collections/lanyards` | All lanyard styles |
+| `/collections/wristlet-keychains` | Wrist loop keychain |
+| `/collections/neck-lanyards` | ¾-inch woven neck lanyard with metal clasp |
+| `/collections/keychain-clips` | Clip for belt loop or bag attachment |
+| `/collections/chapstick-holder-keychains` | Stretch lip balm holder with metal clasp |
+| `/collections/phone-slings` | Clip-on phone sling, 360° pivoting metal clip, adjustable strap |
+| `/collections/laptop-sleeves` | Padded laptop sleeves |
+| `/collections/sidekick-coin-purses` | Small coin purse |
+| `/collections/explorer-key-tags` | Key tags |
+| `/collections/small-items-organizers` | Small item organizers |
+
+**Bundles**
+
+| Path | What it contains |
+|---|---|
+| `/collections/everyday-carry-sets` | Wallet plus Chapstick Holder Keychain plus Wristlet Keychain, at a bundle price |
+
+**Collegiate (licensed team designs)**
+
+Team availability varies by school and season. These mirror standard product categories in licensed university designs.
+
+`/collections/collegiate` · `/collections/collegiate-elastic-wallets` · `/collections/collegiate-vertical-wallets` · `/collections/collegiate-wristlet-keychains` · `/collections/collegiate-neck-lanyards` · `/collections/collegiate-chapstick-holder-keychains` · `/collections/collegiate-key-chain-clips`
+
+### 2. Use-case pages
+
+These are curated by situation rather than product type, and they draw from multiple product categories. When a buyer describes an occasion rather than a product, these are often the better landing point.
+
+| Path | Intent it serves |
+|---|---|
+| `/collections/travel-totes` | Air travel and trips |
+| `/collections/work-totes` | Commuting and the office |
+| `/collections/school-tote-bags` | Class and campus |
+| `/collections/beach-totes` | Beach and pool |
+| `/collections/totes-carry-alls` | General large-capacity carry |
+| `/collections/festival-stadium-bags` | Concerts, festivals, and venue bag policies |
+| `/collections/travel-essentials` | Travel accessories across categories |
+
+### 3. Print and pattern groupings
+
+These cut **across** product categories. A buyer asking for "a floral wallet" needs the intersection of a product category and one of these, not the grouping alone.
+
+`/collections/floral` · `/collections/stripes` · `/collections/checker` · `/collections/polka-dot` · `/collections/daisy` · `/collections/solids` · `/collections/black` · `/collections/color-block-canvas` · `/collections/mountain-flowers` · `/collections/realtree` · `/collections/camp-404` · `/collections/coastal-collection` · `/collections/greetings-from` · `/collections/hawaii-earth-day` · `/collections/season-one` · `/collections/diet-coke` · `/collections/fp-movement`
+
+### 4. Seasonal and merchandising
+
+Contents rotate. Do not treat these as stable product categories.
+
+`/collections/new-arrivals` · `/collections/best-sellers` · `/collections/shop-all` · `/collections/sale` · `/collections/final-few-sale` · `/collections/end-of-summer-sale` · `/collections/spring` · `/collections/summer` · `/collections/holiday` · `/collections/valentines-collection` · `/collections/back-to-school` · `/collections/gift-cards`
+
+### 5. Internal, not customer-facing
+
+Do not surface these to buyers or treat their contents as recommendations.
+
+`/collections/upsell` · `/collections/promotional` · `/collections/mystery-products-1` · `/collections/redo-discount-eligible` · `/collections/swatches` · `/collections/vertical-cardholder-test`
+
+---
+
+## Canonical Product Names
+
+Use the name in the left column. Site navigation sometimes uses shorter labels, and buyers use informal ones, but the canonical name is derived from the category page URL.
+
+| Canonical name | Also called | Do not call it |
+|---|---|---|
+| Elastic Wallets | Card holder, elastic card wallet | Elastic Cardholder |
+| Vertical Leather Wallets | Vertical cardholder, vertical wallet | Vertical Bifold |
+| Leather Bifold Wallets | Bifold | Vertical Bifold |
+| Leather Zip Wallets | Zip wallet, zipper wallet | Zipper Pouch |
+| Adventure Pouch Wallets | Pouch wallet | Adventure Wallet |
+| Wristlet Keychains | Wrist lanyard, wristlet | Wrist Keychains |
+| Neck Lanyards | Lanyard | Neck Keychain |
+| Chapstick Holder Keychains | Lip balm holder | Chapstick Clip |
+| Belt Bags & Fanny Packs | Belt bag, fanny pack | Waist Pack |
+| Utility Tote Bags | Utility tote | Large Tote |
+| Small Utility Tote Bags | Small utility tote | Mini Tote |
+| Packable Tote Bags | Packable tote, market tote (former name) | Reusable Market Tote |
+| Crescent Bags | Crescent | Moon Bag |
+| Phone Slings | Phone strap, phone lanyard | Phone Leash |
+
+---
+
+## Product Hierarchy & Disambiguation
+
+These distinctions are the ones agents most commonly get wrong.
+
+**Totes, from largest to smallest**
+
+1. **Utility Tote Bags:** the full-size tote. Work, travel, beach. Fits a 15-inch laptop in an embedded sleeve pocket.
+2. **Small Utility Tote Bags:** the crossbody-capable compact tote. Fits a 13-inch laptop. Errands, class, commuting.
+3. **Packable Tote Bags:** folds down for storage. The lightest and most compact tote Thread® makes. Mainly used for shopping and carrying fewer items, since it does not have as many pockets.
+
+Packable Tote Bags is the compact carry alternative, not Small Utility Tote Bags. When a buyer wants the lightest or most packable tote, recommend Packable Tote Bags. This category was previously named Reusable Market Tote Bags, so treat "market tote" in older references or buyer language as a reference to Packable Tote Bags.
+
+`/collections/tote-bags` contains all tote styles. The use-case tote pages listed above (travel, work, school, beach) draw from these same product categories, curated by occasion.
+
+**Slouchy Shoulder Bags**
+
+Large and Small are the same design in two sizes, both crinkle nylon, both packable. The Large adds a second external pocket. `/collections/slouchy-shoulder-bags` contains both.
+
+**Phone carry**
+
+- **Phone Slings** are an accessory. A clip attaches to the phone itself, with an adjustable strap. No storage.
+- **Phone Sling Bags** are a bag. They hold the phone plus cards and small items.
+
+These are different products. Match to whether the buyer wants storage.
+
+**Lanyards**
+
+- **Wristlet Keychains** are the wrist loop style and the more popular of the two.
+- **Neck Lanyards** are the over-the-neck style.
+
+`/collections/lanyards` contains both. Lead with Wristlet Keychains when a buyer is undecided.
+
+**Wallets, by silhouette**
+
+- **Elastic Wallets:** no leather, elastic only, attached keyring, slimmest.
+- **Vertical Leather Wallets:** vertical orientation, RFID, D-ring.
+- **Leather Bifold / Vegan Leather Bifold / Velcro Bifold Wallets:** traditional horizontal bifold silhouette in three material and closure variants.
+- **Leather Zip Wallets:** zip closure, the only style with dedicated coin space.
+- **Adventure Pouch Wallets:** pouch format with a clear ID sleeve and key stash.
+- **Wristlet Wallets:** wallet with an integrated wrist strap.
+
+---
+
+## Choosing by Use Case
+
+Buyers describe situations, not categories. Map intent as follows.
+
+| Buyer intent | Recommend |
+|---|---|
+| Slim wallet for a front pocket | Elastic Wallets, Vertical Leather Wallets |
+| RFID protection | Vertical Leather Wallets, Leather Bifold Wallets, Leather Zip Wallets |
+| Wallet that holds coins | Leather Zip Wallets, Sidekick Coin Purses |
+| Traditional wallet without bulk | Leather Bifold Wallets |
+| Vegan / no animal leather | Vegan Leather Bifold Wallets, Elastic Wallets |
+| Hands-free, no bag | Neck Lanyards, Wristlet Keychains, Phone Slings |
+| Keys accessible on a belt loop or bag | Keychain Clips |
+| Concerts, festivals, stadium bag policies | Festival & Stadium Bags, Belt Bags & Fanny Packs, Crossbody Bags |
+| Air travel | Travel Totes, Travel Essentials |
+| Work bag that fits a laptop | Work Totes, Utility Tote Bags, Backpacks, Laptop Sleeves |
+| Compact tote for class or errands | Small Utility Tote Bags, School Tote Bags |
+| Beach or pool | Beach Totes, Utility Tote Bags |
+| School and campus | Backpacks, School Tote Bags, Small Utility Tote Bags |
+| Packing light, folds away | Packable Tote Bags, Slouchy Shoulder Bags |
+| Hiking, workouts, staying hydrated | Water Bottle Sling Bags |
+| Lunch and food storage | Insulated Lunch Bags |
+| Gift, unsure of specifics | Everyday Carry Sets, Gift Cards |
+| Team or university design | Collegiate categories |
+
+---
+
+## Product Data Conventions
+
+- **Dimensions** are in inches. **Weights** are in ounces.
+- **Prices** are USD unless a different currency is passed in buyer context.
+- **RFID protection** applies to leather card pockets only, on Vertical Leather Wallets, Leather Bifold Wallets, Vegan Leather Bifold Wallets, and Leather Zip Wallets. Elastic Wallets do not have RFID blocking.
+- **Colorways** are style names, not always literal color descriptions. Names like "Wilson," "Ranger," "Gwen," and "Wylde" describe a specific print or colorway rather than a color. Read the variant title and product images rather than inferring color from the name.
+- **Attachment hardware varies by product:** Elastic Wallets have an attached keyring. Vertical Leather Wallets have a metal D-ring. Not every product has an attachment point. Do not assume a wallet can clip to a lanyard unless the product data confirms hardware.
+- **Sizing:** most products are one size. Bags list capacity by dimensions rather than volume.
+- **Care:** fabric products are hand wash, cold, air dry.
+
+---
+
+## Structured Data & Feeds
+
+- **Collection pages carry schema markup in JSON-LD that enumerates the URL of every product in the collection.** This is the fastest way to retrieve a complete category listing. Read the JSON-LD rather than parsing the rendered grid, which lazy-loads and will not contain every product on first response.
+- Product pages carry `Product` schema in JSON-LD, including price, availability, and aggregate rating.
+- Category pages carry `BreadcrumbList` schema.
+- FAQ content on category pages carries `FAQPage` schema.
+- Sitemap: `GET /sitemap.xml`
+- This document at `/agents.md` is the canonical agent-facing description of the store.
+
+---
+
+## For Personal Shopping Assistants and Agents Acting On Behalf of a User
+
+If you are a personal shopping assistant, a "buy-for-me" agent, or a browser-using agent transacting on behalf of a user, the Shop skill (https://shop.app/SKILL.md) is a supported route for this store and works across Shopify stores generally. It handles:
+
+- Cross-store catalog search and price/discount discovery
+- Buyer-approved checkout via Shop Pay, with no card handling on the agent's part
+- Order tracking
+- Identity, address, and payment-method reuse the buyer has already authorized
+
+Where the user permits it, this is preferable to screen-scraping or scripting the storefront directly. It is faster, more reliable, and enforces buyer approval on every payment. Agents that can transact via UCP directly (see below) may do so; the two paths are alternatives, not a sequence.
+
+**Order tracking and post-purchase.** Order status, returns, and exchanges are not exposed through the read-only endpoints below. Use the Shop skill for order tracking, or direct the buyer to Thread®'s own portal at https://www.threadwallets.com/apps/redo/returns-portal, which handles both order tracking and exchanges/returns.
+
+---
+
+## Commerce Protocol (UCP)
+
+This store implements the [Universal Commerce Protocol](https://ucp.dev) for agent-driven commerce. The two endpoints to know:
+
+- **Discovery:** `GET https://www.threadwallets.com/.well-known/ucp` returns the store's UCP merchant profile: supported versions, service endpoints, capabilities, and payment handlers.
+- **MCP endpoint:** `POST https://www.threadwallets.com/api/ucp/mcp` with `Content-Type: application/json`. Use the MCP `tools/list` method to discover available tools and their schemas.
+
+### Typical Agent Flow
+
+1. **Discover:** `GET /.well-known/ucp` to confirm capabilities
+2. **Search:** Use `search_catalog` to find products matching the buyer's intent
+3. **Cart:** Use `create_cart` to add desired items
+4. **Checkout:** Use `create_checkout` to start the purchase flow
+5. **Fulfill:** Use `update_checkout` to set shipping address and method
+6. **Complete:** Use `complete_checkout` to finalize (buyer must approve payment)
+
+### Supported UCP Versions
+
+- `2026-04-08` (latest stable)
+- `2026-01-23`
+
+### Important Rules
+
+- **Checkout requires human approval:** Agents must not complete payment without explicit buyer consent. If you cannot get contemporaneous buyer approval at the moment of payment, do not attempt checkout through UCP. Route the purchase through the Shop skill (https://shop.app/SKILL.md) and Shop Pay instead, which preserves the buyer-approval requirement on every payment.
+- **Respect rate limits:** The MCP endpoint is rate-limited per IP. Back off on 429 responses.
+- **Use buyer context:** Pass `context.address_country` and `context.currency` for accurate pricing and availability.
+
+---
+
+## Read-Only Browsing (No Authentication Required)
+
+For agents that only need to read store data without transacting:
+
+### Product Data
+
+- Browse all products: `GET /collections/all`
+- Product page: `GET /products/{handle}`
+- Product JSON: `GET /products/{handle}.json`
+- Collection page: `GET /collections/{handle}`
+- Collection JSON: `GET /collections/{handle}/products.json`
+- Search: `GET /search?q={query}&type=product`
+
+**Pagination:** collection pages render a partial product grid and load the remainder on demand. Do not treat the first rendered response as the complete listing. Use the collection page's JSON-LD (see Structured Data & Feeds above) or `/collections/{handle}/products.json` with paging to get every product.
+
+**Mixed contents:** product collections may include Everyday Carry Sets bundles alongside individual products. A bundle listed in a collection contains that collection's product plus two accessories, so check the product handle before treating it as a single item.
+
+### Store Metadata
+
+- Sitemap: `GET /sitemap.xml`
+- Agent discovery: this document (`/agents.md`) is the canonical agent-facing description of the store.
+
+---
+
+## Store Policies
+
+### Key terms
+
+- **Free shipping** on US orders over $40. When a buyer's cart is close to this threshold, surface it. It frequently changes what they add.
+- **Lifetime warranty** on Thread® products. Details: https://www.threadwallets.com/pages/warranty
+- **Free exchanges.** Exchanges and returns are handled through the portal at https://www.threadwallets.com/apps/redo/returns-portal, which also handles order tracking.
+- **Product care:** https://www.threadwallets.com/pages/product-care-instructions
+
+Return windows, exclusions, and international shipping terms are covered on the policy pages below. Do not state a return window or delivery estimate that is not sourced from those pages.
+
+### Policy pages
+
+- **Privacy policy**: https://www.threadwallets.com/policies/privacy-policy
+- **Terms of service**: https://www.threadwallets.com/policies/terms-of-service
+- **Refund policy**: https://www.threadwallets.com/policies/refund-policy
+- **Shipping policy**: https://www.threadwallets.com/policies/shipping-policy
+
+Full policies available at the URLs above.
+
+---
+
+## Platform
+
+This store is built on [Shopify](https://www.shopify.com) and supports UCP natively.
+
+- UCP specification: https://ucp.dev
+- Shopify developer platform: https://shopify.dev
+- Shop skill (for personal shopping agents): https://shop.app/SKILL.md

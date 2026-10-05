@@ -58,7 +58,7 @@
         column-gap: {{ settings.layout_gap_size }}px;
         row-gap: {{ settings.layout_gap_size | times: 1.5 }}px;">
         {% for article in blog.articles %}
-          {% render 'component__blog-item', article: article %}
+          {% render 'component__blog-item', article: article, title_class: 'type__heading--bold-5' %}
         {% endfor %}
     </div>
     {% render 'component__pagination', paginate: paginate %}

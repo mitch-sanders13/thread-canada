@@ -10,6 +10,8 @@
     updateCart(false);">
 
   <head>
+  {% comment %}Loads Shogun Analytics. Removing this will disrupt analytics data collection.{% endcomment %}
+  <script type="text/javascript" async src="https://na.shgcdn3.com/pixel-collector.js"></script>
     <!-- do not edit or remove- code to remove duplicate slash from URL -->
     <script>
       (function() {
@@ -24,16 +26,7 @@
     </script>
     <!-- do not edit or remove- code to remove duplicate slash from URL -->
     {% render 'theme__meta' %}
-    <link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
-    {%- unless settings.type_font_heading.system? and settings.type_font_body.system? -%}
-      <link rel="preconnect" href="https://fonts.shopifycdn.com" crossorigin>
-    {%- endunless -%}
-    {%- unless settings.type_font_body.system? -%}
-      <link rel="preload" as="font" href="{{ settings.type_font_body | font_url }}" type="font/woff2" crossorigin>
-    {%- endunless -%}
-    {%- unless settings.type_font_heading.system? -%}
-      <link rel="preload" as="font" href="{{ settings.type_font_heading | font_url }}" type="font/woff2" crossorigin>
-    {%- endunless -%}
+    {% render 'theme__fonts' %}
     {%- comment -%} Preload logo animation to prevent cold CDN misses {%- endcomment -%}
     <link rel="preload" as="fetch" href="{{ 'logo.json' | asset_url }}" crossorigin>
     {% if template contains "about" %}
@@ -63,6 +56,7 @@
     class="
       min-h-[100vh] break-words 
       {{ template | handle }}
+      {% if request.page_type == 'index' %}grid grid-cols-[minmax(0,1fr)]{% endif %}
     "
     x-init="initScroll()"
     x-intersect.half:enter="scroll_up = false"
@@ -74,6 +68,7 @@
     </a>
 
     <header class="z-50
+      {% if request.page_type == 'index' %}col-start-1 row-start-1 self-start{% endif %}
       {{ settings.header_position }}
       {% if settings.header_position == 'dynamic' %}sticky top-0 left-0 right-0 animation-300{% endif %} 
       {% if settings.header_position == 'sticky' %}sticky top-0{% endif %}"
@@ -81,6 +76,7 @@
         '!z-50' : hide_header
       }"
       x-ref="header"
+      x-init="$el.style.setProperty('--header-height', $el.offsetHeight + 'px'); document.documentElement.style.setProperty('--header-height', $el.offsetHeight + 'px')"
       {% if settings.header_position == 'dynamic' %}
         x-bind:style="is_scrolled ? 
           'transform: translateY(-2rem); opacity: 0;' : 
@@ -92,7 +88,10 @@
     {% section 'theme__cart' %}
     {% section 'theme__menu' %}
 
-    <main id="root" role="main">
+    <main
+      id="root"
+      class="{% if request.page_type == 'index' %}col-start-1 row-start-1{% endif %}"
+      role="main">
       {{ content_for_layout }}
     </main>
 
