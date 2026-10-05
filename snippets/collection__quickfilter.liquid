@@ -1,7 +1,4 @@
-{% assign current_category = 'All ' | append: collection.title %}
-{% if current_category != collection.title %}
-  {% assign current_category = 'All Products' %}
-{% endif %}
+{% assign current_category = 'collections.general.all_products' | t %}
 
 {% assign product_type_count = 0 %}
 {%- for filter in collection.filters -%}
@@ -12,12 +9,18 @@
   {% endif %}
 {%- endfor -%}
 
+{% assign horizontal_filter_menu = section.settings.horizontal_filter_menu %}
+{% assign has_horizontal_filter_menu = false %}
+{% if horizontal_filter_menu != blank and horizontal_filter_menu.links.size > 0 %}
+  {% assign has_horizontal_filter_menu = true %}
+{% endif %}
+
 {% comment %}Hide quickfilter UI for collegiate collection but keep form for pagination{% endcomment %}
-{% if product_type_count > 1 %}
+{% if product_type_count > 1 or has_horizontal_filter_menu %}
   <form
     id="js:quickFilter"
     class="
-      block bg-inherit
+      margin--t-border-negative block bg-inherit
       md:static
       sticky sm:relative
       top-[var(--header-height,0px)] md:top-auto
@@ -25,13 +28,44 @@
       {{ section.settings.color_scheme }}
       {% if collection.handle == 'collegiate' %}hidden{% endif %}
     "
-    x-data="{ height: 0 }"
-    {% if settings.header_position == 'sticky' %}
-      x-init="
-        height = $refs.header.offsetHeight;
-        $el.style.top = height + 'px';
-      "
-    {% endif %}
+    x-data="
+      {
+        canScrollLeft: false,
+        canScrollRight: false,
+        updateScrollControls() {
+          const scroller = this.$refs.quickFilterScroller;
+          if (!scroller) return;
+          this.canScrollLeft = scroller.scrollLeft > 2;
+          this.canScrollRight = scroller.scrollLeft + scroller.clientWidth < scroller.scrollWidth - 2;
+        },
+        scrollActiveCategory(behavior = 'auto') {
+          const scroller = this.$refs.quickFilterScroller;
+          const activeCategory = this.$refs.activeCategory;
+          if (!scroller || !activeCategory) return;
+          scroller.scrollTo({
+            left: activeCategory.offsetLeft - (scroller.clientWidth - activeCategory.offsetWidth) / 2,
+            behavior
+          });
+        },
+        scrollCategories(direction) {
+          const scroller = this.$refs.quickFilterScroller;
+          if (!scroller) return;
+          scroller.scrollBy({
+            left: direction * Math.max(240, scroller.clientWidth * 0.65),
+            behavior: 'smooth'
+          });
+        }
+      }
+    "
+    x-init="
+      {% if settings.header_position == 'sticky' %}
+        if ($refs.header) $el.style.top = $refs.header.offsetHeight + 'px';
+      {% endif %}
+      $nextTick(() => {
+        scrollActiveCategory();
+        updateScrollControls();
+      });
+    "
     @change.prevent="
       handleFilterChange('js:quickFilter');
       scrollToTop('js:top');
@@ -54,97 +88,140 @@
       {% endfor %}
     {% endif %}
 
-    <div class="flex flex-row flex-wrap items-center justify-between gap-2 max-h-[85vh] border--b-width color__border-divider-1">
+    <div class="relative flex flex-row flex-wrap items-center justify-between max-h-[85vh] border--b-width color__border-divider-1 md:px-[var(--collection-edge-desktop,120px)]">
       <div class="w-full">
         <div class="flex flex-col gap-2 w-full">
-          {%- for filter in collection.filters -%}
-            {% assign has_values = false %}
-            {%- for filter_value in filter.values -%}
-              {%- if filter_value.count > 0 -%}
-                {% assign has_values = true %}
-              {%- endif -%}
-            {%- endfor -%}
-            {%- if filter.type == 'price_range' -%}
-              {% assign has_values = true %}
-            {%- endif -%}
+          {% capture horizontal_filter_items %}
+            {% if has_horizontal_filter_menu %}
+              {% for link in horizontal_filter_menu.links %}
+                <a
+                  href="{{ link.url }}"
+                  class="
+                    whitespace-pre text-center border-b hover:opacity-100 hover:color__border-primary h-full flex flex-col items-center px-3.5 py-4 md:px-5 md:py-6 no-underline hover:no-underline
+                    {% if link.active or link.child_active %}color__primary-background color__border-primary{% else %}border-transparent opacity-60{% endif %}
+                  "
+                  {% if link.active or link.child_active %}
+                    x-ref="activeCategory"
+                    aria-current="page"
+                  {% endif %}
+                >
+                  <span class="type__label type--small">{{ link.title }}</span>
+                </a>
+              {% endfor %}
+            {% else %}
+              {%- for filter in collection.filters -%}
+                {% assign has_values = false %}
+                {%- for filter_value in filter.values -%}
+                  {%- if filter_value.count > 0 -%}
+                    {% assign has_values = true %}
+                  {%- endif -%}
+                {%- endfor -%}
 
-            {% if filter.label == 'Product type' %}
-              {%- if has_values -%}
-                <div class="flex flex-none justify-center snap-center">
-                  {% capture popup_content %}
-                    {%- case filter.type -%}
-                      {%- when 'boolean' or 'list' -%}
-                        
-                        {%- for filter_value in filter.active_values -%}
-                          {% assign active_product_type_filter = filter_value.value %}
-                        {%- endfor -%}
-                        
-                        {% comment %} All button {% endcomment %}
-                        <label 
+                {% if filter.label == 'Product type' and has_values %}
+                  {%- case filter.type -%}
+                    {%- when 'boolean' or 'list' -%}
+                      {% assign active_product_type_filter = blank %}
+                      {%- for filter_value in filter.active_values -%}
+                        {% assign active_product_type_filter = filter_value.value %}
+                      {%- endfor -%}
+
+                      <label
+                        class="
+                          relative whitespace-pre text-center border-b hover:opacity-100 hover:color__border-primary h-full flex flex-col items-center px-3.5 py-4 focus-within:border--focus-outline md:px-5 md:py-6
+                          {% if active_product_type_filter == blank %}color__primary-background color__border-primary{% else %}border-transparent opacity-60{% endif %}
+                        "
+                        {% if active_product_type_filter == blank %}
+                          x-ref="activeCategory"
+                        {% endif %}
+                        @click="$el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })"
+                        for="Filter-all"
+                      >
+                        <input
+                          type="radio"
+                          class="sr-only"
+                          name="{{ filter.values[1].param_name }}"
+                          value=""
+                          id="Filter-all"
+                          {% if active_product_type_filter == blank %}checked{% endif %}
+                        >
+                        <span class="type__label type--small">{{ current_category }}</span>
+                      </label>
+
+                      {%- for filter_value in filter.values -%}
+                        <label
                           class="
-                            whitespace-pre text-center header__link2 type__nav type--small h-full flex flex-col items-center md:py-6 px-6 py-6 
-                            {% if active_product_type_filter == blank %}header__link2-active{% endif %}
+                            relative whitespace-pre text-center border-b hover:opacity-100 hover:color__border-primary h-full flex flex-col items-center px-3.5 py-4 focus-within:border--focus-outline md:px-5 md:py-6
+                            {% if filter_value.active %}color__primary-background color__border-primary{% else %}border-transparent opacity-60{% endif %}
                           "
-                          tabindex="0"
-                          for="Filter-all">
-                          <input 
+                          {% if filter_value.active %}
+                            x-ref="activeCategory"
+                          {% endif %}
+                          @click="$el.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' })"
+                          for="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                        >
+                          <input
                             type="radio"
-                            class="hidden"
-                            @click="popup = true;"
-                            name="{{ filter.values[1].param_name }}"
-                            value=""
-                            id="Filter-all">
-                          <span class="type__nav">{{ current_category }}</span>
+                            class="sr-only"
+                            name="{{ filter_value.param_name }}"
+                            value="{{ filter_value.value }}"
+                            id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
+                            {% if filter_value.active %}checked{% endif %}
+                            {% if filter_value.count == 0 and filter_value.active == false %}disabled{% endif %}
+                          >
+                          <span class="type__label type--small">{{ filter_value.label }}</span>
                         </label>
-                        
-                        {% comment %} Filter buttons {% endcomment %}
-                        {%- for filter_value in filter.values -%}
-                          <label 
-                            class="
-                              whitespace-pre text-center header__link2 type__nav type--small h-full flex flex-col items-center md:py-6 px-6 py-6 
-                              {% if filter_value.active %}header__link2-active{% endif %}
-                            "
-                            tabindex="0"
-                            for="Filter-{{ filter.param_name }}-{{ forloop.index }}">
-                            <input 
-                              type="radio"
-                              class="hidden"
-                              @click="popup = true;"
-                              name="{{ filter_value.param_name }}"
-                              value="{{ filter_value.value }}"
-                              id="Filter-{{ filter.param_name }}-{{ forloop.index }}"
-                              {% if filter_value.active %}checked{% endif %}
-                              {% if filter_value.count == 0 and filter_value.active == false %}disabled{% endif %}>
-                             <span class="type__nav">{{ filter_value.label }}</span>
-                          </label>
-                        {%- endfor -%}
-                        
-                        {% assign is_filter_active = false %}
-                        {%- for filter in collection.filters -%}
-                          {%- for filter_value in filter.values -%}
-                            {%- if filter_value.active -%}
-                              {% assign is_filter_active = true %}
-                            {%- endif -%}
-                          {%- endfor -%}
-                        {%- endfor -%}
-
-                    {%- endcase -%}
-                  {% endcapture %}
-
-                  <div class="flex overflow-x-auto items-center">
-                    {% comment %}
-                      <button
-                        class="header__link2 type__nav type--small h-full flex items-center mr-2
-                        uppercase px-4 md:py-6 py-2 pr-4 {{ button_class }} {% unless is_filter_active %}{% if current_category contains collection.title %}header__link2-active{% endif %}{% endunless %} hidden md:flex">
-                        {{ current_category }}
-                      </button>
-                    {% endcomment %}
-                    <div class="flex flex-row">{{ popup_content }}</div>
-                  </div>
-                </div>
-              {%- endif -%}
+                      {%- endfor -%}
+                  {%- endcase -%}
+                {% endif %}
+              {%- endfor -%}
             {% endif %}
-          {%- endfor -%}
+          {% endcapture %}
+
+          <div class="relative flex w-full flex-none items-center justify-center snap-center">
+            <div class="pointer-events-none absolute left-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 md:block">
+              <button
+                type="button"
+                class="btn btn--plain btn--circle animation-300"
+                aria-label="{{ 'collections.general.previous_categories' | t }}"
+                :aria-hidden="!canScrollLeft"
+                :tabindex="canScrollLeft ? 0 : -1"
+                :class="canScrollLeft ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
+                @click="scrollCategories(-1)"
+                x-cloak
+              >
+                {% render 'component__icon', icon: 'chevron-left', size: '20', class: '' %}
+              </button>
+            </div>
+            <div
+              class="hidescrollbar flex min-w-0 max-w-full flex-1 items-center overflow-x-auto overscroll-x-contain"
+              x-ref="quickFilterScroller"
+              :class="
+                {
+                  'scroll-mask--left': canScrollLeft && !canScrollRight,
+                  'scroll-mask--right': !canScrollLeft && canScrollRight,
+                  'scroll-mask--both': canScrollLeft && canScrollRight
+                }
+              "
+              @scroll.passive="updateScrollControls()"
+              @resize.window="updateScrollControls()"
+            >
+              <div class="flex flex-row">{{ horizontal_filter_items }}</div>
+            </div>
+            <div class="pointer-events-none absolute right-0 top-1/2 z-10 hidden h-8 w-8 -translate-y-1/2 md:block">
+              <button
+                type="button"
+                class="btn btn--plain btn--circle animation-300"
+                aria-label="{{ 'collections.general.next_categories' | t }}"
+                :aria-hidden="!canScrollRight"
+                :tabindex="canScrollRight ? 0 : -1"
+                :class="canScrollRight ? 'pointer-events-auto opacity-100' : 'pointer-events-none opacity-0'"
+                @click="scrollCategories(1)"
+                x-cloak
+              >
+                {% render 'component__icon', icon: 'chevron-right', size: '20', class: '' %}
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

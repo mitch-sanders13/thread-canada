@@ -31,8 +31,19 @@
   {% assign gallery_width_class = section.settings.layout_gallery_size %}
 {% endif %}
 
+{% liquid
+  assign gallery_ratio_class = blank
+  if section.settings.enable_ratio
+    if section.settings.media_ratio contains '2/3'
+      assign gallery_ratio_class = 'aspect-[2/3]'
+    else
+      assign gallery_ratio_class = 'aspect-square'
+    endif
+  endif
+%}
+
 {% comment %} Mobile only blocks {% endcomment %}
-<div class="md:hidden w-full">
+<div class="flex w-full flex-col gap-2 px-4 py-4 md:hidden">
   {% for block in section.blocks %}
     {%- case block.type -%}
       
@@ -40,16 +51,13 @@
         {% render 'product__breadcrumb', blocksettings: block.settings %}
       
       {%- when 'title' -%}
-        {% render 'product__title', blocksettings: block.settings %}
+        {% render 'product__title', blocksettings: block.settings, mobile_layout: true %}
 
       {%- when 'price' -%}
-        <div class="px-4
+        <div class="
             {{ section.settings.color_border }}
             {{ block.settings.color_scheme }} 
-            {{ block.settings.style_border }}"
-          style="
-            padding-top:{{ block.settings.spacing_top }}px;
-            padding-bottom:{{ block.settings.spacing_bottom }}px;">
+            {{ block.settings.style_border }}">
           <div class="relative flex items-end justify-between">
             {% render 'product__price', blocksettings: block.settings %}
           </div>
@@ -132,7 +140,7 @@
     {% endif %}
     
     {%- comment -%}slides{%- endcomment -%}
-    <div class="whitespace-nowrap md:snap-x hidescrollbar padding--l-gap padding--r-gap md:px-0 md:margin--r-gap inline-flex w-full overflow-x-auto overflow-y-hidden text-center"
+    <div class="whitespace-nowrap md:snap-x hidescrollbar padding--l-gap padding--r-gap md:px-0 md:margin--r-gap inline-flex w-full items-start overflow-x-auto overflow-y-hidden text-center"
       style="
         gap: {{ settings.layout_gap_size }}px;"
       x-init="setTimeout(function(){ if (isOverflown($el)) show_arrows = true}, 600)" 
@@ -147,7 +155,7 @@
               {% assign gallery_image_loading = 'eager' %}
               {% assign gallery_image_fetchpriority = 'high' %}
             {% endif %}
-            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+            <div class="relative snap-center flex-none {{ gallery_ratio_class }} border--width border--radius overflow-hidden
               {{ section.settings.image_border }}
               {{ media | handle }} 
               {% if section.settings.enable_zoom %}cursor-zoom-in{% endif %}  
@@ -161,17 +169,16 @@
               {% endif %}   
               x-intersect:enter.half="gallery_index = {{ forloop.index0 }};"
               x-bind:data-slide="{{ forloop.index0 }}">
-              <div class="overflow-hidden object-cover h-full
-                {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}
+              <div class="h-full w-full overflow-hidden object-cover
                 {{ section.settings.media_color_scheme }}">
                 {% if section.settings.media_object-sizing == "cover" %}
                   {% capture image_class %}w-full h-full object-cover {{ section.settings.media_color_scheme }}{% endcapture %}
                 {% else %}
                   {% capture image_class %}w-full h-full object-contain {{ section.settings.media_color_scheme }}{% endcapture %}
                 {% endif %}
-                {{ media
+                {{ media.preview_image
                   | image_url: width: 1400 
-                  | image_tag: style: 'object-fit:cover', class: image_class, loading: gallery_image_loading, fetchpriority: gallery_image_fetchpriority, alt: media.alt }}
+                  | image_tag: class: image_class, loading: gallery_image_loading, fetchpriority: gallery_image_fetchpriority, alt: media.alt }}
               </div>
               {% if section.settings.enable_alt == true and media.alt != product.title %}
                 <div class="type--smaller absolute bottom-0 w-full p-2 text-left whitespace-normal opacity-75">
@@ -181,7 +188,7 @@
             </div>
             
           {% when 'external_video' %}
-            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+            <div class="relative snap-center flex-none {{ gallery_ratio_class }} border--width border--radius overflow-hidden
               {{ section.settings.image_border }}
               {% if product.media.size > 1 %}w-4/5 {% else %} w-full{% endif %}"
               x-intersect:enter.half="gallery_index = {{ forloop.index0 }};"
@@ -196,15 +203,14 @@
                   icon: '',
                   content: badge_content %}
               </div>
-              <div class="overflow-hidden object-cover 
-                {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}
+              <div class="h-full w-full overflow-hidden object-cover
                 {{ section.settings.media_color_scheme }}">
-                <div class="flex items-center">
-                  <div class="aspect-video aspect-w-16 aspect-h-9 object-cover w-full">
+                <div class="flex h-full w-full items-center">
+                  <div class="h-full w-full object-cover">
                     {% if media.host == 'youtube' %}
-                      {{ media | external_video_url: color: 'white' | external_video_tag: class: 'w-full h-full aspect-video max-w-full' }}
+                      {{ media | external_video_url: color: 'white', autoplay: '1', loop: '1', mute: '1', playsinline: '1' | external_video_tag: class: 'h-full max-w-full w-full' }}
                     {% elsif media.host == 'vimeo' %}
-                      {{ media | external_video_url: loop: '1', muted: '1' | external_video_tag: class: 'w-full h-full aspect-video max-w-full' }}
+                      {{ media | external_video_url: autoplay: '1', loop: '1', muted: '1', playsinline: '1' | external_video_tag: class: 'h-full max-w-full w-full' }}
                     {% endif %}
                   </div>
                 </div>
@@ -212,7 +218,7 @@
             </div>
 
           {% when 'video' %}
-            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+            <div class="relative snap-center flex-none {{ gallery_ratio_class }} border--width border--radius overflow-hidden
               {{ section.settings.image_border }}
               {% if product.media.size > 1 %}w-4/5 {% else %} w-full{% endif %}"
               x-intersect:enter.half="gallery_index = {{ forloop.index0 }};"
@@ -227,17 +233,16 @@
                   icon: '',
                   content: badge_content %}
               </div>
-              <div class="overflow-hidden object-contain 
-                {% if section.settings.enable_ratio %}{{ section.settings.media_ratio }}{% endif %}
+              <div class="h-full w-full overflow-hidden object-contain
                 {{ section.settings.media_color_scheme }}">
-                <div class="flex items-center">
-                  {{ media | video_tag: autoplay: true, loop: true, mute: true, controls: true, class: 'w-full h-full' }}
+                <div class="flex h-full w-full items-center">
+                  {{ media | video_tag: autoplay: true, loop: true, muted: true, playsinline: true, controls: true, preload: 'auto', class: 'h-full w-full object-contain' }}
                 </div>
               </div>
             </div>
             
           {% when 'model' %}
-            <div class="relative snap-center flex-none border--width border--radius overflow-hidden
+            <div class="relative snap-center flex-none {{ gallery_ratio_class }} border--width border--radius overflow-hidden
               {{ section.settings.image_border }}
               {% if product.media.size > 1 %}w-4/5 {% else %} w-full{% endif %}" 
               x-intersect:enter.half="gallery_index = {{ forloop.index0 }};"
@@ -261,10 +266,9 @@
                   {{ 'general.media.view_in_space' | t }}
                 </button>
               </div>
-              <div class="overflow-hidden object-contain h-full
-                {{ section.settings.media_ratio }}
+              <div class="h-full w-full overflow-hidden object-contain
                 {{ section.settings.media_color_scheme }}">
-                <div class="flex items-center h-full">
+                <div class="flex h-full w-full items-center">
                   {{ media | model_viewer_tag: class: 'w-full h-full' }}
                 </div>
               </div>

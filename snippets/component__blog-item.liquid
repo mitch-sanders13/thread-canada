@@ -4,6 +4,7 @@
 
   Accepts: 
   - article: {Object} Liquid object for the blog article.
+  - title_class: {String} Optional typography class for the article title.
 
   Globals:
   - settings.blog_cards_border_style: {string} Class string to set border style.
@@ -82,7 +83,7 @@
     <h3 
       aria-level="2"
       class="
-        mb-1 type__heading type__heading--bold-2 !leading-none
+        mb-1 type__heading {{ title_class | default: 'type__heading--bold-2' }} !leading-none
       ">
       {{ article.title }}
     </h3>

@@ -1,6 +1,20 @@
-<div class="favorite-button-wrapper">
+{% doc %}
+  Renders the Rivo favorite control for a product.
+
+  @param {object} [product] - Product associated with the favorite control.
+  @param {number} [tabindex] - Optional tab order override for shortcut controls.
+  @param {boolean} [card] - Match the product-card quick-add control without product-page overrides.
+{% enddoc %}
+
+<div class="{% if card %}product-card__favorite{% else %}favorite-button-wrapper{% endif %}">
   <rivo-favorite-button
+    {% if card %}
+      class="btn btn--plain btn--circle"
+    {% endif %}
     data-product-id="{{ product.id }}"
+    {% if tabindex != blank %}
+      tabindex="{{ tabindex }}"
+    {% endif %}
     rivo-ax-data
     rivo-ax-cloak
     rivo-ax-html="$store.icons.heart"
@@ -33,11 +47,11 @@
         return;
       }
 
-      let lastCount = grid.querySelectorAll('.product-block').length;
+      let lastCount = grid.querySelectorAll('.product-block, [data-product-card]').length;
       console.log('[Wishlist Debug] Initial product-block count:', lastCount);
 
       const observer = new MutationObserver(() => {
-        const currentCount = grid.querySelectorAll('.product-block').length;
+        const currentCount = grid.querySelectorAll('.product-block, [data-product-card]').length;
         if (currentCount !== lastCount) {
           console.log(`[Wishlist Debug] Product-block count changed ${lastCount} → ${currentCount}`);
           lastCount = currentCount;
@@ -55,11 +69,6 @@
 </script>
 
 <style>
-
-  [id*="dropdownSlider"] .favorite-button-wrapper {
-  display: none !important;
-  }
-
   :root {
     --rivo-aw-favorite-button-active-color: #000000 !important;
   }

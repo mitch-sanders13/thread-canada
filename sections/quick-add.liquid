@@ -23,29 +23,26 @@
   -%}
 {% endif %}
 
-<section
-  class="fixed inset-0 z-50 overflow-hidden"
-  aria-modal="true"
-  role="dialog"
-  x-data="{quickAdd:true}"
-  x-show="quickAdd"
-  x-cloak
+{% assign quick_add_title = product.title %}
+{% assign quick_add_type = product.type %}
+{% assign quick_add_title_parts = product.title | split: ' - ' %}
+{% if quick_add_title_parts.size > 1 %}
+  {% assign quick_add_title = quick_add_title_parts | first %}
+  {% assign quick_add_type = quick_add_title_parts | last %}
+{% endif %}
+
+<dialog
+  class="fixed inset-0 m-0 h-dvh max-h-none w-full max-w-none overflow-hidden border-0 bg-transparent p-0"
+  aria-labelledby="QuickAddTitle-{{ product.id }}"
+  data-quick-add-dialog
+  @cancel="theme_scroll = true;"
+  @close="theme_scroll = true;"
 >
   <div class="flex items-end justify-center min-h-screen px-4 pt-4 text-center sm:block sm:p-0">
     <div
-      class="fixed inset-0 transition-opacity bg-black bg-opacity-50 -z-10"
-      @click="theme_scroll = true;"
+      class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+      @click="$el.closest('dialog').close(); theme_scroll = true;"
       aria-hidden="true"
-      x-show="quickAdd"
-      {% if settings.enable_animations %}
-        x-transition:enter="animation-300"
-        x-transition:enter-start="opacity-0"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="animation-300"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0"
-      {% endif %}
-      x-cloak
     ></div>
     <div
       class="
@@ -56,28 +53,22 @@
           md:max-w-md
         {% endif %}
       "
-      x-show="quickAdd"
-      x-trap="quickAdd"
-      {% if settings.enable_animations %}
-        x-transition:enter="animation-300"
-        x-transition:enter-start="opacity-0 translate-y-8"
-        x-transition:enter-end="opacity-100"
-        x-transition:leave="animation-300"
-        x-transition:leave-start="opacity-100"
-        x-transition:leave-end="opacity-0 translate-y-8"
-      {% endif %}
-      x-cloak
     >
       <div class="">
-        <button class="btn color__light btn--smaller !bg-transparent !border-0 !pl-0">
+        <button
+          type="button"
+          class="btn color__light btn--smaller !bg-transparent !border-0 !pl-0"
+          aria-label="{{ 'general.navigation.close' | t | escape }}"
+          autofocus
+          @click="$el.closest('dialog').close()"
+        >
           {% render 'component__icon', icon: 'x', size: '24', class: '' %}
         </button>
       </div>
 
       <div
-        class="mobile-border--radius-b-0 color__bg-body color__text border--radius overflow-y-auto shadow-lg max-h-[80vh]"
+        class="mobile-border--radius-b-0 color__bg-body color__text border--radius overflow-y-auto shadow-lg max-h-[90vh]"
         x-data="{ button_loading: false }"
-        @click.outside="quickAdd = false;"
       >
         {%- capture script_product -%}
           {% render 'script__product' %}
@@ -93,7 +84,7 @@
             @submit.prevent="
               addCartItem(defaultVariantId, defaultSellingPlanId, quantity, true);
               button_loading = true;
-              quickAdd = false;
+              $el.closest('dialog').close();
               setTimeout(function(){ button_loading = false}, 500);
             "
             x-ref="formContainer"
@@ -141,7 +132,7 @@
 
             <div
               class="
-                flex flex-col flex-wrap w-full
+                flex w-full flex-col
                 {% if settings.enable_quick_image %}
                   md:w-1/2
                 {% endif %}
@@ -151,63 +142,31 @@
               <div class="relative z-10 flex items-end justify-between p-4 border--b-width color__border-divider-1 color__bg-body">
                 <div>
                   <h3
-                    style="word-break:break-word"
-                    class="type__heading type--base !leading-tight mb-0.5"
+                    id="QuickAddTitle-{{ product.id }}"
+                    class="type__body type--small m-0 break-words p-0 normal-case"
                   >
-                    {{ product.title }}
+                    {{- quick_add_title -}}
                   </h3>
-                  <ul class="flex flex-wrap items-center gap-x-1 gap-y-0.5 p-0 opacity-75 mb-0.5">
-                    {% if settings.enable_thumbnails_product_type %}
-                      <li
-                        class="
-                          type--small inline-block last:after:hidden
-                          {% if settings.type_seperator == 'dot' %} after:content-['\00B7'] {% else %} after:content-['\007C'] {% endif %}
-                        "
-                      >
-                        {{ product.type }}
-                      </li>
-                    {% endif %}
-                    {% if settings.enable_thumbnails_vendor %}
-                      <li
-                        class="
-                          type--small inline-block last:after:hidden
-                          {% if settings.type_seperator == 'dot' %} after:content-['\00B7'] {% else %} after:content-['\007C'] {% endif %}
-                        "
-                      >
-                        {{ product.vendor }}
-                      </li>
-                    {% endif %}
-                    {% if settings.enable_thumbnails_variant_count %}
-                      <li
-                        class="
-                          type--small inline-block last:after:hidden
-                          {% if settings.type_seperator == 'dot' %} after:content-['\00B7'] {% else %} after:content-['\007C'] {% endif %}
-                        "
-                      >
-                        {{ product.variants.size }}
-                        {{ 'products.general.options' | t }}
-                      </li>
-                    {% endif %}
-                  </ul>
-                  <div class="flex flex-wrap items-center gap-1 mb-2">
-                    {% assign quick_add_v = product.selected_or_first_available_variant %}
-                    <span class="type--small !leading-tight">
-                      {{- product.price_min | money -}}
+                  {% if quick_add_type != blank %}
+                    <p class="type__body type--small m-0 p-0 opacity-60">
+                      {{ quick_add_type }}
+                    </p>
+                  {% endif %}
+                  <div class="type__body type--small m-0 flex flex-wrap items-center gap-2 p-0">
+                    <span
+                      x-html="Shopify.formatMoney(defaultVariantPrice)"
+                    >
+                      {{- product.selected_or_first_available_variant.price | money -}}
                     </span>
-                    {% if product.price_varies %}
-                      <span class="type--small !leading-tight"
-                        >- {{ product.price_max | money -}}
-                      </span>
-                    {% endif %}
-                    {% if quick_add_v.compare_at_price > quick_add_v.price %}
-                      <span class="type--small !leading-tight"
-                        ><s>{{ quick_add_v.compare_at_price | money }}</s></span
-                      >
-                    {% endif %}
+                    <span
+                      class="line-through opacity-60"
+                      x-show="defaultVariantComparePrice > defaultVariantPrice"
+                      x-html="Shopify.formatMoney(defaultVariantComparePrice)"
+                    ></span>
                   </div>
                   <a
                     href="{{ product.url }}"
-                    class="btn btn--smaller btn--plain"
+                    class="btn btn--smaller btn--plain mt-2"
                   >
                     {{- 'products.general.learn_more' | t -}}
                   </a>
@@ -217,7 +176,7 @@
               {%- comment -%} Variants {%- endcomment -%}
               <div
                 class="
-                  flex flex-wrap px-4 py-4 no-js--hide
+                  flex shrink-0 p-4 no-js--hide
                   {% if product.variants.size <= 1 %}
                     hidden
                   {% endif %}
@@ -245,7 +204,7 @@
                     {% comment %} Label and popup {% endcomment %}
                     <div class="flex justify-between mb-2">
                       <label
-                        class="flex opacity-75 type--smaller"
+                        class="flex opacity-75 type--small"
                         for="{{ product.id }}-{{ product_option.name | handle | remove: '-' }}"
                       >
                         {{ product_option.name }}
@@ -281,7 +240,7 @@
                                 {% capture drawer_content %}
                                   <div class="sticky top-0 flex flex-wrap items-center justify-between px-4 py-2 border--b-width color__border-divider-1 color__bg-body">
                                     <div>
-                                      <button class="btn-close-dark btn--smaller" 
+                                      <button class="btn-close-dark btn--smaller"
                                         type="button"
                                         title="{{ 'general.navigation.close' | t }}"
                                         @click="drawer = false; hide_header = false;">
@@ -317,7 +276,7 @@
                       or product_option.name == 'colour'
                     -%}
                       {% if settings.product_color_selection == 'swatches' %}
-                        <div class="flex flex-wrap w-full gap-2 {% if forloop.index == forloop.length %}mb-0{% else %}mb-4{% endif %}">
+                        <div class="grid w-full grid-cols-8 gap-2 {% if forloop.index == forloop.length %}mb-0{% else %}mb-4{% endif %}">
                           {% for value in product_option.values %}
                             {% if settings.enable_unavailable_options %}
                               {%- liquid
@@ -346,7 +305,9 @@
                             {% assign swatch_image = images[swatch_image_filename] %}
                             <button
                               type="button"
-                              class="btn btn--plain btn--small bg-center bg-contain bg-no-repeat !w-8 !h-8 !min-w-0 !min-h-0"
+                              class="btn btn--plain btn--small aspect-square !h-auto !min-h-0 !min-w-0 !w-full !rounded-full bg-center bg-cover bg-no-repeat"
+                              aria-label="{{ product_option.name | escape }}: {{ value | escape }}"
+                              :aria-pressed="{{ product_option.name | handle | remove: '-' }} == '{{ value | handle }}'"
                               {% if product.options_with_values.size > 1 and product_option.position > 1 %}
                                 x-show="optionValueExists({{ product_option.position }}, '{{ value | handle }}')"
                               {% endif %}
@@ -357,8 +318,7 @@
                                   {% elsif settings.enable_unavailable_options %}
                                     'strikethrough': {{ option_disabled }},
                                   {% endif %}
-                                  'btn--plain border--focus-outline' : {{ product_option.name | handle | remove: '-' }} == '{{ value | handle }}',
-                                  'btn--plain' : {{ product_option.name | handle | remove: '-' }} != '{{ value | handle }}',
+                                  '!border--focus-outline' : {{ product_option.name | handle | remove: '-' }} == '{{ value | handle }}',
                                 }
                               "
                               style="
@@ -368,7 +328,6 @@
                                 {% endif %}
                               "
                               @click="{{ product_option.name | handle | remove: '-' }} = '{{ value | handle }}'; handleForm();"
-                              {{ option_size }}
                               {% if option_size <= 1 %}
                                 x-init="{{ product_option.name | handle | remove: '-' }} = '{{ value | handle }}'; handleForm();"
                               {% endif %}
@@ -904,7 +863,7 @@
               {% endif %}
 
               {%- comment -%}add butttons{%- endcomment -%}
-              <div class="sticky bottom-0 z-10 flex flex-wrap items-end content-end flex-grow w-full px-4 py-4 color__bg-body border--t-width color__border-divider-1">
+              <div class="sticky bottom-0 z-10 flex w-full shrink-0 flex-wrap content-end items-end p-4 color__bg-body border--t-width color__border-divider-1">
                 <button
                   disabled
                   type="button"
@@ -986,4 +945,4 @@
       </div>
     </div>
   </div>
-</section>
+</dialog>

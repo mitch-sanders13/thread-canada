@@ -1,0 +1,87 @@
+{% doc %}
+  Load the shared brand fonts for every storefront layout.
+
+  Only the three critical faces are preloaded. The other declared weights and
+  handwritten accent load on demand when matching text is rendered; fallback
+  formats are only downloaded when the browser cannot use the WOFF2 source.
+
+  @example
+  {% render 'theme__fonts' %}
+{% enddoc %}
+
+<link rel="preconnect" href="https://cdn.shopify.com" crossorigin>
+<link
+  rel="preload"
+  as="font"
+  href="https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.woff2?v=1712089722"
+  type="font/woff2"
+  crossorigin
+>
+<link rel="preload" as="font" href="{{ 'FormaDJRDisplay-Light.woff2' | asset_url }}" type="font/woff2" crossorigin>
+<link rel="preload" as="font" href="{{ 'FormaDJRDisplay-Regular.woff2' | asset_url }}" type="font/woff2" crossorigin>
+
+{% style %}
+  @font-face {
+    font-family: "PP Right Grotesk";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src:
+      url("https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.woff2?v=1712089722") format("woff2"),
+      url("https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.woff?v=1712089722") format("woff"),
+      url("https://cdn.shopify.com/s/files/1/1030/4291/files/PPRightGrotesk-TightBold.otf?v=1712089722") format("opentype");
+  }
+
+  @font-face {
+    font-family: "FormaDJR";
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+    src:
+      url("{{ 'FormaDJRDisplay-Bold.woff2' | asset_url }}") format("woff2"),
+      url("{{ 'FormaDJRDisplay-Bold.otf' | asset_url }}") format("opentype");
+  }
+
+  @font-face {
+    font-family: "FormaDJR";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("{{ 'FormaDJRDisplay-Regular.woff2' | asset_url }}") format("woff2");
+  }
+
+  @font-face {
+    font-family: "FormaDJR";
+    font-style: normal;
+    font-weight: 300;
+    font-display: swap;
+    src: url("{{ 'FormaDJRDisplay-Light.woff2' | asset_url }}") format("woff2"),
+      url("{{ 'FormaDJRDisplay-Light-Testing.otf' | asset_url }}") format("opentype");
+  }
+
+  @font-face {
+    font-family: "FormaDJR";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("{{ 'FormaDJRDisplay-Medium.woff2' | asset_url }}") format("woff2"),
+      url("{{ 'FormaDJRDisplay-Medium-Testing.otf' | asset_url }}") format("opentype");
+  }
+
+  @font-face {
+    font-family: "PP Right Grotesk";
+    font-style: normal;
+    font-weight: 500;
+    font-display: swap;
+    src: url("{{ 'RightGrotesk-TightMedium.woff2' | asset_url }}") format("woff2"),
+      url("{{ 'RightGrotesk-TightMedium.otf' | asset_url }}") format("opentype");
+  }
+
+  @font-face {
+    font-family: "Thread Handwritten";
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+    src: url("{{ 'Handwritten.ttf' | asset_url }}") format("truetype");
+  }
+{% endstyle %}

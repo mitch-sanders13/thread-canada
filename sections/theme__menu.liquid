@@ -20,14 +20,14 @@
     @click="menu_nested = false;">
     <div class="flex items-center justify-between w-full h-full">
       <button 
-        class="type__nav w-full h-full flex-grow !text-left !justify-start !px-4 flex items-center border--b-width {{ section.settings.top_color_border }}"
+        class="type__body type--big w-full h-full flex-grow !text-left !justify-start !px-4 flex items-center border--b-width {{ section.settings.top_color_border }}"
         title="Search"
         @click.stop="menu_drawer = false; search_visible = true; search_active = true; $nextTick(() => { document.querySelector('#search-mobile').focus(); });">
-        {% render 'component__icon', icon: 'search', size: '24', class: '' %} 
-        <span class="ml-1 type__nav">Search...</span>
+        {% render 'component__icon', icon: 'search', size: '20', class: 'opacity-50' %}
+        <span class="ml-2 type__body type--big opacity-50">Search...</span>
       </button>
       <button 
-        class="type__nav h-full !text-left !justify-start !px-4 flex items-center border--b-width {{ section.settings.top_color_border }}"
+        class="type--big h-full !text-left !justify-start !px-4 flex items-center border--b-width {{ section.settings.top_color_border }}"
         title="Close Menu"
         @click.stop="menu_drawer = false; menu_nested = false" >
         {% render 'component__icon', icon: 'x', size: '24', class: '' %}
@@ -38,7 +38,7 @@
     <div class="text-right ">
       {% if section.settings.top_button_cart_type == "text" %}
         <a
-          class="inline-flex pl-4 no-underline type__nav"
+          class="inline-flex pl-4 no-underline type--big"
           href="{{ routes.cart_url }}"
           rel="nofollow"
           {% if settings.cart_icon_behavior == "open_cart_drawer" %}
@@ -60,41 +60,37 @@
     
   </section>
 
-  {%- comment -%}
-    Mobile: account is not in the top header; only in this drawer, styled like the search control above (same h-[56px], padding, icon + label).
-  {%- endcomment -%}
   {%- if shop.customer_accounts_enabled -%}
     <a
       href="{{ routes.account_url }}"
       rel="nofollow"
-      @click="menu_drawer = false"
-      class="type__nav w-full flex items-center h-[56px] !px-4 !text-left !justify-start border--b-width {{ section.settings.top_color_border }} no-underline uppercase
-        {{ section.settings.top_color_scheme }}"
-    >
-      {% render 'component__icon', icon: 'account', size: '24', class: '' %}
-      <span class="ml-1 type__nav">
-        {%- if customer -%}
+      @click="menu_drawer = false; menu_nested = false"
+      class="type__body type--big shrink-0 flex items-center gap-2 w-full min-h-[56px] px-4 py-3 border--b-width {{ section.settings.top_color_border }} {{ section.settings.top_color_scheme }} no-underline">
+      {% render 'component__icon', icon: 'account', size: '24', class: 'shrink-0' %}
+      <span>
+        {% if customer %}
           {{ 'general.navigation.account' | t }}
-        {%- else -%}
+        {% else %}
           {{ 'customer.account.log_in' | t }}
-        {%- endif -%}
+        {% endif %}
       </span>
     </a>
   {%- endif -%}
-  
+
   {%- comment -%} Navigation {%- endcomment -%}
-  <section class="relative h-[inherit] overflow-y-auto overflow-x-hidden
+  <section class="relative flex min-h-0 flex-1 flex-col overflow-y-auto overflow-x-hidden
     {{ section.settings.main_color_scheme }}">
       <div 
-        class="w-full"
+        class="w-full pt-4"
         x-cloak
         x-data="{ accordion: null }">
 
             {%- for link in section.settings.main_links.links -%}
             {% if link.links != blank %}
                 {% capture accordion_content %}
+                  <div class="flex flex-col gap-2">
                     {% for child_link in link.links %}
-                        <a href="{{ child_link.url }}" class="type__nav border--t-width {{ section.settings.main_color_border }} flex flex-col items-start justify-start w-full px-4 py-4 no-underline uppercase">
+                        <a href="{{ child_link.url }}" class="type--base flex items-center gap-2 w-full px-4 no-underline">
                             {%- liquid
                               assign child_image = ''
                               if child_link.url contains 'collections'
@@ -106,30 +102,44 @@
                               endif
                             -%}
                             {% if child_image != blank %}
-                                <picture class="color__bg-overlay-2 aspect-[1/1] border--radius flex items-center font-normal">
+                                <picture
+                                  class="mobile-menu__image shrink-0 color__bg-overlay-2 border--radius flex items-center overflow-hidden font-normal">
                                 <source media="(min-width: 1px)" data-srcset="
                                     {{ child_image | file_img_url: "640x", format: 'jpg' }} 1x,
                                     {{ child_image | file_img_url: "640x", format: 'jpg', scale: 2 }} 2x">
-                                <img class="h-[127px] w-[127px]" loading="lazy" alt="{{ child_link.title }}" src="{{ child_image | file_img_url: "1200x", format: 'jpg' }}">
+                                <img
+                                  class="w-full h-full object-cover"
+                                  loading="lazy"
+                                  width="80"
+                                  height="80"
+                                  alt="{{ child_link.title }}"
+                                  src="{{ child_image | file_img_url: "1200x", format: 'jpg' }}">
                                 </picture>
                             {%- endif -%}
-                            <span class="pt-2 type__nav">{{ child_link.title }}</span>
+                            <span class="type--base">{{ child_link.title }}</span>
                         </a>
                     {% endfor %}
+                  </div>
+                      <a href="{{ link.url }}" class="type__button uppercase leading-normal tracking-widest color__link flex items-center mx-4 mt-4 no-underline">
+                    {{ 'general.navigation.shop_all' | t: title: link.title }}
+                    {% render 'component__icon', icon: 'chevron-right', size: '16', class: 'ml-1' %}
+                  </a>
                 {% endcapture %}
-                {% capture accordion_container_class %}{% unless forloop.last %}border--b-width{% endunless %} {{ section.settings.main_color_border }}{% endcapture %}
-                {% capture accordion_inner_class %}color__bg-overlay-1 {% unless link.title == "Brand" %}grid grid-cols-2{% endunless %}{% endcapture %}
+                {% capture accordion_container_class %}{% endcapture %}
+                {% capture accordion_inner_class %}bg-transparent{% endcapture %}
                 {% render 'component__accordion', 
                     open: false,
                     index: forloop.index,
-                    button_label: link.title, 
+                    button_class: '!py-3',
+                    button_label: link.title,
+                    button_label_class: 'type__body type--big',
                     container_class: accordion_container_class,
                     inner_class: accordion_inner_class,
                     content: accordion_content %}
 
             {% else %}
-                <a id="accordion-{{ forloop.index }}" class="type__body border--b-width {{ section.settings.main_color_border }} flex items-center justify-between w-full px-4 py-[1.25rem] no-underline uppercase" href="{{ link.url }}">
-                    <span class="text-left type__nav">
+                <a id="accordion-{{ forloop.index }}" class="type__body flex items-center justify-between w-full px-4 py-3 no-underline" href="{{ link.url }}">
+                    <span class="text-left type--big">
                     {{ link.title }}
                     </span>
                 </a>
@@ -137,64 +147,30 @@
             {% endfor %}
 
             {%- unless section.settings.feature_img == blank -%}
-              <a href="{{ section.settings.url_id }}">
-                <div class="relative m-4 color__bg-overlay-1">
-                  {{ section.settings.feature_img | image_url: height: 210 | image_tag: class: 'w-full', loading: 'lazy' }}
-                  <div class="absolute flex items-center justify-center bg-white bottom-2 left-2 right-2">
-                    <button class="btn btn--secondary !w-full">{{ section.settings.text_id }}</button>
-                  </div>
+              <a href="{{ section.settings.url_id }}" class="block mx-4 mt-2 no-underline">
+                <div class="relative aspect-[1/1.05] overflow-hidden color__bg-overlay-1 border--radius">
+                  {{ section.settings.feature_img | image_url: width: 900 | image_tag: class: 'block w-full aspect-[1/1.05] object-cover', loading: 'lazy' }}
+                  {%- if section.settings.text_id != blank -%}
+                    <span class="!uppercase absolute bottom-4 right-4 type--big font-bold text-white border-b-2 border-white leading-tight">
+                      {{ section.settings.text_id }}
+                    </span>
+                  {%- endif -%}
                 </div>
               </a>
             {% endunless %}
 
       </div>
-  </section>
 
-  {%- comment -%} Sticky footer {%- endcomment -%}
-  {% comment %} 
-  <aside class="sticky bottom-0 {{ section.settings.bottom_color_scheme }}" x-show="!menu_nested">
-    <div class="flex flex-wrap">
-
-      <div class="border--t-width {{ section.settings.bottom_color_border }} w-full">
-        <div class="flex flex-wrap px-4 pt-2">
-
-        {%- if shop.customer_accounts_enabled -%} 
-          <a href="{{ routes.account_url }}" rel="nofollow" class="btn btn--smaller mb-2 mr-2
-            {{ section.settings.bottom_button_color }}">
-            {% if customer %}
-              {{ 'general.navigation.account' | t }}
-            {% else %}
-            {{ 'customer.account.log_in' | t }}
-            {% endif %}
-          </a>
-        {% endif %}
-
-          {% if settings.enable_region or settings.enable_language %}
-            <button class="btn btn--smaller mb-2 mr-2
-            {{ section.settings.bottom_button_color }}" 
-              @click="localization_popup = true;">
-              <span class="fi type--smaller" style="background-image: url(https://flagicons.lipis.dev/flags/4x3/{{ localization.country.iso_code | downcase }}.svg)"></span>
-              <span class="ml-1 type--smaller">{{ localization.country.currency.symbol }} {{ localization.country.currency.iso_code }}
-              {% if settings.type_seperator == 'dot' %}·{% else %}|{% endif %}
-              {{ localization.language.iso_code | upcase }}</span> 
-              {% render 'component__icon', icon: 'chevron-down', size: '16' %}
-            </button>
-          {% endif %}
-          
-        </div>
-      </div>
-
-      <div class="border--t-width {{ section.settings.bottom_color_border }} w-full">
-        <p class="px-4 py-2 m-0 type--small">
+      {%- if section.settings.bottom_links.links != blank -%}
+        <aside class="mt-auto px-4 py-3 {{ section.settings.bottom_color_scheme }}">
           {%- for link in section.settings.bottom_links.links -%}
-            <a href="{{ link.url }}" class="mr-2">{{ link.title }}</a>
+            <a href="{{ link.url }}" class="type--big block py-2 no-underline">
+              {{ link.title }}
+            </a>
           {%- endfor -%}
-         </p>
-      </div>
-      
-    </div>
-  </aside> 
-  {% endcomment %}
+        </aside>
+      {%- endif -%}
+  </section>
 
 {% endcapture %}
 
@@ -203,10 +179,23 @@
   position: 'left',
   content: drawer_content %}
 
+{% stylesheet %}
+  .mobile-menu__image {
+    --mobile-menu-image-size: 5rem;
+    width: var(--mobile-menu-image-size);
+    height: var(--mobile-menu-image-size);
+    flex: 0 0 var(--mobile-menu-image-size);
+  }
+{% endstylesheet %}
+
 {% schema %}
 {
   "name":"t:sections.theme_menu.name",
   "settings":[
+    {
+      "type":"paragraph",
+      "content":"t:sections.theme_menu.settings.ignored_settings.content"
+    },
     {
       "type":"header",
       "content":"t:sections.all.headers.header__15.content"
@@ -219,18 +208,18 @@
     {
       "type": "image_picker",
       "id": "feature_img",
-      "label": "Featured Menu Image"
+      "label": "t:sections.theme_menu.settings.featured_image.label"
     },
     {
       "type": "url",
       "id": "url_id",
-      "label": "Featured Image URL",
+      "label": "t:sections.theme_menu.settings.featured_url.label",
       "default": "/"
     },
     {
       "type": "text",
       "id": "text_id",
-      "label": "Featured Image button text",
+      "label": "t:sections.theme_menu.settings.featured_label.label",
       "default": "Learn More >"
     },
     {
@@ -329,6 +318,10 @@
         {
           "value":"btn--minimal-dark",
           "label":"t:sections.all.colors.settings.color_button.options__7.label"
+        },
+        {
+          "value": "btn--minimal-primary",
+          "label": "t:sections.all.colors.settings.color_button.options__8.label"
         }
       ],
       "default":"btn btn--plain"
@@ -437,6 +430,10 @@
         {
           "value":"btn btn--plain",
           "label":"t:sections.all.colors.settings.color_button.options__4.label"
+        },
+        {
+          "value": "btn--minimal-primary",
+          "label": "t:sections.all.colors.settings.color_button.options__8.label"
         }
       ],
       "default":"btn btn--plain"
@@ -525,6 +522,10 @@
         {
           "value":"btn btn--plain",
           "label":"t:sections.theme_menu.settings.bottom_button_color.options__4.label"
+        },
+        {
+          "value": "btn--minimal-primary",
+          "label": "t:sections.all.colors.settings.color_button.options__8.label"
         }
       ],
       "default":"btn btn--secondary"

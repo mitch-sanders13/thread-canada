@@ -22,10 +22,12 @@
 {% endif %}
 
 <section class="min-h-[75vh] relative overflow-hidden flex justify-start items-end m-0 text-left 
+  {% if section.settings.enable_header_overlap %}pt-[var(--header-height,0px)]{% unless request.page_type == 'index' %} -mt-[var(--header-height,0px)]{% endunless %}{% endif %}
   {{ section.settings.visibility }}
   {{ section.settings.color_scheme }} 
   {{ section.settings.color_border }}
-  {{ section.settings.style_border }}">
+  {{ section.settings.style_border }}"
+  {% if section.settings.enable_header_overlap %}x-init="has_banner_overlap = true; header_color = '{{ section.settings.color_text }}'"{% endif %}>
 
   {%- if section.settings.enable_image -%}
     {%- unless article.image == blank %}
@@ -100,6 +102,7 @@
 {
   "name":"t:sections.article_banner.name",
   "settings":[
+    {"type":"checkbox","id":"enable_header_overlap","label":"Enable header overlap","info":"Places the banner media behind the header and offsets the banner content below it.","default":false},
     {
         "type":"checkbox",
         "id":"show_crumbs",

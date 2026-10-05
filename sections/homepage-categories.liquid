@@ -1,0 +1,27 @@
+{% comment %}Active Sandbox homepage category tiles; hidden Sandbox variants are not included.{% endcomment %}
+<section class="pt-4 pb-6 md:pb-5">
+  <div class="grid grid-cols-2 gap-x-4 gap-y-2 md:grid-cols-4 md:gap-0">
+    {% for block in section.blocks %}
+      <a class="homepage-categories__tile group relative block aspect-[100/133] overflow-hidden bg-[var(--thread-putty)] no-underline hover:no-underline hover:opacity-100 focus-visible:outline focus-visible:outline-[3px] focus-visible:-outline-offset-[3px] focus-visible:outline-[var(--thread-blue)] after:pointer-events-none after:absolute after:inset-0 after:bg-gradient-to-t after:from-black/40 after:to-transparent after:to-55%" href="{{ block.settings.url }}" style="--category-reveal-start: {{ forloop.index0 | times: 5 }}%;" {{ block.shopify_attributes }}>
+        {% if block.settings.image != blank %}
+          {{ block.settings.image | image_url: width: 1200 | image_tag: loading: 'lazy', widths: '240, 400, 600, 800, 1200', sizes: '(min-width: 768px) 25vw, 50vw', class: 'block h-full w-full object-cover motion-safe:transition-transform motion-safe:duration-[900ms] motion-safe:ease-out motion-safe:group-hover:scale-[1.03]', alt: '' }}
+        {% endif %}
+        <span class="type__label color__light absolute bottom-3 left-3.5 right-3 z-10 leading-tight">{{ block.settings.label | escape }}</span>
+      </a>
+    {% endfor %}
+  </div>
+</section>
+
+{% schema %}
+{
+  "name": "Homepage categories",
+  "enabled_on": {"templates": ["index"]},
+  "max_blocks": 4,
+  "blocks": [{"type": "category", "name": "Category", "settings": [
+    {"type": "image_picker", "id": "image", "label": "Image"},
+    {"type": "text", "id": "label", "label": "Label"},
+    {"type": "url", "id": "url", "label": "Link"}
+  ]}],
+  "presets": [{"name": "Homepage categories"}]
+}
+{% endschema %}

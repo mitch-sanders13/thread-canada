@@ -1,0 +1,33 @@
+{% doc %}
+  The shared stitch logo for the desktop and mobile header.
+
+  @param {boolean} enable_homepage_overlay - Whether the homepage overlays the header
+  @param {boolean} use_dark_homepage_overlay - Whether the homepage overlay uses dark icons
+
+  @example
+  {% render 'header__logo', enable_homepage_overlay: true, use_dark_homepage_overlay: false %}
+{% enddoc %}
+
+<a
+  class="site-header__logo inline-flex h-11 w-11 shrink-0 md:h-10 md:w-10 items-center justify-center border-0 bg-transparent hover:!opacity-100"
+  href="{{ routes.root_url }}"
+  title="{{ shop.name | escape }}"
+>
+  <img
+    class="
+      site-header__logo-image h-10 w-10 object-contain !border-0 !bg-transparent
+      {% if enable_homepage_overlay and use_dark_homepage_overlay %}brightness-0{% elsif enable_homepage_overlay %}brightness-100{% else %}brightness-0{% endif %}
+      group-hover/header:!brightness-0 group-[:has(:focus-visible)]/header:!brightness-0
+    "
+    :class="
+      {
+        'brightness-100': ({{ enable_homepage_overlay | json }} || has_banner_overlap) && header_at_top && !(({{ enable_homepage_overlay | json }} && {{ use_dark_homepage_overlay | json }}) || (!{{ enable_homepage_overlay | json }} && has_banner_overlap && (header_color == 'color__dark' || header_color == 'color__text'))),
+        'brightness-0': !(({{ enable_homepage_overlay | json }} || has_banner_overlap) && header_at_top) || (({{ enable_homepage_overlay | json }} && {{ use_dark_homepage_overlay | json }}) || (!{{ enable_homepage_overlay | json }} && has_banner_overlap && (header_color == 'color__dark' || header_color == 'color__text')))
+      }
+    "
+    src="{{ 'threadwallets-logomark-invert.svg' | asset_url }}"
+    width="40"
+    height="40"
+    alt="{{ shop.name | escape }}"
+  >
+</a>

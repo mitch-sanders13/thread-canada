@@ -9,6 +9,7 @@
     - inner_class: string of classes for the inner container
     - button_class: string of classes to add to the button
     - button_label: string of text for the accordion button
+    - button_label_class: string of classes to add to the button label, defaults to type__nav
     - content: content to display
 
   Usage:
@@ -19,12 +20,15 @@
       icon_class: string of icon classes
       inner_class: accordion_inner_class
       button_class: "px-4",
-      button_label: link.title, 
+      button_label: link.title,
+      button_label_class: "type--big",
       content: accordion_content %}
 
   Possible enhancements:
     - Consider setting the button to bold for better hierarchy.
 {% endcomment %}
+
+{% assign button_label_class = button_label_class | default: 'type__nav' %}
 
 <div id='accordion-{{ index }}' class="{{ container_class }}" {% if index %} x-data="{ accordion: null }"{% elsif open == true or open == 'true' %} x-data="{ accordion: true }"{% else %} x-data="{ accordion: null }"{% endif %}>
   <button type="button" class="flex items-center justify-between w-full p-4 {{ button_class }}"
@@ -34,7 +38,7 @@
     @click="accordion !== true ? accordion = true : accordion = null"
     {% endif %}>
 
-    <span class="type__nav text-left">
+    <span class="text-left {{ button_label_class }}">
       {{ button_label }}
     </span>
 

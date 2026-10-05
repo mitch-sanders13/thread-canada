@@ -1,24 +1,12 @@
-<!-- snippets/product__options.liquid -->
-{% comment %}
-  Add to cart block for product sections. Includes quantity selector, variant picker, subscription options and addtional content.
+{% doc %}
+Renders product swatches, variant controls, purchase options, and add-to-cart content.
 
-  Accepts:
-    - blocksettings: liquid object of block settings
-    - featured: boolean to assign product object from section settings, set this to true if block is used within a section rather than product template
+@param {object} blocksettings - Product option block settings. @param {boolean} [featured] - Uses the section product
+when rendered in a featured-product section.
 
-  Usage:
-    {% render 'product__options',
-      blocksettings: block.settings,
-      featured: true %}
-
-  Globals:
-    - settings.product_variant_selection: set variants style to dropdown or buttons
-    - settings.product_color_selection: set color option picker style to dropdown, buttons or swatches
-    - settings.type_seperator: setting to pick the type of seperator between text
-
-  Possible enhancements:
-    - Include nesting container within snippet.
-{% endcomment %}
+@example
+{% render 'product__options', blocksettings: block.settings, featured: true %}
+{% enddoc %}
 
 {% if featured %}
   {%- assign product = section.settings.product -%}
@@ -63,253 +51,90 @@
   {% endif %}
 {% endfor %}
 
-{% comment %} All products now use unified JavaScript-based swatch loading {% endcomment %}
+{% comment %} Product styles load from the cached collection data in collections.ts. {% endcomment %}
 {% if product.metafields.custom.swatch_collection %}
   {% liquid
     assign swatch_collection_ref = product.metafields.custom.swatch_collection.value
     assign swatch_expected_count = swatch_collection_ref.all_products_count | default: 0
+    assign swatch_container_class = 'js:pdp-swatches'
+    assign swatch_selector_id = 'PdpStyleSelector-' | append: product.id
+    assign swatch_row_count = 3
+    if product.type == 'Bundle'
+      assign swatch_row_count = 1
+    endif
+    if is_collegiate
+      assign swatch_container_class = 'js:pdp-collegiate-swatches'
+    endif
   %}
   <div class="flex w-full px-4">
-    {% if is_collegiate %}
-      <div
-        class="js:pdp-collegiate-swatches flex w-full flex-col gap-14 md:gap-16"
-        data-product-type="{{ product.type }}"
-        data-product-handle="{{ product.handle }}"
-        data-swatch-collection-handle="{{ swatch_collection_ref.handle }}"
-        data-expected-swatch-count="{{ swatch_expected_count }}"
-      >
-    {% else %}
-      <div
-        class="js:pdp-swatches flex w-full flex-col gap-14 md:gap-16"
-        data-product-type="{{ product.type }}"
-        data-product-handle="{{ product.handle }}"
-        data-swatch-collection-handle="{{ swatch_collection_ref.handle }}"
-        data-expected-swatch-count="{{ swatch_expected_count }}"
-      >
-    {% endif %}
-    {% comment %} Placeholder swatches {% endcomment %}
     <div
-      class="grid w-full grid-cols-4 gap-2"
-      data-pdp-swatch-loading
+      class="{{ swatch_container_class }} flex min-w-0 w-full flex-col [--pdp-style-selector-column-count:4] [--pdp-style-selector-tile-width:clamp(6.5rem,calc((100%-1.5rem)/3.6),10rem)]"
+      data-pdp-swatch-rows="{{ swatch_row_count }}"
+      data-product-type="{{ product.type }}"
+      data-product-handle="{{ product.handle }}"
+      data-swatch-collection-handle="{{ swatch_collection_ref.handle }}"
+      data-expected-swatch-count="{{ swatch_expected_count }}"
+      data-style-count-template="{{ 'products.general.styles_count' | t: count: '__COUNT__' | escape }}"
+      aria-busy="true"
     >
-      {% for i in (1..4) %}
-        <span
-          class="block aspect-square w-full min-h-[44px] shrink-0 animate-pulse rounded-md color__bg-overlay-2 pointer-events-none"
-          aria-hidden="true"
-        ></span>
-      {% endfor %}
-    </div>
+      <div class="flex items-center gap-2 border--t-width color__border-divider-1 pt-4">
+        <p class="type--small mb-0 mr-auto min-w-0 font-bold">
+          {{ 'products.general.select_style' | t }}
+        </p>
+        <p
+          class="type--small mb-0 shrink-0 opacity-60"
+          data-pdp-swatch-count
+          aria-live="polite"
+        ></p>
+        <div class="flex shrink-0 gap-1">
+          <button
+            type="button"
+            class="btn btn--plain btn--circle disabled:pointer-events-none disabled:opacity-30"
+            data-pdp-swatch-previous
+            aria-controls="{{ swatch_selector_id }}"
+            aria-label="{{ 'general.media.previous_slide' | t }}"
+            disabled
+          >
+            {% render 'component__icon', icon: 'chevron-left', size: '20', class: '' %}
+          </button>
+          <button
+            type="button"
+            class="btn btn--plain btn--circle disabled:pointer-events-none disabled:opacity-30"
+            data-pdp-swatch-next
+            aria-controls="{{ swatch_selector_id }}"
+            aria-label="{{ 'general.media.next_slide' | t }}"
+            disabled
+          >
+            {% render 'component__icon', icon: 'chevron-right', size: '20', class: '' %}
+          </button>
+        </div>
+      </div>
+
+      <div
+        id="{{ swatch_selector_id }}"
+        class="grid w-full min-w-0 grid-flow-row {% if swatch_row_count == 1 %}grid-rows-1{% else %}grid-rows-[repeat(3,auto)]{% endif %} gap-2 overflow-x-auto overflow-y-hidden overscroll-x-contain pb-1 pl-1 pt-3 scroll-pl-1 scroll-smooth snap-x snap-mandatory hidescrollbar motion-reduce:scroll-auto [-webkit-overflow-scrolling:touch] [grid-template-columns:repeat(var(--pdp-style-selector-column-count),var(--pdp-style-selector-tile-width))]"
+        data-pdp-swatch-track
+        role="region"
+        aria-roledescription="carousel"
+        aria-label="{{ 'products.general.select_style' | t }}"
+        tabindex="0"
+      >
+        {% for i in (1..12) %}
+          <span class="grid min-w-0 grid-rows-[auto_minmax(1.25rem,auto)]" aria-hidden="true">
+            <span class="color__bg-overlay-2 block aspect-square w-full animate-pulse rounded-lg"></span>
+            <span
+              class="mx-auto min-w-0 w-[70%] truncate whitespace-nowrap px-1 pt-1 text-center opacity-0 type--smaller"
+              >&nbsp;</span
+            >
+          </span>
+        {% endfor %}
+      </div>
+
+      <template data-pdp-selected-icon>
+        {% render 'component__icon', icon: 'check', size: '14', class: '' %}
+      </template>
     </div>
   </div>
-
-  {% comment %}
-    {% elsif false %}
-      {% comment %} Legacy Liquid-based swatch rendering - now disabled in favor of unified JavaScript approach {% endcomment %}
-      <div class="px-4" style="display: none;">
-        {% assign swatch_groups = settings.swatch_order_groups | split: ',' %}
-
-        {% for group in swatch_groups %}
-          {% assign group_title = group | strip %}
-          {% assign group_title_lowercase = group_title | downcase %}
-          {% assign has_swatches_in_group = false %}
-
-          {% comment %} Check if this group has any swatches - include ALL products even if sold out {% endcomment %}
-          {% assign swatch_collection_handle = product.metafields.custom.swatch_collection.value.handle %}
-          {% if swatch_collection_handle %}
-            {% for linked_product in collections[swatch_collection_handle].products %}
-              {% assign product_tags_lowercase = linked_product.tags | join: ',' | downcase %}
-              {% if product_tags_lowercase contains group_title_lowercase %}
-                {% assign has_swatches_in_group = true %}
-                {% break %}
-              {% endif %}
-            {% endfor %}
-          {% endif %}
-
-          {% if has_swatches_in_group %}
-            <div class="pb-4">
-              <p class="mb-1 opacity-75 type--smaller">{{ group_title }}</p>
-              <div class="inline-flex flex-wrap gap-2 w-full">
-                {% assign swatch_collection_handle = product.metafields.custom.swatch_collection.value.handle %}
-                {% for linked_product in collections[swatch_collection_handle].products %}
-                  {% assign product_tags_lowercase = linked_product.tags | join: ',' | downcase %}
-
-                  {% if product_tags_lowercase contains group_title_lowercase %}
-                    {% capture swatch_image_filename %}swatch-{{ linked_product.title | handle }}.jpg{% endcapture %}
-                    {% assign swatch_image = images[swatch_image_filename] %}
-
-                    {% comment %} Check if swatch image exists {% endcomment %}
-                    {% assign has_swatch_image = false %}
-                    {% if swatch_image contains '.jpg' %}
-                      {% assign has_swatch_image = true %}
-                    {% endif %}
-
-                    <a
-                      href="{{ linked_product.url }}"
-                      title="{{ linked_product.title }}"
-                      class="
-                                                                                                                                                btn btn--plain btn--small bg-center !w-8 !h-8 !min-w-[2rem] !min-h-[2rem] bg-contain !rounded-full !p-0 aspect-1
-                      "
-                      :class="
-                        {
-                          'btn--plain border--focus-outline' : '{{ product.handle }}' == '{{ linked_product.handle }}',
-                          'btn--plain' : '{{ product.handle }}' != '{{ linked_product.handle }}',
-                        }
-                      "
-                      style="
-                        {% if has_swatch_image %}
-                          background-image: url('{{ swatch_image | image_url }}');
-                        {% elsif linked_product.featured_image %}
-                          background-image: url('{{ linked_product.featured_image | image_url: width: 64, height: 64, crop: 'center' }}');
-                          background-size: cover;
-                        {% else %}
-                          background-color: #cccccc;
-                          background-image: none;
-                        {% endif %}
-                      "
-                      @click="window.location.href = ''"
-                    >
-                    </a>
-                  {% endif %}
-                {% endfor %}
-
-                {% comment %} Force display sold-out products that match current product type and have correct tags {% endcomment %}
-                {% for store_product in collections.all.products %}
-                  {% if store_product.available == false and store_product.type == product.type %}
-                    {% assign store_product_tags = store_product.tags | join: ',' | downcase %}
-                    {% if store_product_tags contains group_title_lowercase %}
-                      {% comment %} Check if already shown in available products {% endcomment %}
-                      {% assign already_shown = false %}
-                      {% for shown_product in collections[swatch_collection_handle].products %}
-                        {% if shown_product.handle == store_product.handle %}
-                          {% assign already_shown = true %}
-                          {% break %}
-                        {% endif %}
-                      {% endfor %}
-
-                      {% unless already_shown %}
-                        {% capture swatch_image_filename %}swatch-{{ store_product.title | handle }}.jpg{% endcapture %}
-                        {% assign swatch_image = images[swatch_image_filename] %}
-                        {% assign has_swatch_image = false %}
-                        {% if swatch_image contains '.jpg' %}
-                          {% assign has_swatch_image = true %}
-                        {% endif %}
-
-                        <a
-                          href="{{ store_product.url }}"
-                          title="{{ store_product.title }}"
-                          class="
-                                                                                                                                                                            btn btn--plain btn--small bg-center !w-8 !h-8 !min-w-[2rem] !min-h-[2rem] bg-contain !rounded-full !p-0 aspect-1
-                          "
-                          :class="
-                            {
-                              'btn--plain border--focus-outline' : '{{ product.handle }}' == '{{ store_product.handle }}',
-                              'btn--plain' : '{{ product.handle }}' != '{{ store_product.handle }}',
-                            }
-                          "
-                          style="
-                            {% if has_swatch_image %}
-                              background-image: url('{{ swatch_image | image_url }}');
-                            {% elsif store_product.featured_image %}
-                              background-image: url('{{ store_product.featured_image | image_url: width: 64, height: 64, crop: 'center' }}');
-                              background-size: cover;
-                            {% else %}
-                              background-color: #cccccc;
-                              background-image: none;
-                            {% endif %}
-                          "
-                          @click="window.location.href = ''"
-                        >
-                        </a>
-                      {% endunless %}
-                    {% endif %}
-                  {% endif %}
-                {% endfor %}
-              </div>
-            </div>
-          {% endif %}
-        {% endfor %}
-
-        {% comment %} Add "Other Colors" section for any swatches without matching tags {% endcomment %}
-        {% assign other_swatches_exist = false %}
-        {% assign swatch_collection_handle = product.metafields.custom.swatch_collection.value.handle %}
-        {% for linked_product in collections[swatch_collection_handle].products %}
-          {% assign has_group_tag = false %}
-          {% for group in swatch_groups %}
-            {% assign group_title = group | strip %}
-            {% assign group_title_lowercase = group_title | downcase %}
-            {% assign product_tags_lowercase = linked_product.tags | join: ',' | downcase %}
-            {% if product_tags_lowercase contains group_title_lowercase %}
-              {% assign has_group_tag = true %}
-              {% break %}
-            {% endif %}
-          {% endfor %}
-
-          {% if has_group_tag == false %}
-            {% assign other_swatches_exist = true %}
-            {% break %}
-          {% endif %}
-        {% endfor %}
-
-        {% if other_swatches_exist %}
-          <div class="">
-            <p class="mb-1 opacity-75 type--smaller">Other Colors</p>
-            <div class="inline-flex flex-wrap gap-2 w-full">
-              {% assign swatch_collection_handle = product.metafields.custom.swatch_collection.value.handle %}
-              {% for linked_product in collections[swatch_collection_handle].products %}
-                {% assign has_group_tag = false %}
-                {% for group in swatch_groups %}
-                  {% assign group_title = group | strip %}
-                  {% assign group_title_lowercase = group_title | downcase %}
-                  {% assign product_tags_lowercase = linked_product.tags | join: ',' | downcase %}
-                  {% if product_tags_lowercase contains group_title_lowercase %}
-                    {% assign has_group_tag = true %}
-                    {% break %}
-                  {% endif %}
-                {% endfor %}
-
-                {% if has_group_tag == false %}
-                  {% capture swatch_image_filename %}swatch-{{ linked_product.title | handle }}.jpg{% endcapture %}
-                  {% assign swatch_image = images[swatch_image_filename] %}
-
-                  {% comment %} Check if swatch image exists {% endcomment %}
-                  {% assign has_swatch_image = false %}
-                  {% if swatch_image contains '.jpg' %}
-                    {% assign has_swatch_image = true %}
-                  {% endif %}
-
-                  <a
-                    href="{{ linked_product.url }}"
-                    title="{{ linked_product.title }}"
-                    class="
-                                                                                                                                  btn btn--plain btn--small bg-center !w-8 !h-8 !min-w-[2rem] !min-h-[2rem] bg-contain !rounded-full !p-0 aspect-1
-                    "
-                    :class="
-                      {
-                        'btn--plain border--focus-outline' : '{{ product.handle }}' == '{{ linked_product.handle }}',
-                        'btn--plain' : '{{ product.handle }}' != '{{ linked_product.handle }}',
-                      }
-                    "
-                    style="
-                      {% if has_swatch_image %}
-                        background-image: url('{{ swatch_image | image_url }}');
-                      {% elsif linked_product.featured_image %}
-                        background-image: url('{{ linked_product.featured_image | image_url: width: 64, height: 64, crop: 'center' }}');
-                        background-size: cover;
-                      {% else %}
-                        background-color: #cccccc;
-                        background-image: none;
-                      {% endif %}
-                    "
-                    @click="window.location.href = ''"
-                  >
-                  </a>
-                {% endif %}
-              {% endfor %}
-            </div>
-          </div>
-        {% endif %}
-      </div>
-  {% endcomment %}
 {% endif %}
 
 {%- comment -%} Variants {%- endcomment -%}

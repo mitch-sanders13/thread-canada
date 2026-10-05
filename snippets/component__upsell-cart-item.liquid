@@ -30,7 +30,7 @@
 
 <div
   id="upsell_{{ product.variants[0].id }}"
-  class="    js:cartUpsell color__bg-body color__text flex items-center w-full {{ inner_class }}"
+  class="js:cartUpsell flex items-stretch overflow-hidden w-full {{ inner_class }}"
   x-data="
     {
       button_loading: false
@@ -38,15 +38,15 @@
   "
 >
   {% comment %} Images {% endcomment %}
-  <div class="w-[20%] h-full">
+  <div class="w-24 shrink-0 h-full">
     <div
       class="
-        object-cover flex items-center aspect-[1/1] h-full w-full
+        object-cover flex items-center justify-center aspect-[1/1] h-full w-full
         {{ settings.thumbmails_color_scheme }}
       "
     >
       {%- unless product.featured_image == blank %}
-        {% capture image_class %}w-full h-full object-cover aspect-[1/1] {{ settings.thumbmails_color_scheme }}{% endcapture %}
+        {% capture image_class %}w-full h-full object-contain aspect-[1/1] {{ settings.thumbmails_color_scheme }}{% endcapture %}
         {{
           product.featured_image
           | image_url: width: 200
@@ -57,38 +57,38 @@
   </div>
 
   {%- comment -%} Content {%- endcomment -%}
-  <div class="flex flex-row items-center justify-between flex-grow gap-2 p-4 pl-6 text-left {{ content_class }}">
-    <div class="grow flex flex-col">
-      <p class="mb-0 !leading-tight {% if title_class %}{{ title_class }}{% else %}type__nav{% endif %}">
+  <div class="flex min-w-0 flex-row items-center justify-between flex-grow gap-4 p-3 text-left {{ content_class }}">
+    <div class="w-24 md:w-44 min-w-0 shrink flex flex-col">
+      <p class="mb-0 break-words !leading-tight {% if title_class %}{{ title_class }}{% else %}type--base type__heading{% endif %}">
         {{ product.title }}
       </p>
       {% if settings.enable_tagline and product.metafields.descriptors.subtitle %}
-        <span class="type--small !leading-tight">
+        <span class="type--base !leading-tight">
           {{ product.metafields.descriptors.subtitle }}
         </span>
       {% endif %}
-      <p class="type--small mb-0 !leading-tight" data-product-id="{{ product.id }}">
+      <p class="type--small mb-0 !leading-tight flex flex-wrap items-baseline gap-x-2" data-product-id="{{ product.id }}">
         {% if is_free %}
-          <span class="font-bold">FREE</span>
-          <span class="line-through pl-2 !text-black" data-product-id="{{ product.id }}">
+          <span class="type__body--bold whitespace-nowrap" style="color: #c58b42">FREE</span>
+          <span class="line-through whitespace-nowrap !text-black" data-product-id="{{ product.id }}">
             {{- product.price | money_without_trailing_zeros -}}
           </span>
         {% else %}
-          <span>
+          <span class="type__body--bold whitespace-nowrap" style="color: #c58b42">
             {{ 'products.inventory.only' | t }}
             {{ product.price | money_without_trailing_zeros -}}
           </span>
-          <span class="line-through pl-2 !text-black" data-product-id="{{ product.id }}">
+          <span class="line-through whitespace-nowrap !text-black" data-product-id="{{ product.id }}">
             {{- product.compare_at_price | money_without_trailing_zeros -}}
           </span>
         {% endif %}
       </p>
     </div>
 
-    <div>
+    <div class="shrink-0">
       <form
         class="flex flex-wrap"
-        action="/cart/add"
+        action="{{ routes.cart_add_url }}"
         method="post"
         enctype="multipart/form-data"
         x-data="
@@ -137,8 +137,10 @@
             :class="{ 'btn--loading' : cart_loading && button_loading }"
             :disabled="button_loading"
           >
-            <div class="btn__content">{{ 'products.general.short_add_label' | t }}</div>
-            <div class="btn__spinner">
+            <div class="btn__content{% if button_class contains 'bg-black' %} !text-white{% endif %}">
+              {{ 'products.general.short_add_label' | t }}
+            </div>
+            <div class="btn__spinner{% if button_class contains 'bg-black' %} !text-white{% endif %}">
               {% render 'component__icon', icon: 'spinner', size: '24', class: '' %}
             </div>
           </button>
@@ -153,8 +155,10 @@
               :class="{ 'btn--loading' : button_loading }"
               :disabled="button_loading"
             >
-              <div class="btn__content">{{ 'products.general.short_add_label' | t }}</div>
-              <div class="btn__spinner">
+              <div class="btn__content{% if button_class contains 'bg-black' %} !text-white{% endif %}">
+                {{ 'products.general.short_add_label' | t }}
+              </div>
+              <div class="btn__spinner{% if button_class contains 'bg-black' %} !text-white{% endif %}">
                 {% render 'component__icon', icon: 'spinner', size: '24', class: '' %}
               </div>
             </button>

@@ -1,26 +1,13 @@
-<!-- snippets/theme__scripts.liquid -->
-{% comment %}
-  Site wide variables and JavaScript.
+{% doc %}
+  Renders site-wide data needed by the compiled theme JavaScript.
 
-  Usage:
-    {% render 'theme__scripts' %}
-
-  Globals:
-    - settings.cart_behavior: set the cart behavior to either 'drawer' or 'alert'
-
-  Possible enhancements:
-    - Prepare help docs on editing JavaScript and include build files.
-
-  Pro tips:
-    - Build files can be requested from theme support - hello@brickspacelab.com.
-{% endcomment %}
+  @example
+  {% render 'theme__scripts' %}
+{% enddoc %}
 
 <script>
   window.__initialData = window.__initialData || {};
   Object.assign(window.__initialData, {
-
-    swatch_order_groups: '{{ settings.swatch_order_groups }}',
-
     // Product swatches - unified loading for all product types
     swatch_products: [
       {% comment %} Load collegiate products {% endcomment %}
@@ -54,6 +41,7 @@
     click_audio: '{{ 'click.wav' | asset_url }}',
     success_audio: '{{ 'success.wav' | asset_url }}',
     enable_audio: {{ settings.enable_audio }},
+    enable_animations: {{ settings.enable_animations | json }},
 
     // Color related properties
     header_border: '',
@@ -72,6 +60,7 @@
     scroll_up: false,
     scroll_up_force: true,
     hide_header: false,
+    has_banner_overlap: false,
     header_height: '80px',
     internal_header_height: '60px',
     stickyadd: false,
@@ -160,7 +149,16 @@
 {% comment %} Load swatches for recently viewed products {% endcomment %}
 <script>
   document.addEventListener('alpine:init', () => {
+    let swatchHydrationAttempts = 0;
     const hydrateRecentSwatches = () => {
+      if (typeof window.app !== 'function') {
+        swatchHydrationAttempts += 1;
+        if (swatchHydrationAttempts < 10) {
+          window.setTimeout(hydrateRecentSwatches, 100);
+        }
+        return;
+      }
+
       const app = window.app();
       if (!app) return;
 

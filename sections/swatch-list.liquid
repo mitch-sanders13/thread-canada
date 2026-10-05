@@ -6,11 +6,11 @@
 {% comment %} Swatch placeholders {% endcomment %}
 {% if product.metafields.custom.swatch_collection or is_collegiate_product %}
   <section>
-    <div class="relative flex flex-wrap gap-2 px-2">
-      <div class="inline-flex items-center gap-2">
+    <div class="relative flex flex-wrap gap-3 px-2">
+      <div class="inline-flex items-center gap-3">
         {% for i in (1..6) %}
           <span
-            class="animate-pulse btn btn--plain btn--small bg-center !w-6 !h-6 !min-h-[1.5rem] !min-w-[1.5rem] bg-gray-200 !rounded-full !p-0"
+            class="animate-pulse btn btn--plain btn--small !h-8 !min-h-[2rem] !w-8 !min-w-[2rem] !rounded-full bg-gray-200 bg-center !p-0"
           ></span>
         {% endfor %}
       </div>

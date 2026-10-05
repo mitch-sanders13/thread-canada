@@ -10,7 +10,7 @@
 {% endcomment %}
 
 {%- if section.settings.heading != blank or section.settings.content != blank or section.settings.button_url != blank -%}
-<div class="gap-2 flex flex-row flex-wrap items-end pb-4 pt-9
+<div class="flex pb-4 pt-9
   {{ section.settings.layout_x_alignment }}
   {{ container_class }}
   {% unless request.design_mode %}
@@ -27,19 +27,20 @@
 
   <div class="max-w-prose md:w-auto w-full">
     {%- unless section.settings.heading == blank -%}
-      <h3>{{ section.settings.heading }}</h3>
+      {% if request.page_type == 'index' %}
+        <h2 class="type__heading--section">{{ section.settings.heading }}</h2>
+      {% else %}
+        <h3>{{ section.settings.heading }}</h3>
+      {% endif %}
     {%- endunless -%}
     {%- unless section.settings.content == blank -%}
       <div class="m-0--clear">
         {{ section.settings.content }}
       </div>
     {%- endunless -%}
-  </div>
-
-  <div class="md:w-auto w-full">
     {%- unless section.settings.button_url == blank -%}
       <a href="{{ section.settings.button_url }}" 
-        class="{{ section.settings.color_button }}">
+        class="mt-2 {{ section.settings.color_button }}">
         {{ section.settings.button_label }}
       </a>
     {%- endunless -%}

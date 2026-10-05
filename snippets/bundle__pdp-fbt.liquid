@@ -1,0 +1,189 @@
+{% doc %}
+Renders the Everyday Carry frequently-bought-together selector on eligible PDPs.
+
+@param {product} product - Current product.
+
+@example
+{% render 'bundle__pdp-fbt', product: product %}
+{% enddoc %}
+
+{%- liquid
+  assign wallet_types = 'Elastic Wallet|Vertical Leather Wallet|Leather Zip Wallet' | split: '|'
+  assign lanyard_types = 'Wristlet Keychain' | split: '|'
+  assign accessory_types = 'Chapstick Holder Keychain' | split: '|'
+
+  assign current_slot = blank
+  assign bundle_product_handle = blank
+  if wallet_types contains product.type
+    assign current_slot = 'wallet'
+    case product.type
+      when 'Elastic Wallet'
+        assign bundle_product_handle = 'everyday-carry-set-elastic-wallet'
+      when 'Vertical Leather Wallet'
+        assign bundle_product_handle = 'everyday-carry-set-vertical-leather-wallet'
+      when 'Leather Zip Wallet'
+        assign bundle_product_handle = 'every-day-carry-set-leather-zip-wallet'
+    endcase
+  elsif lanyard_types contains product.type
+    assign current_slot = 'lanyard'
+  elsif accessory_types contains product.type
+    assign current_slot = 'accessory'
+  endif
+
+  assign product_type_handle = product.type | handleize
+  assign product_type_suffix = '-' | append: product_type_handle
+  assign current_colorway_handle = product.handle | remove: product_type_suffix
+  if current_colorway_handle == product.handle
+    assign current_colorway_title = product.title | split: ' - ' | first
+    assign current_colorway_handle = current_colorway_title | handleize
+  endif
+
+  assign associated_wallet_handle = current_colorway_handle | append: '-elastic-wallet'
+  assign associated_lanyard_handle = current_colorway_handle | append: '-wristlet-keychain'
+  assign associated_accessory_handle = current_colorway_handle | append: '-chapstick-holder-keychain'
+  assign associated_wallet = all_products[associated_wallet_handle]
+  assign associated_lanyard = all_products[associated_lanyard_handle]
+  assign associated_accessory = all_products[associated_accessory_handle]
+
+  if associated_lanyard == blank
+    assign associated_lanyard_handle = current_colorway_handle | append: '-wrist-lanyard'
+    assign associated_lanyard = all_products[associated_lanyard_handle]
+  endif
+  if associated_accessory == blank
+    assign associated_accessory_handle = current_colorway_handle | append: '-lip-balm-holder'
+    assign associated_accessory = all_products[associated_accessory_handle]
+  endif
+
+  if bundle_product_handle != blank
+    assign bundle_product_handles = bundle_product_handle | split: '|'
+  else
+    assign bundle_product_handles = 'everyday-carry-set-elastic-wallet|everyday-carry-set-vertical-leather-wallet|every-day-carry-set-leather-zip-wallet' | split: '|'
+  endif
+
+  assign has_bundle = false
+  for candidate_handle in bundle_product_handles
+    assign bundle_product = all_products[candidate_handle]
+    for bundle_variant in bundle_product.variants
+      assign bundle_variant_title = bundle_variant.title | handleize
+      if bundle_variant.available and bundle_variant_title == current_colorway_handle
+        assign has_bundle = true
+        assign matched_bundle_variant = bundle_variant
+        assign matched_bundle_handle = candidate_handle
+        break
+      endif
+    endfor
+    if has_bundle
+      break
+    endif
+  endfor
+
+  # Match the displayed wallet to the set whose available color swatch was found.
+  if has_bundle and current_slot != 'wallet'
+    case matched_bundle_handle
+      when 'everyday-carry-set-vertical-leather-wallet'
+        assign associated_wallet_handle = current_colorway_handle | append: '-vertical-leather-wallet'
+      when 'every-day-carry-set-leather-zip-wallet'
+        assign associated_wallet_handle = current_colorway_handle | append: '-leather-zip-wallet'
+    endcase
+    assign associated_wallet = all_products[associated_wallet_handle]
+  endif
+-%}
+
+{%- if settings.bundle_fbt_enable and has_bundle and current_slot != blank -%}
+  <bundle-pdp-fbt
+    class="no-js--hide block border--t-width color__border-divider-1 px-4 pt-6"
+    data-current-slot="{{ current_slot }}"
+    data-current-variant-id="{{ product.selected_or_first_available_variant.id }}"
+    data-discount-enabled="{{ settings.bundle_fbt_discount_enable }}"
+  >
+    <script type="application/json" data-bundle-products>
+      {
+        "bundle": {
+          "id": {{ matched_bundle_variant.id | json }},
+          "price": {{ matched_bundle_variant.price | json }}
+        },
+        "current": {
+          "title": {{ product.title | json }},
+          "variants": [
+            {%- for variant in product.variants -%}
+              {
+                "id": {{ variant.id | json }},
+                "title": {{ product.title | json }},
+                "price": {{ variant.price | json }},
+                "image": {{ variant.featured_image | default: product.featured_image | image_url: width: 360 | json }}
+              }{% unless forloop.last %},{% endunless %}
+            {%- endfor -%}
+          ]
+        },
+        "associated": {
+          "wallet":
+            {%- if associated_wallet != blank and associated_wallet.selected_or_first_available_variant.available -%}
+              {%- assign associated_variant = associated_wallet.selected_or_first_available_variant -%}
+              {
+                "id": {{ associated_variant.id | json }},
+                "title": {{ associated_wallet.title | json }},
+                "price": {{ associated_variant.price | json }},
+                "image": {{ associated_variant.featured_image | default: associated_wallet.featured_image | image_url: width: 360 | json }}
+              }
+            {%- else -%}
+              null
+            {%- endif -%},
+          "lanyard":
+            {%- if associated_lanyard != blank and associated_lanyard.selected_or_first_available_variant.available -%}
+              {%- assign associated_variant = associated_lanyard.selected_or_first_available_variant -%}
+              {
+                "id": {{ associated_variant.id | json }},
+                "title": {{ associated_lanyard.title | json }},
+                "price": {{ associated_variant.price | json }},
+                "image": {{ associated_variant.featured_image | default: associated_lanyard.featured_image | image_url: width: 360 | json }}
+              }
+            {%- else -%}
+              null
+            {%- endif -%},
+          "accessory":
+            {%- if associated_accessory != blank and associated_accessory.selected_or_first_available_variant.available -%}
+              {%- assign associated_variant = associated_accessory.selected_or_first_available_variant -%}
+              {
+                "id": {{ associated_variant.id | json }},
+                "title": {{ associated_accessory.title | json }},
+                "price": {{ associated_variant.price | json }},
+                "image": {{ associated_variant.featured_image | default: associated_accessory.featured_image | image_url: width: 360 | json }}
+              }
+            {%- else -%}
+              null
+            {%- endif -%}
+        },
+        "strings": {
+          "includeProduct": {{ 'products.bundle.include_product' | t: product: '__PRODUCT__' | json }},
+          "addBundle": {{ 'products.bundle.add_bundle' | t | json }},
+          "addSelectedOne": {{ 'products.bundle.add_selected_one' | t: count: '__COUNT__' | json }},
+          "addSelectedOther": {{ 'products.bundle.add_selected_other' | t: count: '__COUNT__' | json }},
+          "saveAmount": {{ 'products.bundle.save_amount' | t: amount: '__AMOUNT__' | json }},
+          "addedToCart": {{ 'products.bundle.added_to_cart' | t | json }},
+          "addError": {{ 'products.bundle.add_error' | t | json }}
+        }
+      }
+    </script>
+
+    <h2 class="type__heading type__heading--bold-4 mb-4 text-center">
+      {{ settings.bundle_fbt_heading | escape }}
+    </h2>
+
+    <div class="grid grid-cols-1 gap-2 md:grid-cols-3" data-bundle-items></div>
+
+    <button class="btn btn--primary btn--load mt-4 !w-full" type="button" data-bundle-add>
+      <span class="btn__content" data-bundle-add-label>{{ 'products.bundle.add_selected_items' | t }}</span>
+      <span class="btn__spinner">{% render 'component__icon', icon: 'spinner', size: '24', class: '' %}</span>
+    </button>
+
+    <p class="mt-2 break-words text-center" data-bundle-summary aria-live="polite">
+      <strong>
+        {{- 'products.bundle.total' | t }}
+        <span data-bundle-total></span
+      ></strong>
+      <s class="ml-1" data-bundle-original></s>
+      <strong class="color__primary-background ml-1" data-bundle-savings></strong>
+    </p>
+    <p class="sr-only" data-bundle-status aria-live="polite"></p>
+  </bundle-pdp-fbt>
+{%- endif -%}

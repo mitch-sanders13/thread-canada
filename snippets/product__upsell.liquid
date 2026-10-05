@@ -21,6 +21,7 @@
 {% endcomment %}
 
 <section 
+  data-product-mix-match
   x-data="{
     initialLoad: true,
     loadingRecomendations: false,
@@ -139,7 +140,7 @@
                         :disabled="button_loading"
                         @click="
                           button_loading = true; 
-                          fetchAndRenderQuickAdd(item.handle, 'upsell');
+                          fetchAndRenderQuickAdd(item.handle, 'upsell', $event.currentTarget);
                           setTimeout(function(){ button_loading = false}, 500);"
                         x-show="item.variants.length !== 1">
         
@@ -164,3 +165,10 @@
     </div>
   </div>
 </section>
+
+{% stylesheet %}
+  [data-pdp-main]:has([data-fbt-ready]:not([hidden])) [data-product-mix-match] {
+    /* Override Alpine's visibility styling while the FBT upsell is available. */
+    display: none !important;
+  }
+{% endstylesheet %}
