@@ -31,7 +31,8 @@
         "style_border": "border--b-width",
         "layout_padding": true,
         "visibility": ""
-      }
+      },
+      "disabled": true
     }
   },
   "order": [

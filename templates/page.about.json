@@ -53,15 +53,15 @@
         "heading": "<p>PRODUCTS <br/>THAT <br/>DEFINE <br/>US</p>",
         "heading_2": "<p>PRODUCTS THAT DEFINE US</p>",
         "title_1": "<p>CROSSBODY BAG</p>",
-        "url_1": "https://www.threadwallets.com/collections/crossbody-bags",
+        "url_1": "/collections/crossbody-bags",
         "title_2": "<p>WRISTLET KEYCHAIN</p>",
-        "url_2": "https://www.threadwallets.com/collections/wristlet-keychains",
+        "url_2": "/collections/wristlet-keychains",
         "title_3": "<p>VERTICAL WALLET</p>",
-        "url_3": "https://www.threadwallets.com/collections/vertical-leather-wallets",
+        "url_3": "/collections/vertical-leather-wallets",
         "title_4": "<p>BIFOLD WALLET</p>",
-        "url_4": "https://www.threadwallets.com/collections/leather-bifold-wallets",
+        "url_4": "/collections/leather-bifold-wallets",
         "title_5": "<p>ELASTIC WALLET</p>",
-        "url_5": "https://www.threadwallets.com/collections/elastic-wallets",
+        "url_5": "/collections/elastic-wallets",
         "padding_top": 0,
         "padding_bottom": 0
       }
@@ -74,7 +74,7 @@
           "settings": {
             "image_background": "shopify://shop_images/ThreadHeadPhotos_MARY_RAND.jpg",
             "slide_name": "MARY  RAND",
-            "name_url": "https://www.threadwallets.com",
+            "name_url": "",
             "spacing_top": 0,
             "spacing_bottom": 0,
             "layout_desktop_width": 3,
@@ -86,7 +86,7 @@
           "settings": {
             "image_background": "shopify://shop_images/ThreadHeadPhotos_ACE_PELKA.jpg",
             "slide_name": "ACE PELKA",
-            "name_url": "https://www.threadwallets.com",
+            "name_url": "",
             "spacing_top": 0,
             "spacing_bottom": 0,
             "layout_desktop_width": 3,
@@ -98,7 +98,7 @@
           "settings": {
             "image_background": "shopify://shop_images/ThreadHeadPhotos_ZOE_MCDOUGAL.jpg",
             "slide_name": "ZOE MCDOUGAL",
-            "name_url": "https://www.threadwallets.com",
+            "name_url": "",
             "spacing_top": 0,
             "spacing_bottom": 0,
             "layout_desktop_width": 3,
@@ -110,7 +110,7 @@
           "settings": {
             "image_background": "shopify://shop_images/ThreadHeadPhotos_ETHAN_JONES.jpg",
             "slide_name": "ETHAN JONES",
-            "name_url": "https://www.threadwallets.com",
+            "name_url": "",
             "spacing_top": 0,
             "spacing_bottom": 0,
             "layout_desktop_width": 3,
@@ -122,7 +122,7 @@
           "settings": {
             "image_background": "shopify://shop_images/ThreadHeadPhotos_IVY_MILLER.jpg",
             "slide_name": "IVY MILLER",
-            "name_url": "https://www.threadwallets.com",
+            "name_url": "",
             "spacing_top": 0,
             "spacing_bottom": 0,
             "layout_desktop_width": 3,
@@ -143,7 +143,7 @@
         "heading": "<p>CURIOUS</p><p>CARRIERS</p>",
         "body": "<p>We are driven by a culture of curiosity. In the pursuit of carrying on, we push on, break through and begin anew. With a fresh perspective living a life in motion is our focus.</p>",
         "link_title": "SEE MORE",
-        "link_url": "https://www.threadwallets.com/",
+        "link_url": "/",
         "spacing_top": 0,
         "spacing_bottom": 0,
         "visibility": ""

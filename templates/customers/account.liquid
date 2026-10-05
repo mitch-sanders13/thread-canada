@@ -6,7 +6,7 @@
 	// Check if current page is account page
 	if (window.location.pathname === "/account") {
 		// Redirect to the carriers-club
-		window.location.href = "https://threadwallets.com/collections/carriers-club";
+		window.location.href = "/collections/carriers-club";
 	}
 });
 </script>
@@ -21,7 +21,7 @@
         {{ 'general.navigation.account' | t }}
       </h1>
 
-      <a href="https://www.threadwallets.com/collections" class="btn btn--smaller">Carrier's Club</a>
+      <a href="/collections" class="btn btn--smaller">Carrier's Club</a>
       <a href="{{ routes.account_logout_url }}" class="btn btn--plain btn--smaller">{{ 'customer.sign_in.log_out' | t }}</a>
     </div>
 

@@ -1,15 +1,15 @@
 <!-- sections/page__tracking.liquid -->
-{% comment %} 
-  Malomo tracking form with image. 
+{% comment %}
+  Malomo tracking form with image.
+  Disabled for Canada preview until a CA Malomo publishable key is available.
 {% endcomment %}
-
-{{ 'malomo.css' | asset_url | stylesheet_tag }}
-<script  src="https://js.gomalomo.com/v2/" type="application/javascript"></script>
 
 <section class="tmp-{{ template | handle }} flex flex-col md:flex-row justify-center items-stretch h-auto mx-auto {{ settings.layout_horizontal }}"
   style="gap: {{ settings.layout_gap_size }}px;">
-    <section id="malomo" class="order-2 md:order-1"></section>
-    <h1 class="sr-only">Malomo</h1>
+    <section id="malomo" class="order-2 md:order-1 flex items-center justify-center p-8">
+      <p>Order tracking will be available soon.</p>
+    </section>
+    <h1 class="sr-only">Order tracking</h1>
     <div class="flex order-1 md:order-2">
         <a href="{{ section.settings.card_url }}" class="flex-1" aria-label="{{ section.settings.card_desktop_image.alt }}">
           {%- if section.settings.card_desktop_image -%}
@@ -22,48 +22,6 @@
         </a>
     </div>
 </section>
-
-<script type="application/javascript">
-  (function() {
-    
-    // Start config
-    let apiKey = 'pk_887fb1eefc3d8644e2d7aa74d99fb39d';
-    let mountPoint = '#malomo';
-
-    // End config
-    let malomo = Malomo(apiKey);
-    let elements = malomo.elements();
-
-    malomo.fetchOrder()
-      .then((order) => {
-        return elements
-          .create(
-            'shipmentTracker',
-            {
-              order: order
-            }
-          )
-          .mount(mountPoint);
-      })
-      .catch(() => {
-        return elements
-          .create(
-            'orderLookup',
-            {
-              callback: (resp) => {
-                let url = new URL(document.URL);
-
-                url.searchParams.append('_m_id', resp.body['id']);
-
-                window.location.href = url;
-              }
-            }
-          )
-          .mount(mountPoint);
-      });
-  })();
-</script>
-
 
 {% schema %}
 {

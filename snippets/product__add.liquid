@@ -151,38 +151,10 @@
   {% endunless %}
 </div>
 
-{% comment %} Attentive Back in Stock - Full Width {% endcomment %}
-<div
-  x-show="!defaultAvailable && defaultVariantExists"
-  x-cloak
-  class="mt-4 px-4"
->
-  <!-- Attentive Back in Stock Button -->
-  <script
-    id="attn-waitlist-eligibility"
-    type="application/json">
-    {
-    {%- liquid
-    for variant in product.variants
-    assign eligibility = 'false'
-    if variant.inventory_quantity <= 0
-    assign eligibility = 'true'
-    endif
-    assign entry = '"' | append: variant.id | append: '":' | append: eligibility
-    unless forloop.last
-    assign entry = entry | append: ','
-    endunless
-
-    echo entry
-    endfor
-    -%}
-    }
-  </script>
-  <div 
-    id="attn-waitlist-trigger" 
-    class="btn btn--primary btn--load w-full min-h-12 [&_button]:indent-[-9999px] [&_button]:uppercase [&_button]:relative [&_button]:before:content-['notify_me_when_back_in_stock'] [&_button]:before:absolute [&_button]:before:left-1/2 [&_button]:before:top-1/2 [&_button]:before:-translate-x-1/2 [&_button]:before:-translate-y-1/2 [&_button]:before:indent-0 [&_button]:before:font-black [&_button]:before:tracking-widest [&_button]:before:whitespace-nowrap">
-  </div>
-</div>
+{% comment %}
+  Attentive Back in Stock disabled for Canada preview until CA Attentive is installed.
+  Restore from git history when ready.
+{% endcomment %}
 
 {% unless featured %}
   {% render 'bundle__pdp-cta', product: product %}

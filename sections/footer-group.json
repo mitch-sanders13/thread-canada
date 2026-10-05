@@ -66,6 +66,7 @@
     },
     "db6f23ff-c8c2-428f-97d2-55c4d20911f7": {
       "type": "attentive-bar",
+      "disabled": true,
       "settings": {
         "desktop_id": "164248",
         "mobile_id": "164239",

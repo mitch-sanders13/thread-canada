@@ -115,7 +115,7 @@
           "type": "icon",
           "settings": {
             "icon": "truck",
-            "content": "Free Shipping Over $40",
+            "content": "Shipping policy coming soon",
             "spacing_top": 10,
             "spacing_bottom": 10,
             "color_scheme": "color__bg-body color__text",
@@ -173,7 +173,7 @@
           "disabled": true,
           "settings": {
             "title": "Warranty",
-            "content": "<p>We stand by our products. Each one is made using durable materials and checked for quality before shipping. Our products hold some of your most valuable items, therefore you should buy one that you can rely on. For that reason, we have put a limited lifetime warranty on all orders (details below).  We have had customers who have been using their Thread® products for many years without issue but we understand that accidents happen! </p><p><strong>Details: </strong></p><p>Thread® products are made to last! However, if your item becomes defective, you qualify for a replacement.  Please keep in mind that <strong>products that have been stretched out due to over-stuffing, water damage, normal day to day wear and tear, etc. will not qualify for a replacement. </strong>For more information on our Warranty Policy, <a href=\"https://www.threadwallets.com/pages/warranty\" title=\"One Year Warranty\">click here</a>.</p>",
+            "content": "<p>We stand by our products. Each one is made using durable materials and checked for quality before shipping. Our products hold some of your most valuable items, therefore you should buy one that you can rely on. For that reason, we have put a limited lifetime warranty on all orders (details below).  We have had customers who have been using their Thread® products for many years without issue but we understand that accidents happen! </p><p><strong>Details: </strong></p><p>Thread® products are made to last! However, if your item becomes defective, you qualify for a replacement.  Please keep in mind that <strong>products that have been stretched out due to over-stuffing, water damage, normal day to day wear and tear, etc. will not qualify for a replacement. </strong>For more information on our Warranty Policy, <a href=\"/pages/warranty\" title=\"One Year Warranty\">click here</a>.</p>",
             "color_scheme": "color__bg-body color__text",
             "style_border": "border--b-width",
             "enable_open": false

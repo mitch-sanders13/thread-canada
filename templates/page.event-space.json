@@ -113,7 +113,7 @@
       "name": "Rich text",
       "settings": {
         "heading": "About",
-        "content": "<p>Built over a century ago in the heart of downtown Provo, Thread is a thoughtfully designed industrial-style venue created to host memorable events of all kinds. The flexible space features a full kitchen, spacious stage with a jumbotron, professional sound system with microphone, tables and chairs, tablecloths and decor, and an open layout that can be customized to fit your vision.<br/></p><p>Whether you’re planning a corporate gathering, celebration, workshop, or community event, Thread offers a unique and versatile setting designed to bring people together.<br/></p><p>For questions or booking inquiries, please email teagan@threadwallets.com or call (720) 883-8031.</p>",
+        "content": "<p>Built over a century ago in the heart of venue location TBD, Thread is a thoughtfully designed industrial-style venue created to host memorable events of all kinds. The flexible space features a full kitchen, spacious stage with a jumbotron, professional sound system with microphone, tables and chairs, tablecloths and decor, and an open layout that can be customized to fit your vision.<br/></p><p>Whether you’re planning a corporate gathering, celebration, workshop, or community event, Thread offers a unique and versatile setting designed to bring people together.<br/></p><p>For questions or booking inquiries, please email teagan@threadwallets.com or call (phone TBD).</p>",
         "button_label": "Book a tour",
         "button_url": "https://calendly.com/teagan-threadwallets/30min",
         "spacing_top": 60,
@@ -430,7 +430,7 @@
           "type": "content",
           "settings": {
             "title": "Do you allow outside vendors for catering?",
-            "content": "<p>Yes. We allow outside licensed vendors for catering. While we have a list of preferred vendors we recommend, you are welcome to bring in any licensed vendors of your choice. Our preferred vendors are familiar with the space and consistently provide great service, and we’re happy to share their information to help with planning.<br/></p><p><em><strong>Preferred Vendors:</strong></em></p><p><strong>Guru’s Cafe</strong> – catering@guruscafe.com<br/>A local downtown Provo favorite known for its globally inspired, flavor-forward menu and fresh ingredients. Guru’s offers a wide range of options that accommodate different tastes and dietary needs, making it a reliable and crowd-pleasing catering choice.<br/></p><p><strong>Rockwell Ice Cream - </strong>events@rockwellicecream.com<br/>A preferred dessert vendor offering handcrafted, small-batch ice cream with creative flavors. They’re a popular choice for weddings, corporate events, and celebrations, and can serve from a cart or as part of a custom dessert setup, adding a fun and memorable touch to any event.”</p>"
+            "content": "<p>Yes. We allow outside licensed vendors for catering. While we have a list of preferred vendors we recommend, you are welcome to bring in any licensed vendors of your choice. Our preferred vendors are familiar with the space and consistently provide great service, and we’re happy to share their information to help with planning.<br/></p><p><em><strong>Preferred Vendors:</strong></em></p><p><strong>Guru’s Cafe</strong> – catering@guruscafe.com<br/>A local venue location TBD favorite known for its globally inspired, flavor-forward menu and fresh ingredients. Guru’s offers a wide range of options that accommodate different tastes and dietary needs, making it a reliable and crowd-pleasing catering choice.<br/></p><p><strong>Rockwell Ice Cream - </strong>events@rockwellicecream.com<br/>A preferred dessert vendor offering handcrafted, small-batch ice cream with creative flavors. They’re a popular choice for weddings, corporate events, and celebrations, and can serve from a cart or as part of a custom dessert setup, adding a fun and memorable touch to any event.”</p>"
           }
         },
         "content_kkaUMe": {
@@ -481,7 +481,7 @@
       "name": "Rich text",
       "settings": {
         "heading": "Contact us",
-        "content": "<p>We would love to host your next event! Please email or call us with any questions.<br/><strong>(720) 883-8031<br/>teagan@threadwallets.com</strong></p>",
+        "content": "<p>We would love to host your next event! Please email or call us with any questions.<br/><strong>(phone TBD)<br/>teagan@threadwallets.com</strong></p>",
         "button_label": "BOOK A TOUR",
         "button_url": "https://calendly.com/teagan-threadwallets/30min",
         "spacing_top": 100,

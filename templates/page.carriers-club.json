@@ -12,10 +12,10 @@
           "settings": {
             "button_color": "btn btn--secondary",
             "button_label": "Sign Up",
-            "button_url": "https:\/\/www.threadwallets.com\/account\/register",
+            "button_url": "\/account\/register",
             "secondary_button_color": "btn btn--secondary",
             "secondary_button_label": "Log In",
-            "secondary_button_url": "https:\/\/www.threadwallets.com\/account\/login",
+            "secondary_button_url": "\/account\/login",
             "button_text_logged_in": "Shop Now",
             "button_link_logged_in": "shopify:\/\/collections\/carriers-club",
             "btn_width_logged_in": 120

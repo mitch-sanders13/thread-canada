@@ -7,7 +7,7 @@
 			{{ article.published_at | date: '%b %d, %Y' }}
 			<span class="">
 				{% for tag in article.tags %}
-					<a class="" href="https://www.threadwallets.com/blogs/thread-wallets/tagged/{{tag}}">#{{ tag }}</a>
+					<a class="" href="/blogs/thread-wallets/tagged/{{tag}}">#{{ tag }}</a>
 				{% endfor %}
 			</span>
 		</p>
