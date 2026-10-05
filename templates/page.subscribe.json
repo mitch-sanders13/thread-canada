@@ -12,14 +12,14 @@
         "template--15912723021962__afca52a8-f921-488f-a713-614a88e5ce87-1689674982f0ccc70e-1": {
           "type": "content",
           "settings": {
-            "content": "<p>TWO winners will receive a $250 travel voucher, a $100 gift card to @thread_wallets, $150 gift card to @midoribikinis, and two pairs of sun glasses from @otiseyewear. Giveaway ends 9\/23 at Midnight MST. By entering, you are subscribing to receive communication from all brands listed above.<\/p>"
+            "content": "<p>TWO winners will receive a $250 travel voucher, a $100 gift card to @thread_wallets, $150 gift card to @midoribikinis, and two pairs of sun glasses from @otiseyewear.\u00a0Giveaway ends 9/23 at Midnight MST.\u00a0By entering, you are subscribing to receive communication from all brands listed above.</p>"
           }
         },
         "38c2e917-72c9-4848-96a9-3eb235acb83d": {
           "type": "email",
           "settings": {
-            "klaviyo_list": "Rkcdfb",
-            "klaviyo_source": "Embed page"
+            "klaviyo_list": "",
+            "klaviyo_source": "Canada preview (list TBD)"
           }
         }
       },
@@ -30,8 +30,8 @@
       ],
       "settings": {
         "url": "",
-        "image_background_desktop": "shopify:\/\/shop_images\/Holding_Onto_Summer_Giveaway.webp",
-        "image_background_mobile": "shopify:\/\/shop_images\/Holding_Onto_Summer_Giveaway.jpg",
+        "image_background_desktop": "shopify://shop_images/Holding_Onto_Summer_Giveaway.webp",
+        "image_background_mobile": "shopify://shop_images/Holding_Onto_Summer_Giveaway.jpg",
         "show_entire_image": false,
         "enable_lazy_loading": false,
         "show_video_background_mobile": true,

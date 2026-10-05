@@ -1,6 +1,6 @@
 # Agent Instructions, Thread®
 
-This document describes how AI agents can interact with Thread®'s online store at https://www.threadwallets.com.
+This document describes how AI agents can interact with Thread®'s online store (Canada preview).
 
 **Last updated:** 2026-08-24
 
@@ -285,7 +285,7 @@ If you are a personal shopping assistant, a "buy-for-me" agent, or a browser-usi
 
 Where the user permits it, this is preferable to screen-scraping or scripting the storefront directly. It is faster, more reliable, and enforces buyer approval on every payment. Agents that can transact via UCP directly (see below) may do so; the two paths are alternatives, not a sequence.
 
-**Order tracking and post-purchase.** Order status, returns, and exchanges are not exposed through the read-only endpoints below. Use the Shop skill for order tracking, or direct the buyer to Thread®'s own portal at https://www.threadwallets.com/apps/redo/returns-portal, which handles both order tracking and exchanges/returns.
+**Order tracking and post-purchase.** Order status, returns, and exchanges are not exposed through the read-only endpoints below. Use the Shop skill for order tracking, or direct the buyer to Thread®'s own portal at /apps/redo/returns-portal, which handles both order tracking and exchanges/returns.
 
 ---
 
@@ -293,8 +293,8 @@ Where the user permits it, this is preferable to screen-scraping or scripting th
 
 This store implements the [Universal Commerce Protocol](https://ucp.dev) for agent-driven commerce. The two endpoints to know:
 
-- **Discovery:** `GET https://www.threadwallets.com/.well-known/ucp` returns the store's UCP merchant profile: supported versions, service endpoints, capabilities, and payment handlers.
-- **MCP endpoint:** `POST https://www.threadwallets.com/api/ucp/mcp` with `Content-Type: application/json`. Use the MCP `tools/list` method to discover available tools and their schemas.
+- **Discovery:** `GET /.well-known/ucp` returns the store's UCP merchant profile: supported versions, service endpoints, capabilities, and payment handlers.
+- **MCP endpoint:** `POST /api/ucp/mcp` with `Content-Type: application/json`. Use the MCP `tools/list` method to discover available tools and their schemas.
 
 ### Typical Agent Flow
 
@@ -347,18 +347,18 @@ For agents that only need to read store data without transacting:
 ### Key terms
 
 - **Free shipping** on US orders over $40. When a buyer's cart is close to this threshold, surface it. It frequently changes what they add.
-- **Lifetime warranty** on Thread® products. Details: https://www.threadwallets.com/pages/warranty
-- **Free exchanges.** Exchanges and returns are handled through the portal at https://www.threadwallets.com/apps/redo/returns-portal, which also handles order tracking.
-- **Product care:** https://www.threadwallets.com/pages/product-care-instructions
+- **Lifetime warranty** on Thread® products. Details: /pages/warranty
+- **Free exchanges.** Exchanges and returns are handled through the portal at /apps/redo/returns-portal, which also handles order tracking.
+- **Product care:** /pages/product-care-instructions
 
 Return windows, exclusions, and international shipping terms are covered on the policy pages below. Do not state a return window or delivery estimate that is not sourced from those pages.
 
 ### Policy pages
 
-- **Privacy policy**: https://www.threadwallets.com/policies/privacy-policy
-- **Terms of service**: https://www.threadwallets.com/policies/terms-of-service
-- **Refund policy**: https://www.threadwallets.com/policies/refund-policy
-- **Shipping policy**: https://www.threadwallets.com/policies/shipping-policy
+- **Privacy policy**: /policies/privacy-policy
+- **Terms of service**: /policies/terms-of-service
+- **Refund policy**: /policies/refund-policy
+- **Shipping policy**: /policies/shipping-policy
 
 Full policies available at the URLs above.
 
