@@ -20,6 +20,45 @@
     - Upsells can be set to related or complimentary products.
 {% endcomment %}
 
+{%- comment -%}
+  Same-colourway companions are shown first (wristlet, chapstick holder, elastic wallet, etc.),
+  then Shopify recommendations fill any remaining slots.
+  Colourway is derived the same way as bundle__pdp-fbt (handle minus product type, title fallback).
+  Up to 9 all_products lookups; bundle__pdp-fbt uses up to 9 as well.
+{%- endcomment -%}
+{%- liquid
+  assign product_type_handle = product.type | handleize
+  assign product_type_suffix = '-' | append: product_type_handle
+  assign current_colorway_handle = product.handle | remove: product_type_suffix
+  if current_colorway_handle == product.handle
+    assign current_colorway_title = product.title | split: ' - ' | first
+    assign current_colorway_handle = current_colorway_title | handleize
+  endif
+
+  assign companion_suffixes = '-wristlet-keychain,-chapstick-holder-keychain,-elastic-wallet,-vertical-leather-wallet,-leather-zip-wallet,-neck-lanyard,-keychain-clip,-wrist-lanyard,-lip-balm-holder' | split: ','
+  assign companion_seed = ''
+  assign companion_seed_count = 0
+  for companion_suffix in companion_suffixes
+    if companion_seed_count >= blocksettings.products_count
+      break
+    endif
+    assign companion_handle = current_colorway_handle | append: companion_suffix
+    if companion_handle != product.handle
+      assign companion_product = all_products[companion_handle]
+      if companion_product != blank and companion_product.available
+        unless companion_product.tags contains 'hiderecommendation'
+          assign companion_seed = companion_seed | append: '|' | append: companion_handle
+          assign companion_seed_count = companion_seed_count | plus: 1
+        endunless
+      endif
+    endif
+  endfor
+  assign companion_seed_handles = companion_seed | remove_first: '|' | split: '|'
+-%}
+<script type="application/json" id="upsell-seed-{{ product.id }}">
+  [{%- for companion_handle in companion_seed_handles -%}{{ all_products[companion_handle] | json }}{%- unless forloop.last -%},{%- endunless -%}{%- endfor -%}]
+</script>
+
 <section 
   data-product-mix-match
   x-data="{
@@ -30,10 +69,19 @@
       fetch(window.Shopify.routes.root + 'recommendations/products.json?product_id={{ product.id }}&limit=' + ({{ blocksettings.products_count }} + 4) + '&intent={{ blocksettings.intent }}')
         .then(response => response.json())
         .then(({ products }) => {
+          let seedProducts = [];
+          try {
+            const seedEl = document.getElementById('upsell-seed-{{ product.id }}');
+            seedProducts = JSON.parse((seedEl && seedEl.textContent) || '[]');
+          } catch (e) { seedProducts = []; }
+          seedProducts = seedProducts
+            .filter(p => p && p.available && p.handle)
+            .map(p => Object.assign({}, p, { url: p.url || (window.Shopify.routes.root + 'products/' + p.handle) }));
           const visibleProducts = (products || [])
             .filter(p => p && p.available && p.url)
-            .filter(p => !(p.tags || []).includes('hiderecommendation'));
-          this.complementary_products = visibleProducts.slice(0, {{ blocksettings.products_count }});
+            .filter(p => !(p.tags || []).includes('hiderecommendation'))
+            .filter(p => !seedProducts.some(s => s.id === p.id));
+          this.complementary_products = [...seedProducts, ...visibleProducts].slice(0, {{ blocksettings.products_count }});
           this.loadingRecomendations = this.complementary_products.length > 0;
           this.initialLoad = false;
         });
@@ -72,6 +120,7 @@
                 <a :href="item && item.url ? `${ item.url }` : '#'">
                   <img class="w-full h-full object-cover aspect-[1/1] {{ settings.thumbmails_color_scheme }}"
                     width="200"
+                    height="200"
                     loading="lazy"
                     :src="`${ item.featured_image }`" 
                     :alt="`${ item.title }`" />
