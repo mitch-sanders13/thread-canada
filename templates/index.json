@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "85942a7d-a700-4a34-9b4d-8e0a35c6feb7": {
@@ -130,6 +139,7 @@
         "enable_header_overlap": false,
         "visibility": "",
         "image_background": "shopify://shop_images/screenshot-video.jpg",
+        "video_background": "shopify://files/videos/nocopy.mp4",
         "auto_play": true,
         "enable_gradient": true,
         "height_mobile": 320,
@@ -149,7 +159,7 @@
           "type": "image",
           "settings": {
             "media_type": "video",
-            "video": "",
+            "video": "shopify://files/videos/aprilinfusion_lip_pdp.mp4",
             "aspect": "portrait",
             "caption": "@skyelane",
             "link": "",
@@ -182,7 +192,7 @@
           "type": "image",
           "settings": {
             "media_type": "video",
-            "video": "",
+            "video": "shopify://files/videos/aprilinfusion_neck_pdp.mp4",
             "aspect": "square",
             "caption": "@mackkenzi",
             "link": "",
@@ -215,7 +225,7 @@
           "type": "image",
           "settings": {
             "media_type": "video",
-            "video": "",
+            "video": "shopify://files/videos/aprilinfusion_wrist_pdp.mp4",
             "aspect": "square",
             "caption": "@dailycarry",
             "link": "",
@@ -247,7 +257,7 @@
       "name": "Automatic slider",
       "settings": {
         "heading": "DO WHAT CONNECTS YOU",
-        "lede": "Genuine connection. That\u2019s what it\u2019s all about.",
+        "lede": "Genuine connection. That’s what it’s all about.",
         "button_label": "MORE ABOUT US",
         "button_url": "shopify://pages/about",
         "accessibility_label": "Community gallery",
@@ -308,7 +318,7 @@
       "disabled": true,
       "settings": {
         "heading": "RELENTLESS PROGRESSION. FEARLESS EXPRESSION.",
-        "content": "<p>Thread\u00ae was born out of a need for expression and function. Life comes with stuff to carry, but who said that has to be boring and inconvenient? For us, it started with <a href=\"/collections/all-wallets\" target=\"_blank\" title=\"/collections/all-wallets\">wallets</a>. We overturned everything about the traditional wallet\u2014you know, that big, ugly one that your dad has had for decades\u2014and brought life to a category saturated with bulky and boring. We replaced the bulk with slim silhouettes that don\u2019t weigh you down, and traded boring designs for a huge variety of original colorways. From there, we expanded into <a href=\"/collections/lanyards\" target=\"_blank\" title=\"/collections/lanyards\">lanyards</a>, <a href=\"/collections/all-bags\" target=\"_blank\" title=\"All Bags Collection\">bags</a>, <a href=\"/collections/chapstick-holder-keychains\" target=\"_blank\" title=\"Chapstick Holders\">lip balm holders</a>, and more <a href=\"/collections/all-accessories\" target=\"_blank\" title=\"Thread Wallet Accessories\">accessories</a> made to hold your daily essentials. Check out Thread\u00ae products designed to express your originality with every outing and errand. We\u2019re redefining the way you carry, and making sure you look damn good while doing it. </p>",
+        "content": "<p>Thread® was born out of a need for expression and function. Life comes with stuff to carry, but who said that has to be boring and inconvenient? For us, it started with <a href=\"/collections/all-wallets\" target=\"_blank\" title=\"/collections/all-wallets\">wallets</a>. We overturned everything about the traditional wallet—you know, that big, ugly one that your dad has had for decades—and brought life to a category saturated with bulky and boring. We replaced the bulk with slim silhouettes that don’t weigh you down, and traded boring designs for a huge variety of original colorways. From there, we expanded into <a href=\"/collections/lanyards\" target=\"_blank\" title=\"/collections/lanyards\">lanyards</a>, <a href=\"/collections/all-bags\" target=\"_blank\" title=\"All Bags Collection\">bags</a>, <a href=\"/collections/chapstick-holder-keychains\" target=\"_blank\" title=\"Chapstick Holders\">lip balm holders</a>, and more <a href=\"/collections/all-accessories\" target=\"_blank\" title=\"Thread Wallet Accessories\">accessories</a> made to hold your daily essentials. Check out Thread® products designed to express your originality with every outing and errand. We’re redefining the way you carry, and making sure you look damn good while doing it. </p>",
         "button_label": "Button",
         "button_url": "",
         "spacing_top": 60,
