@@ -147,7 +147,7 @@
         "content": "",
         "heading": "Expressive Everyday Carry",
         "button_label": "Shop Now",
-        "button_url": "shopify://products/everyday-carry-set-elastic-wallet",
+        "button_url": "/collections/elastic-wallets",
         "spacing_top": 0,
         "spacing_bottom": 0
       }
