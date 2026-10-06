@@ -34,6 +34,10 @@
 
          {% comment %} Mobile only {% endcomment %}
          {% for block in section.blocks %}
+          {%- comment -%} Skip image-only blocks with no media so education text is not duplicated in an empty box. {%- endcomment -%}
+          {%- if block.settings.image_background == blank and block.settings.video_background == blank and block.settings.image_featured == blank and block.settings.heading == blank and block.settings.content == blank -%}
+            {%- continue -%}
+          {%- endif -%}
           {% assign show_first = false %}
           {% if block.settings.enable_show_first %}
             {% assign show_first = true %}
@@ -80,7 +84,7 @@
                     {% if block.settings.enable_autoplay %} autoplay {% endif %}
                     {% if block.settings.enable_loop %} loop {% endif %}
                     {% if block.settings.image_background %}
-                      poster="{{ block.settings.image_background | image_url: width: 1200 }}
+                      poster="{{ block.settings.image_background | image_url: width: 1200 }}"
                     {% endif %}
                     ">
                     {% for source in block.settings.video_background.sources %}
@@ -174,6 +178,10 @@
 				{% endfor %}
         
 				{% for block in section.blocks %}
+          {%- comment -%} Skip image-only blocks with no media so education text is not duplicated in an empty box. {%- endcomment -%}
+          {%- if block.settings.image_background == blank and block.settings.video_background == blank and block.settings.image_featured == blank and block.settings.heading == blank and block.settings.content == blank -%}
+            {%- continue -%}
+          {%- endif -%}
           {% assign show_first = false %}
           {% if block.settings.enable_show_first %}
             {% assign show_first = true %}
@@ -220,7 +228,7 @@
 									{% if block.settings.enable_autoplay %} autoplay {% endif %}
 									{% if block.settings.enable_loop %} loop {% endif %}
 									{% if block.settings.image_background %}
-										poster="{{ block.settings.image_background | image_url: width: 1200 }}
+										poster="{{ block.settings.image_background | image_url: width: 1200 }}"
 									{% endif %}
 									">
 									{% for source in block.settings.video_background.sources %}
