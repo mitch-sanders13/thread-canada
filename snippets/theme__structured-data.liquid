@@ -163,6 +163,22 @@
 {%- endif -%}
 
 {%- if template.name == 'product' -%}
+  {%- comment -%}
+    Product JSON-LD country, currency, and the Canada Standard shipping quote.
+    Change the shipping assigns below if checkout rates or transit times change.
+    Country and currency come from the shop / buyer market, not hard-coded US/USD.
+  {%- endcomment -%}
+  {%- liquid
+    assign schema_country = localization.country.iso_code | default: shop.address.country_code | default: 'CA'
+    assign schema_currency = cart.currency.iso_code | default: shop.currency
+    assign schema_shipping_label = 'Standard'
+    assign schema_shipping_rate = 5.99
+    assign schema_handling_min = 0
+    assign schema_handling_max = 0
+    assign schema_transit_min = 3
+    assign schema_transit_max = 5
+    assign schema_return_days = shop.metafields.policies.return_days | default: 30
+  -%}
   <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -194,16 +210,16 @@
         "@type": "Offer",
         "url": "{{ shop.url }}{{ product.url }}",
         "price": {{ product.price_max | money_without_currency | replace: ",", "" }},
-        "priceCurrency": {{ shop.currency | json }},
+        "priceCurrency": {{ schema_currency | json }},
         "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
         "itemCondition": "https://schema.org/NewCondition",
         "sku": {{ product.selected_or_first_available_variant.sku | json }},
         "gtin": {{ product.selected_or_first_available_variant.barcode | json }},
         "hasMerchantReturnPolicy": {
           "@type": "MerchantReturnPolicy",
-          "applicableCountry": "US",
+          "applicableCountry": {{ schema_country | json }},
           "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-          "merchantReturnDays": {{ shop.metafields.policies.return_days | default: 30 }},
+          "merchantReturnDays": {{ schema_return_days }},
           "returnMethod": "https://schema.org/ReturnByMail",
           "returnFees": "https://schema.org/FreeReturn",
           "merchantReturnLink": {{ shop.policy_refund_url | default: shop.url | append: "/policies/refund-policy" | json }}
@@ -211,16 +227,17 @@
         "shippingDetails": [
           {
             "@type": "OfferShippingDetails",
-            "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "US" },
+            "shippingDestination": { "@type": "DefinedRegion", "addressCountry": {{ schema_country | json }} },
+            "shippingLabel": {{ schema_shipping_label | json }},
             "shippingRate": {
               "@type": "MonetaryAmount",
-              "value": {{ shop.metafields.shipping.us_rate | default: 0 }},
-              "currency": {{ shop.currency | json }}
+              "value": {{ schema_shipping_rate }},
+              "currency": {{ schema_currency | json }}
             },
             "deliveryTime": {
               "@type": "ShippingDeliveryTime",
-              "handlingTime": { "@type": "QuantitativeValue", "minValue": 0, "maxValue": 2, "unitCode": "d" },
-              "transitTime": { "@type": "QuantitativeValue", "minValue": 3, "maxValue": 7, "unitCode": "d" }
+              "handlingTime": { "@type": "QuantitativeValue", "minValue": {{ schema_handling_min }}, "maxValue": {{ schema_handling_max }}, "unitCode": "d" },
+              "transitTime": { "@type": "QuantitativeValue", "minValue": {{ schema_transit_min }}, "maxValue": {{ schema_transit_max }}, "unitCode": "d" }
             }
           }
         ]

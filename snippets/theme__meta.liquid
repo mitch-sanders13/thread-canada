@@ -58,8 +58,18 @@
   <meta name="robots" content="noindex, follow">
 {%- endif -%}
 
+{%- liquid
+  assign og_language = localization.language.iso_code | default: request.locale.iso_code | replace: '-', '_'
+  assign og_country = localization.country.iso_code
+  if og_language.size == 2 and og_country != blank
+    assign og_locale = og_language | append: '_' | append: og_country
+  else
+    assign og_locale = og_language
+  endif
+-%}
 <meta property="og:url" content="{{ canonical }}">
 <meta property="og:site_name" content="{{ shop.name }}">
+<meta property="og:locale" content="{{ og_locale }}">
 <meta property="og:type" content="{{ meta_type | default: 'website' }}">
 <meta property="og:title" content="{{ meta_title | default: shop.name }}">
 <meta property="og:description" content="{{ meta_description | default: shop.name }}">
