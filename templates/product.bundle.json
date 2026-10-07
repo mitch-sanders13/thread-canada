@@ -111,18 +111,6 @@
             "enable_dynamic_checkout": false
           }
         },
-        "product-benefit-shipping": {
-          "type": "icon",
-          "settings": {
-            "icon": "truck",
-            "content": "Shipping policy coming soon",
-            "spacing_top": 10,
-            "spacing_bottom": 10,
-            "color_scheme": "color__bg-body color__text",
-            "style_border": "",
-            "layout_width": "half"
-          }
-        },
         "product-benefit-exchanges": {
           "type": "icon",
           "settings": {
@@ -153,7 +141,6 @@
         "b78b560b-e1c2-428d-ad73-fb5f8aac6d58",
         "inventory_limited_callout",
         "b78b560b-e1c2-428d-ad73-fb5f8aac6d53",
-        "product-benefit-shipping",
         "product-benefit-exchanges",
         "848f5aea-f7ad-4974-a5fb-020776e3e523"
       ],
