@@ -43,7 +43,7 @@
     "thumbnails_object-sizing": "cover",
     "thumbnails_border_style": "image",
     "thumbnails_alignment": "text-center justify-center",
-    "stock_threshold": 40,
+    "stock_threshold": 5,
     "enable_thumbnails_variant_count": false,
     "enable_thumbnails_product_type": true,
     "enable_thumbnails_vendor": false,
