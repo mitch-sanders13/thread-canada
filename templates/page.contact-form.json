@@ -18,6 +18,9 @@
     },
     "text_FgGKR7": {
       "type": "text",
+      "custom_css": [
+        ".btn {display: none; }"
+      ],
       "name": "Rich text",
       "settings": {
         "heading": "",
