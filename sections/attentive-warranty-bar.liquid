@@ -36,17 +36,11 @@
           </div>
         {%- endunless -%}
         {%- unless section.settings.button_label == blank -%}
-          <button
-            class="mt-2 {{ section.settings.color_button }}"
-            @click="
-              if (window.innerWidth >= 760) {
-                window.__attentive.trigger(null, null, null, {{ section.settings.desktop_id }});
-              } else {
-                window.__attentive.trigger(null, null, null, {{ section.settings.mobile_id }});
-              }
-            ">
+          <a
+            href="{{ section.settings.url }}"
+            class="mt-2 {{ section.settings.color_button }}">
             {{ section.settings.button_label }}
-          </button>
+          </a>
         {%- endunless -%}
       </div>
 
@@ -61,11 +55,7 @@
   "settings":[
     {
       "type": "paragraph",
-      "content": "This section will only work if the Attentive script is installed - inject using GTM or custom liquid snippet."
-    },
-    {
-      "type": "paragraph",
-      "content": "<script>!function(w){w.attn_d0x0b_evt=[];var n=w.attentive={analytics:{}},a=['enable','disable','track','pageView','productView','addToCart','purchase'];function e(n){return function(){w.attn_d0x0b_evt.push({func:n,args:arguments})}}for(var i=0,c=a.length;i<c;i++)n.analytics[a[i]]=e(a[i])}(window)</script><script src='https://cdn.attn.tv/threadwallets/dtag.js'></script>"
+      "content": "The button is a regular link. Desktop/mobile Attentive IDs are unused leftovers and can be left blank."
     },
     {
       "type":"header",
@@ -95,6 +85,12 @@
       "type":"text",
       "id":"button_label",
       "label":"t:sections.all.content.settings.button_label.label"
+    },
+    {
+      "type":"url",
+      "id":"url",
+      "label":"t:sections.all.content.settings.button_url.label",
+      "default":"/pages/contact"
     },
     {
       "type": "header",
@@ -314,6 +310,7 @@
         "heading": "Register Warranty",
         "content": "",
         "button_label": "Register Now",
+        "url": "/pages/contact",
         "spacing_top": 100,
         "spacing_bottom": 100,
         "color_scheme": "color__bg-body color__text",
