@@ -37,7 +37,7 @@
         {%- endunless -%}
         {%- unless section.settings.button_label == blank -%}
           <a
-            href="{{ section.settings.url }}"
+            href="{{ section.settings.url | default: '/pages/contact' }}"
             class="mt-2 {{ section.settings.color_button }}">
             {{ section.settings.button_label }}
           </a>
@@ -89,8 +89,7 @@
     {
       "type":"url",
       "id":"url",
-      "label":"t:sections.all.content.settings.button_url.label",
-      "default":"/pages/contact"
+      "label":"t:sections.all.content.settings.button_url.label"
     },
     {
       "type": "header",
@@ -310,7 +309,7 @@
         "heading": "Register Warranty",
         "content": "",
         "button_label": "Register Now",
-        "url": "/pages/contact",
+        "url": "shopify://pages/contact",
         "spacing_top": 100,
         "spacing_bottom": 100,
         "color_scheme": "color__bg-body color__text",
