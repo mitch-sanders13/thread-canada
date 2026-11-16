@@ -13,9 +13,9 @@
       "type": "banner",
       "settings": {
         "enable_header_overlap": false,
-        "url": "shopify://collections/new-arrivals",
-        "image_background_desktop": "shopify://shop_images/fW_HERO_DESKTOPe.png",
-        "image_background_mobile": "shopify://shop_images/fW_Hero_mobile.png",
+        "url": "shopify://collections/daisy",
+        "image_background_desktop": "shopify://shop_images/Desktop_DAISY_Hero_desktop.png",
+        "image_background_mobile": "shopify://shop_images/Desktop_DAISY_Hero_mobile.png",
         "show_entire_image": false,
         "enable_lazy_loading": false,
         "show_video_background_mobile": true,
